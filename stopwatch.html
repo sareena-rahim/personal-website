@@ -1,0 +1,111 @@
+<html>
+<head>
+<style>
+	body {
+				font-family: Arial, sans-serif;
+				background-color: red;
+				color: white;
+				height: 100vh;
+				margin: 0;
+
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+
+				transition: background-color 1s ease;
+			}
+			
+	h1 {
+				margin-bottom: 20px;
+			}
+			
+	#time {
+				font-size: 48px;
+				margin-bottom: 30px;
+			}
+	
+	.buttons {
+            display: flex;
+            gap: 15px;
+        }
+	button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+	button:hover {
+            opacity: 0.8;
+        }
+
+</style>
+
+
+
+</head>
+
+<body>
+      <h1>Stopwatch</h1>
+      <div id="time">00:00:00</div>
+	  <div class="buttons">
+        <button onclick="start()">Start</button>
+        <button onclick="stop()">Stop</button>
+        <button onclick="reset()">Reset</button>
+      </div>
+    <script>
+		let seconds = 0;
+		let timer = null;
+		let colorTimer = null;
+		
+		const rainbowColors = [
+			"red",
+			"orange",
+			"yellow",
+			"green",
+			"blue",
+			"indigo",
+			"violet"
+	    ];
+		
+		let colorIndex = 0;
+
+        function formatTime(sec) {
+            const hrs = String(Math.floor(sec / 3600)).padStart(2, "0");
+            const mins = String(Math.floor((sec % 3600) / 60)).padStart(2, "0");
+            const secs = String(sec % 60).padStart(2, "0");
+            return `${hrs}:${mins}:${secs}`;
+        }
+		function start() {
+            if (timer !== null) return;
+
+            timer = setInterval(() => {
+                seconds++;
+                document.getElementById("time").textContent = formatTime(seconds);
+            }, 1000);
+
+            colorTimer = setInterval(() => {
+                document.body.style.backgroundColor = rainbowColors[colorIndex];
+                colorIndex = (colorIndex + 1) % rainbowColors.length;
+            }, 3000);
+        }
+		function stop() {
+            clearInterval(timer);
+            clearInterval(colorTimer);
+            timer = null;
+            colorTimer = null;
+        }
+		function reset() {
+            stop();
+            seconds = 0;
+            colorIndex = 0;
+            document.getElementById("time").textContent = "00:00:00";
+            document.body.style.backgroundColor = rainbowColors[0];
+        }
+		
+	
+	</script>
+
+</body>
+</html>

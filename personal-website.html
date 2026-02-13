@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sareena Rahim | Portfolio</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#111827,#000);
+color:white;
+}
+
+/* ================= HEADER ================= */
+
+header{
+background:linear-gradient(135deg,#111827,#000);
+padding:110px 20px 140px;
+text-align:center;
+}
+
+header h1{
+font-size:64px;
+background:linear-gradient(90deg,#f59e0b,#ec4899);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+
+header h2{
+margin-top:12px;
+font-size:24px;
+color:#fcd34d;
+}
+header p{
+max-width:600px;
+margin:20px auto 35px;
+color:#ccc;
+}
+
+.header-buttons{
+display:flex;
+gap:18px;
+justify-content:center;
+flex-wrap:wrap;
+}
+
+.header-buttons a{
+padding:12px 28px;
+border-radius:30px;
+border:2px solid #f59e0b;
+color:#f59e0b;
+text-decoration:none;
+font-weight:500;
+transition:0.3s;
+}
+
+.header-buttons a:hover{
+background:#f59e0b;
+color:black;
+}
+/* ================= CONTAINER ================= */
+
+.container{
+max-width:1300px;
+margin:-70px auto 80px;
+padding:0 30px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:30px;
+}
+
+/* ================= CARD ================= */
+
+.card{
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(12px);
+padding:35px;
+border-radius:20px;
+box-shadow:0 0 25px rgba(0,0,0,0.5);
+transition:0.3s;
+position:relative;
+}
+
+.card::before{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:4px;
+background:#f59e0b;
+border-radius:20px 20px 0 0;
+}
+
+.card:hover{
+transform:translateY(-10px);
+}
+
+/* ================= PROFILE ================= */
+
+.profile{
+text-align:center;
+}
+
+.avatar{
+width:120px;
+height:120px;
+border-radius:50%;
+background:#f59e0b;
+display:flex;
+align-items:center;
+justify-content:center;
+margin:0 auto 20px;
+font-size:48px;
+font-weight:bold;
+color:black;
+}
+.socials{
+display:flex;
+justify-content:center;
+gap:15px;
+margin-top:15px;
+}
+
+.socials a{
+width:40px;
+height:40px;
+border-radius:10px;
+background:#1f2933;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#f59e0b;
+transition:0.3s;
+}
+
+.socials a:hover{
+background:#f59e0b;
+color:black;
+}
+
+/* ================= TITLES ================= */
+
+.card-title{
+font-size:24px;
+color:#fcd34d;
+margin-bottom:15px;
+}
+
+/* ================= SKILLS ================= */
+
+.skills{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:15px;
+}
+.skill{
+background:#1f2933;
+padding:12px;
+border-radius:10px;
+display:flex;
+gap:12px;
+align-items:center;
+transition:0.3s;
+}
+
+.skill:hover{
+background:#f59e0b;
+color:black;
+}
+.skill i{
+font-size:22px;
+color:#f59e0b;
+}
+.skill:hover i{
+color:black;
+}
+
+/* ================= PROJECTS ================= */
+
+.project h3{
+margin-bottom:10px;
+color:#fcd34d;
+}
+
+.project p{
+color:#ccc;
+margin-bottom:18px;
+}
+.project a{
+padding:10px 22px;
+border-radius:30px;
+border:2px solid #f59e0b;
+color:#f59e0b;
+text-decoration:none;
+font-size:14px;
+margin-right:10px;
+transition:0.3s;
+}
+
+.project a:hover{
+background:#f59e0b;
+color:black;
+}
+
+/* ================= CONTACT ================= */
+
+input,textarea{
+width:100%;
+padding:12px;
+border-radius:10px;
+border:none;
+background:#1f2933;
+color:white;
+margin-bottom:12px;
+}
+
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:30px;
+background:#f59e0b;
+color:black;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+opacity:0.85;
+}
+
+/* ================= FOOTER ================= */
+
+footer{
+text-align:center;
+padding:25px;
+color:#777;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:768px){
+header h1{font-size:42px;}
+.skills{grid-template-columns:1fr;}
+}
+
+
+</style>
+
+</head>
+
+<body>
+<header>
+<h1>Sareena Rahim</h1>
+<h2>Junior Full-Stack Developer</h2>
+<p>I build clean, responsive and user-friendly web applications.</p>
+
+<div class="header-buttons">
+<a href="SAREENA_RAHIM_RESUME.pdf" download>Resume</a>
+<a href="https://github.com/sareena-rahim" target="_blank">GitHub</a>
+<a href="#contact">Hire Me</a>
+</div>
+</header>
+
+<!-- ================= CONTENT ================= -->
+
+<div class="container">
+
+
+<div class="grid">
+<!-- PROFILE -->
+<div class="card profile">
+	<div class="avatar">SR</div>
+	<h3 class="card-title">Sareena Rahim</h3>
+	<p>Junior Full-Stack Developer</p>
+
+
+	<div class="socials">
+		<a href="https://github.com/sareena-rahim" target="_blank"><i class="fab fa-github"></i></a>
+		<a href="https://t.me/SareenaRahim" target="_blank"><i class="fab fa-telegram"></i></a>
+		<a href="mailto:sareenar385@gmail.com"><i class="fas fa-envelope"></i></a>
+	</div>
+</div>
+	
+	<!-- ABOUT -->
+	<div class="card">
+		<h3 class="card-title">About Me</h3>
+		<p>
+		I am a passionate junior full-stack developer who enjoys building web applications and learning new technologies.
+		I focus on writing clean, maintainable code and solving real-world problems.
+		</p>
+	</div>
+	
+<!-- SKILLS -->
+<div class="card">
+	<h3 class="card-title">Skills</h3>
+
+	<div class="skills">
+		<div class="skill"><i class="fab fa-python"></i> Python</div>
+		<div class="skill"><i class="fab fa-html5"></i> HTML</div>
+		<div class="skill"><i class="fab fa-css3-alt"></i> CSS</div>
+		<div class="skill"><i class="fab fa-js"></i> JavaScript</div>
+		<div class="skill"><i class="fas fa-database"></i> SQL</div>
+		<div class="skill"><i class="fab fa-git-alt"></i> Git</div>
+	</div>
+</div>
+
+<!-- PROJECT -->
+<div class="card project">
+	<h3>🌍 World Clock</h3>
+	<p>Live world clock showing current time in multiple cities.</p>
+	<a href="worldclock.html" target="_blank">Live Demo</a>
+	<a href="#">Source Code</a>
+</div>
+
+<div class="card project">
+	<h3>🎂 Age Calculator</h3>
+	<p>Calculate age in years, months and days.</p>
+	<a href="agecalculator.html" target="_blank">Live Demo</a>
+	<a href="#">Source Code</a>
+</div>
+
+<div class="card project">
+	<h3>⏱ Stopwatch</h3>
+	<p>Stopwatch with start, stop and reset.</p>
+	<a href="stopwatch.html" target="_blank">Live Demo</a>
+	<a href="#">Source Code</a>
+</div>
+
+<!-- CONTACT -->
+<div class="card" id="contact">
+	<h3 class="card-title">Contact Me</h3>
+
+	<form action="mailto:sareenar385@gmail.com" method="post" enctype="text/plain">
+		<input type="text" name="name" placeholder="Your Name" required>
+		<input type="email" name="email" placeholder="Your Email" required>
+		<textarea name="message" placeholder="Message" rows="4" required></textarea>
+		<button type="submit">Send Message</button>
+	</form>
+</div>
+
+</div>
+</div>
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+© 2026 Sareena Rahim | Built with HTML, CSS & JavaScript
+</footer>
+
+</body>
