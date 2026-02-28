@@ -1,9 +1,623 @@
-<div>
-First Page
 
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sareena Rahim | Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(90deg, #b936ee, #f27e4d);
+            --bg-light: #fdfdfd;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #fdf4ff, transparent 400px),
+                        radial-gradient(circle at top left, #f0f9ff, transparent 400px);
+            background-color: var(--bg-light);
+            min-height: 100vh;
+            color: #1a1a1a;
+        }
+		header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+            /* This creates the frosted glass effect on the whole bar area */
+            background: rgba(255, 255, 255, 0.15); 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(15px); /* Safari support */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Floating Nav Bar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .logo span { color: #b936ee; }
+
+        .nav-center {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 10px 30px;
+            border-radius: 50px;
+            border: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-center a {
+            text-decoration: none;
+            color: #444;
+            font-size: 0.95rem;
+            font-weight: 400;
+			position: relative; /* Required for the underline positioning */
+    padding: 4px 0;
+    transition: color 0.3s ease;
+        }
+		
+		.nav-center a::after {
+			content: '';
+			position: absolute;
+			width: 0;
+			height: 2px;
+			bottom: 0;
+			left: 50%;
+			background: var(--primary-gradient);
+			transition: all 0.3s ease;
+			transform: translateX(-50%);
+			border-radius: 2px;
+		}
+		
+		/* Hover States */
+		.nav-center a:hover {
+			color: #b936ee; /* Changes text color to match the start of your gradient */
+		}
+
+		.nav-center a:hover::after {
+			width: 100%; /* Expands the line to full width */
+		}
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .contact-btn {
+            border: 1px solid #ccc;
+            padding: 10px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            color: black;
+            font-size: 0.9rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding-top: 60px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* The Replacement for Profile Pic: Animated Code Icon */
+        .icon-circle {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        .icon-circle i {
+            font-size: 3rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .icon-circle::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px dashed #b936ee;
+            animation: rotate 10s linear infinite;
+            padding: 5px;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .hero h3 {
+            font-weight: 400;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            line-height: 1.1;
+            font-weight: 400;
+            margin-bottom: 30px;
+        }
+
+        .hero p.description {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        /* Action Buttons */
+        .cta-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .btn-grad {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 15px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .btn-outline {
+            border: 1px solid #ddd;
+            padding: 15px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-grad:hover { transform: translateY(-3px); }
+		
+		
+		.about-section {
+    padding: 100px 8%;
+    background: transparent;
+}
+
+.about-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.2); /* Very transparent glass */
+    backdrop-filter: blur(10px);
+    border-radius: 40px;
+    padding: 60px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.about-header {
+    margin-bottom: 50px;
+}
+
+.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 0.8rem;
+    color: #b936ee;
+    font-weight: 600;
+}
+
+.section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    margin-top: 10px;
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.about-text p {
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: #444;
+    margin-bottom: 25px;
+}
+
+.about-text strong {
+    color: #1a1a1a;
+}
+
+.about-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.stat-card {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    border: 1px solid #f0f0f0;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateX(10px);
+    border-color: #b936ee;
+}
+
+.stat-card h4 {
+    color: #b936ee;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+.stat-card p {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.5;
+}
 
 
-<div>Go to the <a href="tools/index.html">tools page</a>.</div>
 
-<div>Go to the <a href="games/index.html">games page</a>.</div>
+.contact-section {
+    padding: 100px 8%;
+    background: transparent;
+}
+
+.contact-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 80px;
+    margin-top: 50px;
+}
+
+.contact-desc {
+    font-size: 1.1rem;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+/* Info Items (Email/Location) */
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.info-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(185, 54, 238, 0.1);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #b936ee;
+    font-size: 1.2rem;
+}
+
+.info-text span {
+    display: block;
+    font-size: 0.85rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.info-text a, .info-text p {
+    font-size: 1.1rem;
+    color: #1a1a1a;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* Social Buttons */
+.social-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 40px;
+}
+
+.social-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-btn:hover {
+    background: var(--primary-gradient);
+    color: white;
+    border-color: transparent;
+    transform: translateY(-5px);
+}
+
+/* Glass Form Fields */
+.contact-form {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    padding: 40px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.contact-form input, .contact-form textarea {
+    width: 100%;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0,0,0,0.05);
+    border-radius: 15px;
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.contact-form input:focus, .contact-form textarea:focus {
+    border-color: #b936ee;
+}
+
+.contact-form .btn-grad {
+    width: 100%;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+}
+
+/* Responsive Fix */
+@media (max-width: 900px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 50px;
+    }
+}
+
+.telegram-float {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 2000;
+    text-decoration: none;
+}
+
+.float-content {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 10px 25px rgba(185, 54, 238, 0.3);
+    transition: all 0.3s ease;
+}
+
+.float-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.float-content i {
+    font-size: 1.4rem;
+}
+
+/* Hover & Animation */
+.telegram-float:hover .float-content {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(185, 54, 238, 0.5);
+}
+
+/* Suble pulse animation to make it live */
+@keyframes pulse-border {
+    0% { box-shadow: 0 0 0 0 rgba(185, 54, 238, 0.4); }
+    70% { box-shadow: 0 0 0 15px rgba(185, 54, 238, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(185, 54, 238, 0); }
+}
+
+.float-content {
+    animation: pulse-border 2s infinite;
+}
+
+/* Hide text on very small screens to keep it clean */
+@media (max-width: 600px) {
+    .float-text {
+        display: none;
+    }
+    .float-content {
+        padding: 15px;
+    }
+}
+
+
+    </style>
+</head>
+<body>
+   <header>
+		<nav>
+			<div class="logo">sareena<span>.</span></div>
+			<div class="nav-center">
+				<a href="#">Home</a>
+				<a href="#about">About me</a>
+				<a href="#">Services</a>
+				<a href="#">My Work</a>
+				<a href="#contact">Contact me</a>
+			</div>
+			<div class="nav-right">
+				<i class="far fa-moon"></i>
+				<a href="#" class="contact-btn">Contact <i class="fas fa-arrow-up-right-from-square" style="font-size: 0.7rem;"></i></a>
+			</div>
+		</nav>
+   </header>
+    <section class="hero">
+        <div class="icon-circle">
+            <i class="fas fa-code"></i>
+        </div>
+        
+        <h3>Hi! I'm Sareena Rahim 👋</h3>
+        
+        <h1>frontend web developer</h1>
+        
+        <p class="description">
+            I am a frontend developer passionate about building clean, modern, and user-friendly web interfaces with 
+            a focus on responsive design and performance.
+        </p>
+
+        <div class="cta-group">
+            <a href="#" class="btn-grad">contact me <i class="fas fa-arrow-right"></i></a>
+            <a href="#" class="btn-outline">my resume <i class="fas fa-download"></i></a>
+        </div>
+    </section>
+	
+	<section id="about" class="about-section">
+    <div class="about-container">
+        <div class="about-content">
+            <div class="about-header">
+                <span class="eyebrow">The Story</span>
+                <h2 class="section-title">Beyond the Code</h2>
+            </div>
+            
+            <div class="about-grid">
+                <div class="about-text">
+                    <p class="main-para">
+                        I came to software through an unconventional path - Physics first, then Social Work, then a Java codebase at an aerospace company in the UAE. What looked like a zigzag was actually the same thing each time: figuring out how things work, and making them work better.
+                    </p>
+                    <p class="sub-para">
+                        My internship at <strong>AMC Aerospace Technologies</strong> was my first real exposure to enterprise software : ERP systems, <strong>Java</strong>, JSF, and what it actually means to write code that a business depends on. I picked it up fast, with minimal hand-holding, and left with a much sharper sense of how backend systems are structured and why they're built that way.
+                    </p>
+                    <p class="sub-para">
+                        Outside of Java, I work mostly in <strong>Python</strong> , building things with <strong>SQL</strong>, REST APIs, and databases. The Physics degree didn't teach me to code, but it taught me how to think through problems methodically until they break open. That habit has been more useful than I expected.
+                    </p>
+                </div>
+                <div class="about-stats">
+                    <div class="stat-card">
+                        <h4>Python & SQL</h4>
+                        <p>Primary stack. Comfortable with SQLite, MySQL, PostgreSQL and REST API integrations.</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Java & ERP</h4>
+                        <p>Hands-on internship experience in enterprise-scale backend systems and business workflows.</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Fast learner</h4>
+                        <p>Picked up Java, JSF, and a professional dev environment from scratch</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="contact" class="contact-section">
+    <div class="contact-container">
+        <div class="contact-header">
+            <span class="eyebrow">Get In Touch</span>
+            <h2 class="section-title">Let's build something together.</h2>
+        </div>
+
+        <div class="contact-grid">
+            <div class="contact-info">
+                <p class="contact-desc">
+                    I'm currently seeking entry-level software development roles. Whether you have a question or just want to say hi, my inbox is always open!
+                </p>
+                
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-envelope"></i></div>
+                    <div class="info-text">
+                        <span>Email me at</span>
+                        <a href="mailto:sareenar385@gmail.com">sareenar385@gmail.com</a>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-location-dot"></i></div>
+                    <div class="info-text">
+                        <span>Location</span>
+                        <p>Kerala, India</p>
+                    </div>
+                </div>
+
+                <div class="social-links">
+                    <a href="https://linkedin.com/in/sareena-rahim" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://github.com/sareena-rahim" class="social-btn"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+
+            <form class="contact-form">
+                <div class="form-group">
+                    <input type="text" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="Your Email" required>
+                </div>
+                <div class="form-group">
+                    <textarea placeholder="Your Message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn-grad">Send Message <i class="fas fa-paper-plane"></i></button>
+            </form>
+        </div>
+    </div>
+</section>
+<a href="https://t.me/SareenaRahim" target="_blank" class="telegram-float">
+    <div class="float-content">
+        <span class="float-text">Chat with me</span>
+        <i class="fab fa-telegram-plane"></i>
+    </div>
+</a>
+
+</body>
+</html>
