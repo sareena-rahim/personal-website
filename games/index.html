@@ -1,1 +1,483 @@
-<div>This is the games page.</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games · Sareena Rahim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f0e0d;
+            --ink-soft: #3a3835;
+            --ink-muted: #7a7672;
+            --paper: #f5f2ed;
+            --paper-warm: #ede9e2;
+            --paper-card: #f9f7f4;
+            --accent: #c0392b;
+            --accent-warm: #e67e22;
+            --accent-cool: #2c7a6e;
+            --rule: rgba(15,14,13,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--paper);
+            color: var(--ink);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.4;
+        }
+
+        /* ─── HEADER ─── */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(245, 242, 237, 0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 7%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem;
+            color: var(--ink);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .logo sup {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.5rem;
+            color: var(--accent);
+            vertical-align: super;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .back-btn {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.78rem;
+            border: 1.5px solid var(--ink);
+            padding: 9px 22px;
+            border-radius: 3px;
+            text-decoration: none;
+            color: var(--ink);
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s ease;
+        }
+
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+        /* ─── PAGE HERO ─── */
+        .page-hero {
+            padding: 70px 7% 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-bottom: 1px solid var(--rule);
+        }
+
+        .breadcrumb {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--ink-muted);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .breadcrumb a {
+            color: var(--ink-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover { color: var(--accent); }
+        .breadcrumb span { color: var(--accent); }
+
+        .page-hero h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            letter-spacing: -0.03em;
+            line-height: 1.08;
+            color: var(--ink);
+        }
+
+        .page-hero h1 em { font-style: italic; color: var(--accent); }
+
+        .page-hero-meta {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .page-hero-meta p {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--ink-muted);
+            letter-spacing: 0.08em;
+        }
+
+        .game-count {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            background: var(--paper-warm);
+            border: 1px solid var(--rule);
+            padding: 5px 14px;
+            border-radius: 2px;
+            color: var(--ink-soft);
+            letter-spacing: 0.1em;
+        }
+
+        /* ─── GAMES SECTION ─── */
+        .games-section {
+            padding: 60px 7% 100px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Single card constrained width */
+        .games-grid {
+            display: grid;
+            grid-template-columns: minmax(280px, 500px);
+        }
+
+        /* ─── GAME CARD ─── */
+        .game-card {
+            background: var(--paper-card);
+            border: 1px solid var(--rule);
+            border-radius: 6px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .game-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-warm));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .game-card:hover::after { transform: scaleX(1); }
+
+        .game-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 28px 56px rgba(0,0,0,0.09);
+            border-color: rgba(192, 57, 43, 0.2);
+        }
+
+        /* ─── BANNER ─── */
+        .game-banner {
+            height: 220px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #1a1a1a;
+        }
+
+        .maze-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 26px);
+            grid-template-rows: repeat(5, 26px);
+            gap: 3px;
+            opacity: 0.85;
+            transition: opacity 0.3s;
+        }
+
+        .game-card:hover .maze-grid { opacity: 1; }
+
+        .maze-cell            { background: #2a2a2a; border-radius: 2px; }
+        .maze-cell.wall       { background: #c0392b; }
+        .maze-cell.path       { background: #3a3a3a; }
+        .maze-cell.start      { background: #2c7a6e; }
+        .maze-cell.end        { background: #e67e22; }
+        .maze-cell.player     { background: #f5f2ed; box-shadow: 0 0 8px rgba(245,242,237,0.6); }
+
+        .banner-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(192, 57, 43, 0.08);
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .banner-overlay span {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: white;
+            background: var(--accent);
+            padding: 8px 20px;
+            border-radius: 2px;
+            transform: translateY(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .game-card:hover .banner-overlay      { opacity: 1; }
+        .game-card:hover .banner-overlay span { transform: translateY(0); }
+
+        /* ─── CARD BODY ─── */
+        .game-body {
+            padding: 32px 36px 36px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .game-num {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            color: var(--ink-muted);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        .game-body h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.9rem;
+            letter-spacing: -0.025em;
+            color: var(--ink);
+            line-height: 1.1;
+        }
+
+        .game-body p {
+            font-size: 0.9rem;
+            color: var(--ink-muted);
+            line-height: 1.65;
+        }
+
+        .game-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .tag {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            background: var(--paper-warm);
+            border: 1px solid var(--rule);
+            padding: 4px 12px;
+            border-radius: 2px;
+            color: var(--ink-soft);
+        }
+
+        .play-link {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .play-link i { transition: transform 0.25s ease; }
+        .game-card:hover .play-link i { transform: translateX(5px); }
+
+        /* ─── FADE IN ─── */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.55s ease, transform 0.55s ease;
+        }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        /* ─── FOOTER ─── */
+        .footer-bar {
+            border-top: 1px solid var(--rule);
+            padding: 24px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-bar p {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--ink-muted);
+            letter-spacing: 0.08em;
+        }
+
+        .footer-bar span { color: var(--accent); }
+
+        @media (max-width: 600px) {
+            .games-grid    { grid-template-columns: 1fr; }
+            .page-hero     { padding: 50px 7% 36px; }
+            .games-section { padding: 40px 7% 70px; }
+            .game-body     { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Portfolio</a>
+        </nav>
+    </header>
+
+    <div class="page-hero">
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a>
+            <i class="fas fa-chevron-right" style="font-size:0.55rem;"></i>
+            <span>Games</span>
+        </div>
+        <h1>Inter&shy;active <em>Games</em></h1>
+        <div class="page-hero-meta">
+            <p>Logic-based browser games. No installs. Play right here.</p>
+            <span class="game-count">01 Game</span>
+        </div>
+    </div>
+
+    <div class="games-section">
+        <div class="games-grid">
+
+            <a href="maze/index.html" class="game-card fade-in">
+                <div class="game-banner">
+                    <div class="maze-grid">
+                        <!-- Row 1 -->
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div>
+                        <!-- Row 2 -->
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell start"></div>
+                        <div class="maze-cell path"></div>
+                        <div class="maze-cell path"></div>
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell path"></div>
+                        <div class="maze-cell path"></div>
+                        <div class="maze-cell path"></div>
+                        <div class="maze-cell wall"></div>
+                        <!-- Row 3 -->
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell path"></div>
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell path"></div>
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell player"></div>
+                        <div class="maze-cell wall"></div>
+                        <!-- Row 4 -->
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell path"></div>
+                        <div class="maze-cell path"></div>
+                        <div class="maze-cell path"></div>
+                        <div class="maze-cell path"></div>
+                        <div class="maze-cell path"></div>
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell path"></div>
+                        <div class="maze-cell wall"></div>
+                        <!-- Row 5 -->
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell end"></div>
+                        <div class="maze-cell wall"></div>
+                    </div>
+                    <div class="banner-overlay"><span>Play Now</span></div>
+                </div>
+                <div class="game-body">
+                    <div class="game-num">01 / Maze</div>
+                    <h2>Dark Maze</h2>
+                    <p>Navigate an 8×8 maze using arrow keys, WASD, or swipe. Find the exit in as few moves as possible — your best score is saved.</p>
+                    <div class="game-tags">
+                        <span class="tag">Keyboard</span>
+                        <span class="tag">Logic</span>
+                        <span class="tag">Single Player</span>
+                    </div>
+                    <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+    <div class="footer-bar">
+        <p>© 2025 Sareena Rahim</p>
+        <p>Part of <span>·</span> <a href="../index.html" style="color:var(--ink-muted); text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--ink-muted)'">sareenarahim.dev</a></p>
+    </div>
+
+    <script>
+        const fadeEls = document.querySelectorAll('.fade-in');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    observer.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        fadeEls.forEach(el => observer.observe(el));
+        setTimeout(() => fadeEls.forEach(el => el.classList.add('visible')), 80);
+    </script>
+</body>
+</html>
+
