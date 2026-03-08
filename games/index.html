@@ -115,12 +115,7 @@
             gap: 8px;
         }
 
-        .breadcrumb a {
-            color: var(--ink-muted);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
+        .breadcrumb a { color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
         .breadcrumb a:hover { color: var(--accent); }
         .breadcrumb span { color: var(--accent); }
 
@@ -167,10 +162,10 @@
             margin: 0 auto;
         }
 
-        /* Single card constrained width */
         .games-grid {
             display: grid;
-            grid-template-columns: minmax(280px, 500px);
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
         }
 
         /* ─── GAME CARD ─── */
@@ -206,7 +201,7 @@
             border-color: rgba(192, 57, 43, 0.2);
         }
 
-        /* ─── BANNER ─── */
+        /* ─── BANNERS ─── */
         .game-banner {
             height: 220px;
             position: relative;
@@ -214,8 +209,10 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            background: #1a1a1a;
         }
+
+        /* Maze banner */
+        .banner-maze { background: #1a1a1a; }
 
         .maze-grid {
             display: grid;
@@ -235,6 +232,86 @@
         .maze-cell.end        { background: #e67e22; }
         .maze-cell.player     { background: #f5f2ed; box-shadow: 0 0 8px rgba(245,242,237,0.6); }
 
+        /* Tug of War banner */
+        .banner-tug { background: #1a2535; }
+
+        .tug-scene {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            padding: 0 30px;
+        }
+
+        .tug-side-labels {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 4px;
+        }
+
+        .tug-side-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .tug-side-label.blue { color: #4a90d9; }
+        .tug-side-label.red  { color: #c0392b; }
+
+        .tug-rope-row {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            gap: 6px;
+        }
+
+        .tug-emoji { font-size: 1.9rem; flex-shrink: 0; }
+
+        .tug-rope {
+            flex: 1;
+            height: 8px;
+            background: repeating-linear-gradient(
+                90deg,
+                #b5894f 0px,
+                #d4a96a 6px,
+                #b5894f 12px
+            );
+            border-radius: 4px;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+
+        .tug-knot {
+            position: absolute;
+            top: 50%;
+            left: 55%;
+            transform: translate(-50%, -50%);
+            width: 18px; height: 18px;
+            background: #e67e22;
+            border-radius: 50%;
+            border: 2px solid #c0392b;
+            box-shadow: 0 0 10px rgba(230,126,34,0.5);
+        }
+
+        .tug-bar-wrap {
+            width: 100%;
+            height: 5px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .tug-bar-fill {
+            height: 100%;
+            width: 42%;
+            background: linear-gradient(90deg, #4a90d9, #c0392b);
+            border-radius: 3px;
+        }
+
+        /* Shared hover overlay */
         .banner-overlay {
             position: absolute;
             inset: 0;
@@ -268,6 +345,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            flex: 1;
         }
 
         .game-num {
@@ -354,7 +432,7 @@
 
         .footer-bar span { color: var(--accent); }
 
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .games-grid    { grid-template-columns: 1fr; }
             .page-hero     { padding: 50px 7% 36px; }
             .games-section { padding: 40px 7% 70px; }
@@ -380,76 +458,70 @@
         <h1>Inter&shy;active <em>Games</em></h1>
         <div class="page-hero-meta">
             <p>Logic-based browser games. No installs. Play right here.</p>
-            <span class="game-count">01 Game</span>
+            <span class="game-count">02 Games</span>
         </div>
     </div>
 
     <div class="games-section">
         <div class="games-grid">
 
+            <!-- ── Maze ── -->
             <a href="maze/index.html" class="game-card fade-in">
-                <div class="game-banner">
+                <div class="game-banner banner-maze">
                     <div class="maze-grid">
-                        <!-- Row 1 -->
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell wall"></div>
-                        <!-- Row 2 -->
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell start"></div>
-                        <div class="maze-cell path"></div>
-                        <div class="maze-cell path"></div>
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell path"></div>
-                        <div class="maze-cell path"></div>
-                        <div class="maze-cell path"></div>
-                        <div class="maze-cell wall"></div>
-                        <!-- Row 3 -->
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell path"></div>
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell path"></div>
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell player"></div>
-                        <div class="maze-cell wall"></div>
-                        <!-- Row 4 -->
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell path"></div>
-                        <div class="maze-cell path"></div>
-                        <div class="maze-cell path"></div>
-                        <div class="maze-cell path"></div>
-                        <div class="maze-cell path"></div>
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell path"></div>
-                        <div class="maze-cell wall"></div>
-                        <!-- Row 5 -->
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell wall"></div>
-                        <div class="maze-cell end"></div>
-                        <div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div><div class="maze-cell wall"></div><div class="maze-cell wall"></div><div class="maze-cell wall"></div><div class="maze-cell wall"></div><div class="maze-cell wall"></div><div class="maze-cell wall"></div><div class="maze-cell wall"></div><div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div><div class="maze-cell start"></div><div class="maze-cell path"></div><div class="maze-cell path"></div><div class="maze-cell wall"></div><div class="maze-cell path"></div><div class="maze-cell path"></div><div class="maze-cell path"></div><div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div><div class="maze-cell wall"></div><div class="maze-cell wall"></div><div class="maze-cell path"></div><div class="maze-cell wall"></div><div class="maze-cell path"></div><div class="maze-cell wall"></div><div class="maze-cell player"></div><div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div><div class="maze-cell path"></div><div class="maze-cell path"></div><div class="maze-cell path"></div><div class="maze-cell path"></div><div class="maze-cell path"></div><div class="maze-cell wall"></div><div class="maze-cell path"></div><div class="maze-cell wall"></div>
+                        <div class="maze-cell wall"></div><div class="maze-cell wall"></div><div class="maze-cell wall"></div><div class="maze-cell wall"></div><div class="maze-cell wall"></div><div class="maze-cell wall"></div><div class="maze-cell wall"></div><div class="maze-cell end"></div><div class="maze-cell wall"></div>
                     </div>
                     <div class="banner-overlay"><span>Play Now</span></div>
                 </div>
                 <div class="game-body">
                     <div class="game-num">01 / Maze</div>
                     <h2>Dark Maze</h2>
-                    <p>Navigate an 8×8 maze using arrow keys, WASD, or swipe. Find the exit in as few moves as possible — your best score is saved.</p>
+                    <p>Navigate an 8×8 maze using arrow keys, WASD, or swipe. Find the exit in as few moves as possible. Your best score is saved.</p>
                     <div class="game-tags">
                         <span class="tag">Keyboard</span>
                         <span class="tag">Logic</span>
+                        <span class="tag">Single Player</span>
+                    </div>
+                    <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- ── Tug of War ── -->
+            <a href="tug-of-war/index.html" class="game-card fade-in" style="transition-delay: 0.1s;">
+                <div class="game-banner banner-tug">
+                    <div class="tug-scene">
+                        <div class="tug-side-labels">
+                            <span class="tug-side-label blue">You 🧑</span>
+                            <span class="tug-side-label red">CPU 🤖</span>
+                        </div>
+                        <div class="tug-rope-row">
+                            <span class="tug-emoji">🧑</span>
+                            <div class="tug-rope">
+                                <div class="tug-knot"></div>
+                            </div>
+                            <span class="tug-emoji">🤖</span>
+                        </div>
+                        <div class="tug-bar-wrap">
+                            <div class="tug-bar-fill"></div>
+                        </div>
+                        <div class="tug-side-labels">
+                            <span class="tug-side-label blue">← Winning</span>
+                            <span class="tug-side-label red">Losing →</span>
+                        </div>
+                    </div>
+                    <div class="banner-overlay"><span>Play Now</span></div>
+                </div>
+                <div class="game-body">
+                    <div class="game-num">02 / Tug of War</div>
+                    <h2>Math Tug<br>of War</h2>
+                    <p>Answer addition and subtraction questions faster than the CPU to pull the rope to your side. First to win 4 rounds wins the match.</p>
+                    <div class="game-tags">
+                        <span class="tag">Math</span>
+                        <span class="tag">vs CPU</span>
                         <span class="tag">Single Player</span>
                     </div>
                     <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
@@ -460,7 +532,7 @@
     </div>
 
     <div class="footer-bar">
-        <p>© 2025 Sareena Rahim</p>
+        <p>© 2026 Sareena Rahim</p>
         <p>Part of <span>·</span> <a href="../index.html" style="color:var(--ink-muted); text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--ink-muted)'">sareenarahim.dev</a></p>
     </div>
 
