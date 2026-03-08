@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Tug of War · Sareena Rahim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f0e0d;
+            --paper: #f5f2ed;
+            --paper-warm: #ede9e2;
+            --paper-card: #f9f7f4;
+            --accent: #c0392b;
+            --accent-warm: #e67e22;
+            --accent-cool: #2c7a6e;
+            --blue: #2471a3;
+            --ink-muted: #7a7672;
+            --rule: rgba(15,14,13,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--paper);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ─── HEADER ─── */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: rgba(245,242,237,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 7%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem;
+            color: var(--ink);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .logo sup {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.48rem;
+            color: var(--accent);
+            vertical-align: super;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .back-btn {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            border: 1.5px solid var(--ink);
+            padding: 8px 18px;
+            border-radius: 3px;
+            text-decoration: none;
+            color: var(--ink);
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s;
+        }
+
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+        /* ─── MAIN ─── */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 36px 7% 60px;
+            gap: 28px;
+        }
+
+        /* ─── TITLE ─── */
+        .game-header { text-align: center; }
+
+        .eyebrow {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.4rem;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        h1 em { font-style: italic; color: var(--accent); }
+
+        .subtitle {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--ink-muted);
+            letter-spacing: 0.08em;
+            margin-top: 8px;
+        }
+
+        /* ─── SCORE BAR ─── */
+        .score-bar {
+            display: flex;
+            border: 1px solid var(--rule);
+            border-radius: 4px;
+            overflow: hidden;
+            background: var(--paper-card);
+        }
+
+        .score-box {
+            padding: 10px 28px;
+            text-align: center;
+            border-right: 1px solid var(--rule);
+        }
+
+        .score-box:last-child { border-right: none; }
+
+        .score-box .val {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem;
+            color: var(--ink);
+            display: block;
+            line-height: 1;
+        }
+
+        .score-box .lbl {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
+            margin-top: 3px;
+            display: block;
+        }
+
+        /* ─── ROPE STAGE ─── */
+        .rope-stage {
+            width: 100%;
+            max-width: 600px;
+            background: var(--paper-card);
+            border: 1px solid var(--rule);
+            border-radius: 6px;
+            padding: 22px 40px 18px;
+        }
+
+        .side-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .side-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .side-label.you { color: var(--blue); }
+        .side-label.cpu { color: var(--accent); }
+
+        /* Track */
+        .track-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .player-emoji, .cpu-emoji {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .track {
+            flex: 1;
+            height: 8px;
+            background: var(--paper-warm);
+            border-radius: 4px;
+            position: relative;
+        }
+
+        /* edge markers */
+        .track::before, .track::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            width: 2px;
+            height: 24px;
+            background: var(--rule);
+            border-radius: 1px;
+        }
+        .track::before { left: 12%; }
+        .track::after  { right: 12%; }
+
+        .rope-fill {
+            position: absolute;
+            top: 0; bottom: 0;
+            border-radius: 4px;
+            transition: left 0.4s ease, right 0.4s ease;
+        }
+
+        .knot {
+            position: absolute;
+            top: 50%;
+            width: 20px; height: 20px;
+            background: var(--ink);
+            border-radius: 50%;
+            border: 3px solid var(--paper);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transform: translate(-50%, -50%);
+            transition: left 0.4s cubic-bezier(0.34,1.4,0.64,1);
+            z-index: 2;
+        }
+
+        /* CPU thinking dots */
+        .cpu-row {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+            height: 14px;
+        }
+
+        .cpu-row .thinking-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem;
+            color: var(--ink-muted);
+            letter-spacing: 0.06em;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .cpu-row.active .thinking-label { opacity: 1; }
+
+        .thinking-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--ink-muted);
+            opacity: 0;
+            animation: bounce 0.9s ease-in-out infinite;
+        }
+
+        .cpu-row.active .thinking-dot { opacity: 1; }
+        .thinking-dot:nth-child(3) { animation-delay: 0.15s; }
+        .thinking-dot:nth-child(4) { animation-delay: 0.3s; }
+
+        @keyframes bounce {
+            0%,60%,100% { transform: translateY(0); }
+            30%          { transform: translateY(-4px); }
+        }
+
+        /* ─── QUESTION CARD ─── */
+        .question-card {
+            width: 100%;
+            max-width: 600px;
+            background: var(--paper-card);
+            border: 1px solid var(--rule);
+            border-radius: 6px;
+            padding: 32px 36px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            text-align: center;
+        }
+
+        .question-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
+        }
+
+        .question-text {
+            font-family: 'DM Serif Display', serif;
+            font-size: 3rem;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        /* Input + button row */
+        .answer-row {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .ans-input {
+            flex: 1;
+            padding: 12px 16px;
+            background: var(--paper);
+            border: 1.5px solid var(--rule);
+            border-radius: 4px;
+            font-family: 'DM Mono', monospace;
+            font-size: 1.2rem;
+            color: var(--ink);
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s;
+            -moz-appearance: textfield;
+        }
+
+        .ans-input::-webkit-outer-spin-button,
+        .ans-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+        .ans-input:focus { border-color: var(--blue); }
+
+        .ans-input.shake {
+            animation: shake 0.35s ease;
+            border-color: var(--accent);
+        }
+
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            20%      { transform: translateX(-6px); }
+            40%      { transform: translateX(6px); }
+            60%      { transform: translateX(-4px); }
+            80%      { transform: translateX(4px); }
+        }
+
+        .pull-btn {
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 12px 22px;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pull-btn:hover   { background: #1a5276; transform: translateY(-1px); }
+        .pull-btn:active  { transform: translateY(0); }
+        .pull-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+        /* Feedback line */
+        .feedback {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            min-height: 1rem;
+        }
+
+        .feedback.correct { color: var(--accent-cool); }
+        .feedback.wrong   { color: var(--accent); }
+
+        /* ─── WIN OVERLAY ─── */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15,14,13,0.88);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease;
+        }
+
+        .overlay.show { opacity: 1; pointer-events: all; }
+
+        .overlay-box {
+            background: var(--paper-card);
+            border: 1px solid var(--rule);
+            border-radius: 8px;
+            padding: 44px 52px;
+            text-align: center;
+            max-width: 360px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(20px);
+            transition: transform 0.35s ease;
+        }
+
+        .overlay.show .overlay-box { transform: translateY(0); }
+
+        .overlay-emoji { font-size: 3rem; line-height: 1; }
+
+        .overlay-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.2rem;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        .overlay-title em { font-style: italic; }
+        .win  em { color: var(--accent-cool); }
+        .lose em { color: var(--accent); }
+
+        .overlay-sub {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--ink-muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .overlay-sub span { color: var(--ink); }
+
+        .overlay-btn {
+            margin-top: 12px;
+            background: var(--ink);
+            color: var(--paper);
+            border: none;
+            border-radius: 3px;
+            padding: 12px 32px;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .overlay-btn:hover { background: var(--accent); transform: translateY(-2px); }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 500px) {
+            h1 { font-size: 1.9rem; }
+            .question-text { font-size: 2.4rem; }
+            .rope-stage { padding: 18px 16px 14px; }
+            .question-card { padding: 24px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Games</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="game-header">
+            <div class="eyebrow">Game 02</div>
+            <h1>Math <em>Tug of War</em></h1>
+            <p class="subtitle">Answer faster than the CPU to win the round</p>
+        </div>
+
+        <!-- Score -->
+        <div class="score-bar">
+            <div class="score-box">
+                <span class="val" id="youScore">0</span>
+                <span class="lbl">You</span>
+            </div>
+            <div class="score-box">
+                <span class="val" id="roundNum">1</span>
+                <span class="lbl">Round</span>
+            </div>
+            <div class="score-box">
+                <span class="val" id="cpuScore">0</span>
+                <span class="lbl">CPU</span>
+            </div>
+        </div>
+
+        <!-- Rope -->
+        <div class="rope-stage">
+            <div class="side-labels">
+                <span class="side-label you">You 🧑</span>
+                <span class="side-label cpu">CPU 🤖</span>
+            </div>
+            <div class="track-row">
+                <span class="player-emoji">🧑</span>
+                <div class="track" id="track">
+                    <div class="rope-fill" id="ropeFill"></div>
+                    <div class="knot" id="knot"></div>
+                </div>
+                <span class="cpu-emoji">🤖</span>
+            </div>
+            <div class="cpu-row" id="cpuRow">
+                <span class="thinking-label">CPU thinking</span>
+                <div class="thinking-dot"></div>
+                <div class="thinking-dot"></div>
+                <div class="thinking-dot"></div>
+            </div>
+        </div>
+
+        <!-- Question -->
+        <div class="question-card">
+            <div class="question-label">What is the answer?</div>
+            <div class="question-text" id="questionText">—</div>
+            <div class="answer-row">
+                <input type="number" class="ans-input" id="ansInput" placeholder="?" autocomplete="off">
+                <button class="pull-btn" id="pullBtn" onclick="submitAnswer()">Pull!</button>
+            </div>
+            <div class="feedback" id="feedback"></div>
+        </div>
+    </main>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay">
+        <div class="overlay-box">
+            <div class="overlay-emoji" id="overlayEmoji">🎉</div>
+            <div class="overlay-title" id="overlayTitle"><em>You Win!</em></div>
+            <div class="overlay-sub" id="overlaySub">
+                You <span id="finalYou">0</span> – <span id="finalCpu">0</span> CPU
+            </div>
+            <button class="overlay-btn" onclick="resetGame()">
+                <i class="fas fa-rotate-right"></i> Play Again
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ─── CONFIG ───────────────────────────────────────────────────────
+        const TOTAL_ROUNDS  = 7;        // first to win 4 rounds wins
+        const CPU_DELAY_MIN = 3500;     // ms — medium speed
+        const CPU_DELAY_MAX = 5500;
+
+        // ─── STATE ────────────────────────────────────────────────────────
+        let youScore  = 0;
+        let cpuScore  = 0;
+        let round     = 1;
+        let gameOver  = false;
+        let currentQ  = {};
+        let cpuTimer  = null;
+
+        // Rope position: -3 to +3 (negative = you winning, positive = cpu winning)
+        let ropePos = 0;
+
+        // ─── HELPERS ─────────────────────────────────────────────────────
+        function rand(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // ─── QUESTION ─────────────────────────────────────────────────────
+        function makeQuestion() {
+            const op = Math.random() < 0.5 ? '+' : '-';
+            let a, b, ans, label;
+
+            if (op === '+') {
+                a = rand(1, 20); b = rand(1, 20);
+                ans = a + b;
+                label = `${a} + ${b} = ?`;
+            } else {
+                a = rand(5, 25); b = rand(1, a);
+                ans = a - b;
+                label = `${a} − ${b} = ?`;
+            }
+
+            return { label, ans };
+        }
+
+        // ─── ROPE VISUAL ─────────────────────────────────────────────────
+        // ropePos: -3 = far left (you winning), 0 = centre, +3 = far right (cpu winning)
+        function updateRope() {
+            const pct  = (ropePos + 3) / 6;   // 0 to 1
+            const knot = document.getElementById('knot');
+            const fill = document.getElementById('ropeFill');
+
+            knot.style.left = `${pct * 100}%`;
+
+            if (ropePos < 0) {
+                fill.style.left       = `${pct * 100}%`;
+                fill.style.right      = '50%';
+                fill.style.background = 'var(--blue)';
+            } else if (ropePos > 0) {
+                fill.style.left       = '50%';
+                fill.style.right      = `${(1 - pct) * 100}%`;
+                fill.style.background = 'var(--accent)';
+            } else {
+                fill.style.left  = '50%';
+                fill.style.right = '50%';
+            }
+        }
+
+        // ─── NEW ROUND ────────────────────────────────────────────────────
+        function newRound() {
+            if (gameOver) return;
+
+            currentQ = makeQuestion();
+            document.getElementById('questionText').textContent = currentQ.label;
+            document.getElementById('ansInput').value    = '';
+            document.getElementById('ansInput').disabled = false;
+            document.getElementById('pullBtn').disabled  = false;
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('feedback').className   = 'feedback';
+            document.getElementById('ansInput').focus();
+
+            // CPU timer
+            const delay = rand(CPU_DELAY_MIN, CPU_DELAY_MAX);
+            document.getElementById('cpuRow').classList.add('active');
+
+            cpuTimer = setTimeout(() => {
+                if (!gameOver) cpuWinsRound();
+            }, delay);
+        }
+
+        // ─── CPU WINS ROUND ───────────────────────────────────────────────
+        function cpuWinsRound() {
+            clearTimeout(cpuTimer);
+            document.getElementById('cpuRow').classList.remove('active');
+            document.getElementById('ansInput').disabled = true;
+            document.getElementById('pullBtn').disabled  = true;
+
+            cpuScore++;
+            ropePos = Math.min(ropePos + 1, 3);
+            updateRope();
+            updateScores();
+
+            checkGameOver() || setTimeout(() => {
+                round++;
+                updateScores();
+                newRound();
+            }, 900);
+        }
+
+        // ─── PLAYER SUBMITS ───────────────────────────────────────────────
+        function submitAnswer() {
+            if (gameOver) return;
+
+            const input = document.getElementById('ansInput');
+            const val   = parseInt(input.value);
+            const fb    = document.getElementById('feedback');
+
+            if (isNaN(val)) return;
+
+            if (val === currentQ.ans) {
+                clearTimeout(cpuTimer);
+                document.getElementById('cpuRow').classList.remove('active');
+                document.getElementById('ansInput').disabled = true;
+                document.getElementById('pullBtn').disabled  = true;
+
+                fb.textContent = '✓ Correct! You pull!';
+                fb.className   = 'feedback correct';
+
+                youScore++;
+                ropePos = Math.max(ropePos - 1, -3);
+                updateRope();
+                updateScores();
+
+                checkGameOver() || setTimeout(() => {
+                    round++;
+                    updateScores();
+                    newRound();
+                }, 800);
+
+            } else {
+                input.value = '';
+                input.classList.remove('shake');
+                void input.offsetWidth;
+                input.classList.add('shake');
+                fb.textContent = '✗ Not quite — try again!';
+                fb.className   = 'feedback wrong';
+                setTimeout(() => {
+                    input.classList.remove('shake');
+                    fb.textContent = '';
+                }, 800);
+            }
+        }
+
+        // ─── CHECK GAME OVER ─────────────────────────────────────────────
+        // First to 4 round wins, or after 7 rounds whoever has more
+        function checkGameOver() {
+            const needed = Math.ceil(TOTAL_ROUNDS / 2) + 1; // 4
+            if (youScore >= needed) { endGame(true);  return true; }
+            if (cpuScore >= needed) { endGame(false); return true; }
+            if (round >= TOTAL_ROUNDS) {
+                endGame(youScore > cpuScore);
+                return true;
+            }
+            return false;
+        }
+
+        function endGame(youWon) {
+            gameOver = true;
+            clearTimeout(cpuTimer);
+            document.getElementById('cpuRow').classList.remove('active');
+            document.getElementById('ansInput').disabled = true;
+            document.getElementById('pullBtn').disabled  = true;
+
+            const emoji = document.getElementById('overlayEmoji');
+            const title = document.getElementById('overlayTitle');
+            document.getElementById('finalYou').textContent = youScore;
+            document.getElementById('finalCpu').textContent = cpuScore;
+
+            if (youWon) {
+                emoji.textContent = '🎉';
+                title.innerHTML   = 'You <em>Win!</em>';
+                title.className   = 'overlay-title win';
+            } else {
+                emoji.textContent = '😅';
+                title.innerHTML   = 'CPU <em>Wins!</em>';
+                title.className   = 'overlay-title lose';
+            }
+
+            setTimeout(() => document.getElementById('overlay').classList.add('show'), 350);
+        }
+
+        // ─── RESET ────────────────────────────────────────────────────────
+        function resetGame() {
+            youScore = 0; cpuScore = 0;
+            round    = 1; ropePos  = 0;
+            gameOver = false;
+            clearTimeout(cpuTimer);
+            document.getElementById('overlay').classList.remove('show');
+            updateRope();
+            updateScores();
+            setTimeout(newRound, 150);
+        }
+
+        function updateScores() {
+            document.getElementById('youScore').textContent = youScore;
+            document.getElementById('cpuScore').textContent = cpuScore;
+            document.getElementById('roundNum').textContent = round;
+        }
+
+        // ─── KEYBOARD ────────────────────────────────────────────────────
+        document.getElementById('ansInput').addEventListener('keydown', e => {
+            if (e.key === 'Enter') submitAnswer();
+        });
+
+        // ─── START ────────────────────────────────────────────────────────
+        updateRope();
+        newRound();
+    </script>
+</body>
+</html>
