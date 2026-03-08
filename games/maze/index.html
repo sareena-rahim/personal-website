@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maze · Sareena Rahim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f0e0d;
+            --paper: #f5f2ed;
+            --paper-warm: #ede9e2;
+            --paper-card: #f9f7f4;
+            --accent: #c0392b;
+            --accent-warm: #e67e22;
+            --accent-cool: #2c7a6e;
+            --ink-muted: #7a7672;
+            --rule: rgba(15,14,13,0.1);
+            --cell: 52px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--paper);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ─── HEADER ─── */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: rgba(245,242,237,0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 7%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem;
+            color: var(--ink);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .logo sup {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.48rem;
+            color: var(--accent);
+            vertical-align: super;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .back-btn {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            border: 1.5px solid var(--ink);
+            padding: 8px 18px;
+            border-radius: 3px;
+            text-decoration: none;
+            color: var(--ink);
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s;
+        }
+
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+        /* ─── MAIN ─── */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 7%;
+            gap: 24px;
+        }
+
+        .game-header { text-align: center; }
+
+        .eyebrow {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.6rem;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        h1 em { font-style: italic; color: var(--accent); }
+
+        /* Stats */
+        .stats-bar {
+            display: flex;
+            border: 1px solid var(--rule);
+            border-radius: 4px;
+            overflow: hidden;
+            background: var(--paper-card);
+        }
+
+        .stat {
+            padding: 12px 32px;
+            text-align: center;
+            border-right: 1px solid var(--rule);
+        }
+
+        .stat:last-child { border-right: none; }
+
+        .stat .val {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.6rem;
+            color: var(--ink);
+            display: block;
+            line-height: 1;
+        }
+
+        .stat .lbl {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
+            margin-top: 3px;
+            display: block;
+        }
+
+        /* ─── MAZE ─── */
+        .maze-wrap {
+            position: relative;
+            background: #0d0d0f;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+        }
+
+        #maze {
+            display: grid;
+            grid-template-columns: repeat(8, var(--cell));
+            grid-template-rows: repeat(8, var(--cell));
+            gap: 3px;
+        }
+
+        .cell {
+            width: var(--cell);
+            height: var(--cell);
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .cell.path    { background: #13131a; }
+        .cell.wall    { background: #1e1e24; }
+
+        .cell.visited { background: #15151e; }
+        .cell.visited::after {
+            content: '';
+            position: absolute;
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: rgba(44,122,110,0.3);
+        }
+
+        .cell.end-cell {
+            background: rgba(230,126,34,0.1);
+            animation: endGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes endGlow {
+            0%,100% { box-shadow: inset 0 0 14px rgba(230,126,34,0.15); }
+            50%      { box-shadow: inset 0 0 26px rgba(230,126,34,0.3); }
+        }
+
+        .player-dot {
+            width: 30px; height: 30px;
+            background: var(--paper);
+            border-radius: 50%;
+            border: 2.5px solid var(--accent);
+            animation: breath 2s ease-in-out infinite;
+        }
+
+        @keyframes breath {
+            0%,100% { box-shadow: 0 0 12px rgba(192,57,43,0.5); }
+            50%      { box-shadow: 0 0 22px rgba(192,57,43,0.75); }
+        }
+
+        .end-icon {
+            font-size: 1.5rem;
+            animation: bob 1.5s ease-in-out infinite;
+        }
+
+        @keyframes bob {
+            0%,100% { transform: translateY(0); }
+            50%      { transform: translateY(-3px); }
+        }
+
+        /* ─── WIN OVERLAY ─── */
+        .win-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(13,13,15,0.93);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .win-overlay.show { opacity: 1; pointer-events: all; }
+
+        .win-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem;
+            color: var(--paper);
+            letter-spacing: -0.02em;
+        }
+
+        .win-title em { font-style: italic; color: var(--accent-warm); }
+
+        .win-sub {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            color: rgba(245,242,237,0.5);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .win-sub span { color: var(--paper); }
+
+        .win-btn {
+            margin-top: 8px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 10px 26px;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .win-btn:hover { background: #a93226; transform: translateY(-2px); }
+
+        /* ─── D-PAD ─── */
+        .dpad {
+            display: grid;
+            grid-template-columns: repeat(3, 48px);
+            grid-template-rows: repeat(3, 48px);
+            gap: 6px;
+        }
+
+        .dpad-btn {
+            background: var(--paper-card);
+            border: 1.5px solid var(--rule);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            color: var(--ink-muted);
+            cursor: pointer;
+            transition: all 0.15s;
+            user-select: none;
+        }
+
+        .dpad-btn:active, .dpad-btn.pressed {
+            background: var(--ink);
+            color: var(--paper);
+            border-color: var(--ink);
+            transform: scale(0.92);
+        }
+
+        .dpad-empty   { visibility: hidden; }
+        .dpad-center  { background: var(--paper-warm); border-color: transparent; cursor: default; }
+
+        /* ─── RESTART ─── */
+        .btn-restart {
+            background: var(--ink);
+            color: var(--paper);
+            border: 1.5px solid var(--ink);
+            border-radius: 3px;
+            padding: 11px 32px;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s;
+        }
+
+        .btn-restart:hover { background: var(--accent); border-color: var(--accent); }
+
+        .hint {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            color: var(--ink-muted);
+            letter-spacing: 0.1em;
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 520px) {
+            :root { --cell: 38px; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Games</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="game-header">
+            <div class="eyebrow">Game 01</div>
+            <h1>Dark <em>Maze</em></h1>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat">
+                <span class="val" id="movesDisplay">0</span>
+                <span class="lbl">Moves</span>
+            </div>
+            <div class="stat">
+                <span class="val" id="bestDisplay">—</span>
+                <span class="lbl">Best</span>
+            </div>
+        </div>
+
+        <div class="maze-wrap">
+            <div id="maze"></div>
+            <div class="win-overlay" id="winOverlay">
+                <div class="win-title">You <em>Escaped!</em></div>
+                <div class="win-sub">Solved in <span id="winMoves">0</span> moves</div>
+                <button class="win-btn" onclick="restart()">
+                    <i class="fas fa-rotate-right"></i> Play Again
+                </button>
+            </div>
+        </div>
+
+        <div class="dpad">
+            <div class="dpad-empty"></div>
+            <button class="dpad-btn" id="btnUp"    onclick="move(-1,0)"  aria-label="Up">    <i class="fas fa-chevron-up"></i>    </button>
+            <div class="dpad-empty"></div>
+            <button class="dpad-btn" id="btnLeft"  onclick="move(0,-1)"  aria-label="Left">  <i class="fas fa-chevron-left"></i>  </button>
+            <div class="dpad-btn dpad-center"></div>
+            <button class="dpad-btn" id="btnRight" onclick="move(0,1)"   aria-label="Right"> <i class="fas fa-chevron-right"></i> </button>
+            <div class="dpad-empty"></div>
+            <button class="dpad-btn" id="btnDown"  onclick="move(1,0)"   aria-label="Down">  <i class="fas fa-chevron-down"></i>  </button>
+            <div class="dpad-empty"></div>
+        </div>
+
+        <button class="btn-restart" onclick="restart()">
+            <i class="fas fa-rotate-right"></i> Restart
+        </button>
+
+        <p class="hint">Arrow keys · WASD · Swipe · or tap the D-pad</p>
+    </main>
+
+    <script>
+        const GRID = [
+            ["P", "W", "",  "",  "W", "",  "",  ""],
+            ["",  "",  "W", "",  "",  "W", "W", ""],
+            ["W", "",  "",  "W", "",  "",  "",  "W"],
+            ["",  "W", "",  "",  "W", "W", "",  ""],
+            ["",  "",  "W", "",  "",  "",  "W", ""],
+            ["W", "",  "",  "W", "W", "",  "",  "W"],
+            ["",  "W", "",  "",  "",  "W", "",  ""],
+            ["",  "",  "W", "W", "",  "",  "W", "G"]
+        ];
+
+        const ROWS = 8, COLS = 8;
+        let pos     = { row: 0, col: 0 };
+        let won     = false;
+        let moves   = 0;
+        let best    = null;
+        let visited = new Set();
+
+        const mazeEl       = document.getElementById('maze');
+        const winOverlay   = document.getElementById('winOverlay');
+        const movesDisplay = document.getElementById('movesDisplay');
+        const bestDisplay  = document.getElementById('bestDisplay');
+        const winMovesEl   = document.getElementById('winMoves');
+
+        function restart() {
+            pos     = { row: 0, col: 0 };
+            won     = false;
+            moves   = 0;
+            visited = new Set();
+            visited.add('0,0');
+            winOverlay.classList.remove('show');
+            updateStats();
+            draw();
+        }
+
+        function draw() {
+            mazeEl.innerHTML = '';
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    const v = GRID[r][c];
+                    const isPlayer = (r === pos.row && c === pos.col);
+
+                    if (v === 'W') {
+                        cell.classList.add('wall');
+                    } else if (isPlayer) {
+                        cell.classList.add('path');
+                        const dot = document.createElement('div');
+                        dot.className = 'player-dot';
+                        cell.appendChild(dot);
+                    } else if (v === 'G') {
+                        cell.classList.add('end-cell');
+                        const icon = document.createElement('span');
+                        icon.className = 'end-icon';
+                        icon.textContent = '🏁';
+                        cell.appendChild(icon);
+                    } else if (visited.has(`${r},${c}`)) {
+                        cell.classList.add('visited');
+                    } else {
+                        cell.classList.add('path');
+                    }
+
+                    mazeEl.appendChild(cell);
+                }
+            }
+        }
+
+        function move(dr, dc) {
+            if (won) return;
+            const nr = pos.row + dr;
+            const nc = pos.col + dc;
+            if (nr < 0 || nr >= ROWS || nc < 0 || nc >= COLS) return;
+            if (GRID[nr][nc] === 'W') return;
+
+            pos = { row: nr, col: nc };
+            moves++;
+            visited.add(`${nr},${nc}`);
+            updateStats();
+
+            if (GRID[nr][nc] === 'G') {
+                won = true;
+                draw();
+                if (best === null || moves < best) best = moves;
+                winMovesEl.textContent = moves;
+                updateStats();
+                setTimeout(() => winOverlay.classList.add('show'), 250);
+                return;
+            }
+            draw();
+        }
+
+        function flashBtn(id) {
+            const b = document.getElementById(id);
+            if (!b) return;
+            b.classList.add('pressed');
+            setTimeout(() => b.classList.remove('pressed'), 120);
+        }
+
+        function updateStats() {
+            movesDisplay.textContent = moves;
+            bestDisplay.textContent  = best !== null ? best : '—';
+        }
+
+        document.addEventListener('keydown', e => {
+            if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)) e.preventDefault();
+            switch (e.key) {
+                case 'ArrowUp':    case 'w': case 'W': flashBtn('btnUp');    move(-1, 0); break;
+                case 'ArrowDown':  case 's': case 'S': flashBtn('btnDown');  move( 1, 0); break;
+                case 'ArrowLeft':  case 'a': case 'A': flashBtn('btnLeft');  move( 0,-1); break;
+                case 'ArrowRight': case 'd': case 'D': flashBtn('btnRight'); move( 0, 1); break;
+                case 'r': case 'R': restart(); break;
+            }
+        });
+
+        let tx = 0, ty = 0;
+        document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
+        document.addEventListener('touchend', e => {
+            const dx = e.changedTouches[0].clientX - tx;
+            const dy = e.changedTouches[0].clientY - ty;
+            if (Math.abs(dx) < 20 && Math.abs(dy) < 20) return;
+            if (Math.abs(dx) > Math.abs(dy)) { dx > 0 ? move(0,1) : move(0,-1); }
+            else { dy > 0 ? move(1,0) : move(-1,0); }
+        }, { passive: true });
+
+        restart();
+    </script>
+</body>
+</html>
