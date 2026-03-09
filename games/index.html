@@ -162,9 +162,10 @@
             margin: 0 auto;
         }
 
+        /* 3 columns, wraps to 2 then 1 */
         .games-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 24px;
         }
 
@@ -203,7 +204,7 @@
 
         /* ─── BANNERS ─── */
         .game-banner {
-            height: 220px;
+            height: 200px;
             position: relative;
             display: flex;
             align-items: center;
@@ -211,13 +212,13 @@
             overflow: hidden;
         }
 
-        /* Maze banner */
+        /* — Maze — */
         .banner-maze { background: #1a1a1a; }
 
         .maze-grid {
             display: grid;
-            grid-template-columns: repeat(9, 26px);
-            grid-template-rows: repeat(5, 26px);
+            grid-template-columns: repeat(9, 22px);
+            grid-template-rows: repeat(5, 22px);
             gap: 3px;
             opacity: 0.85;
             transition: opacity 0.3s;
@@ -232,7 +233,7 @@
         .maze-cell.end        { background: #e67e22; }
         .maze-cell.player     { background: #f5f2ed; box-shadow: 0 0 8px rgba(245,242,237,0.6); }
 
-        /* Tug of War banner */
+        /* — Tug of War — */
         .banner-tug { background: #1a2535; }
 
         .tug-scene {
@@ -241,14 +242,13 @@
             align-items: center;
             gap: 14px;
             width: 100%;
-            padding: 0 30px;
+            padding: 0 28px;
         }
 
         .tug-side-labels {
             display: flex;
             justify-content: space-between;
             width: 100%;
-            padding: 0 4px;
         }
 
         .tug-side-label {
@@ -268,17 +268,12 @@
             gap: 6px;
         }
 
-        .tug-emoji { font-size: 1.9rem; flex-shrink: 0; }
+        .tug-emoji { font-size: 1.8rem; flex-shrink: 0; }
 
         .tug-rope {
             flex: 1;
             height: 8px;
-            background: repeating-linear-gradient(
-                90deg,
-                #b5894f 0px,
-                #d4a96a 6px,
-                #b5894f 12px
-            );
+            background: repeating-linear-gradient(90deg, #b5894f 0px, #d4a96a 6px, #b5894f 12px);
             border-radius: 4px;
             position: relative;
             box-shadow: 0 2px 8px rgba(0,0,0,0.4);
@@ -286,8 +281,7 @@
 
         .tug-knot {
             position: absolute;
-            top: 50%;
-            left: 55%;
+            top: 50%; left: 55%;
             transform: translate(-50%, -50%);
             width: 18px; height: 18px;
             background: #e67e22;
@@ -297,18 +291,51 @@
         }
 
         .tug-bar-wrap {
-            width: 100%;
-            height: 5px;
+            width: 100%; height: 5px;
             background: rgba(255,255,255,0.08);
             border-radius: 3px;
             overflow: hidden;
         }
 
         .tug-bar-fill {
-            height: 100%;
-            width: 42%;
+            height: 100%; width: 42%;
             background: linear-gradient(90deg, #4a90d9, #c0392b);
             border-radius: 3px;
+        }
+
+        /* — Memory Cards — */
+        .banner-memory { background: var(--paper-warm); }
+
+        .memory-preview {
+            display: grid;
+            grid-template-columns: repeat(4, 44px);
+            grid-template-rows: repeat(3, 44px);
+            gap: 6px;
+            opacity: 0.9;
+            transition: opacity 0.3s;
+        }
+
+        .game-card:hover .memory-preview { opacity: 1; }
+
+        .mem-card {
+            background: var(--paper-card);
+            border: 1.5px solid var(--rule);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .mem-card.hidden {
+            background: var(--paper-warm);
+            border-color: rgba(15,14,13,0.12);
+            font-size: 0;
+        }
+
+        .mem-card.matched {
+            background: rgba(44,122,110,0.1);
+            border-color: rgba(44,122,110,0.35);
         }
 
         /* Shared hover overlay */
@@ -341,10 +368,10 @@
 
         /* ─── CARD BODY ─── */
         .game-body {
-            padding: 32px 36px 36px;
+            padding: 28px 30px 30px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             flex: 1;
         }
 
@@ -358,47 +385,47 @@
 
         .game-body h2 {
             font-family: 'DM Serif Display', serif;
-            font-size: 1.9rem;
+            font-size: 1.7rem;
             letter-spacing: -0.025em;
             color: var(--ink);
             line-height: 1.1;
         }
 
         .game-body p {
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             color: var(--ink-muted);
-            line-height: 1.65;
+            line-height: 1.6;
         }
 
         .game-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 7px;
             margin-top: 4px;
         }
 
         .tag {
             font-family: 'DM Mono', monospace;
-            font-size: 0.68rem;
+            font-size: 0.66rem;
             letter-spacing: 0.08em;
             text-transform: uppercase;
             background: var(--paper-warm);
             border: 1px solid var(--rule);
-            padding: 4px 12px;
+            padding: 3px 10px;
             border-radius: 2px;
             color: var(--ink-soft);
         }
 
         .play-link {
             font-family: 'DM Mono', monospace;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             letter-spacing: 0.1em;
             text-transform: uppercase;
             color: var(--accent);
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-top: 8px;
+            margin-top: 6px;
         }
 
         .play-link i { transition: transform 0.25s ease; }
@@ -432,11 +459,15 @@
 
         .footer-bar span { color: var(--accent); }
 
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
+            .games-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
             .games-grid    { grid-template-columns: 1fr; }
             .page-hero     { padding: 50px 7% 36px; }
             .games-section { padding: 40px 7% 70px; }
-            .game-body     { padding: 24px; }
+            .game-body     { padding: 22px; }
         }
     </style>
 </head>
@@ -458,14 +489,14 @@
         <h1>Inter&shy;active <em>Games</em></h1>
         <div class="page-hero-meta">
             <p>Logic-based browser games. No installs. Play right here.</p>
-            <span class="game-count">02 Games</span>
+            <span class="game-count">03 Games</span>
         </div>
     </div>
 
     <div class="games-section">
         <div class="games-grid">
 
-            <!-- ── Maze ── -->
+            <!-- ── 01 Maze ── -->
             <a href="maze/index.html" class="game-card fade-in">
                 <div class="game-banner banner-maze">
                     <div class="maze-grid">
@@ -480,7 +511,7 @@
                 <div class="game-body">
                     <div class="game-num">01 / Maze</div>
                     <h2>Dark Maze</h2>
-                    <p>Navigate an 8×8 maze using arrow keys, WASD, or swipe. Find the exit in as few moves as possible. Your best score is saved.</p>
+                    <p>Navigate an 8×8 maze using arrow keys, WASD, or swipe. Find the exit in as few moves as possible.</p>
                     <div class="game-tags">
                         <span class="tag">Keyboard</span>
                         <span class="tag">Logic</span>
@@ -490,8 +521,8 @@
                 </div>
             </a>
 
-            <!-- ── Tug of War ── -->
-            <a href="tug-of-war/index.html" class="game-card fade-in" style="transition-delay: 0.1s;">
+            <!-- ── 02 Tug of War ── -->
+            <a href="tug-of-war/index.html" class="game-card fade-in" style="transition-delay:0.08s;">
                 <div class="game-banner banner-tug">
                     <div class="tug-scene">
                         <div class="tug-side-labels">
@@ -500,9 +531,7 @@
                         </div>
                         <div class="tug-rope-row">
                             <span class="tug-emoji">🧑</span>
-                            <div class="tug-rope">
-                                <div class="tug-knot"></div>
-                            </div>
+                            <div class="tug-rope"><div class="tug-knot"></div></div>
                             <span class="tug-emoji">🤖</span>
                         </div>
                         <div class="tug-bar-wrap">
@@ -518,10 +547,42 @@
                 <div class="game-body">
                     <div class="game-num">02 / Tug of War</div>
                     <h2>Math Tug<br>of War</h2>
-                    <p>Answer addition and subtraction questions faster than the CPU to pull the rope to your side. First to win 4 rounds wins the match.</p>
+                    <p>Answer addition and subtraction questions faster than the CPU. First to win 4 rounds wins the match.</p>
                     <div class="game-tags">
                         <span class="tag">Math</span>
                         <span class="tag">vs CPU</span>
+                        <span class="tag">Single Player</span>
+                    </div>
+                    <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- ── 03 Memory Cards ── -->
+            <a href="memory-cards/index.html" class="game-card fade-in" style="transition-delay:0.16s;">
+                <div class="game-banner banner-memory">
+                    <div class="memory-preview">
+                        <div class="mem-card matched">🐶</div>
+                        <div class="mem-card hidden"></div>
+                        <div class="mem-card hidden"></div>
+                        <div class="mem-card matched">🐶</div>
+                        <div class="mem-card hidden"></div>
+                        <div class="mem-card matched">🦊</div>
+                        <div class="mem-card matched">🦊</div>
+                        <div class="mem-card hidden"></div>
+                        <div class="mem-card hidden"></div>
+                        <div class="mem-card hidden"></div>
+                        <div class="mem-card hidden"></div>
+                        <div class="mem-card hidden"></div>
+                    </div>
+                    <div class="banner-overlay"><span>Play Now</span></div>
+                </div>
+                <div class="game-body">
+                    <div class="game-num">03 / Memory</div>
+                    <h2>Memory<br>Cards</h2>
+                    <p>Flip cards to find all 6 emoji pairs on a 4×3 grid. Match everything in as few moves as you can.</p>
+                    <div class="game-tags">
+                        <span class="tag">Memory</span>
+                        <span class="tag">Emojis</span>
                         <span class="tag">Single Player</span>
                     </div>
                     <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
@@ -552,4 +613,3 @@
     </script>
 </body>
 </html>
-
