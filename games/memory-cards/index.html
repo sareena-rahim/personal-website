@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Cards · Sareena Rahim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f0e0d;
+            --paper: #f5f2ed;
+            --paper-warm: #ede9e2;
+            --paper-card: #f9f7f4;
+            --accent: #c0392b;
+            --accent-warm: #e67e22;
+            --accent-cool: #2c7a6e;
+            --ink-muted: #7a7672;
+            --rule: rgba(15,14,13,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--paper);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* grain */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.4;
+        }
+
+        /* ─── HEADER ─── */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(245,242,237,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 7%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem;
+            color: var(--ink);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .logo sup {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.48rem;
+            color: var(--accent);
+            vertical-align: super;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .back-btn {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            border: 1.5px solid var(--ink);
+            padding: 8px 18px;
+            border-radius: 3px;
+            text-decoration: none;
+            color: var(--ink);
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s;
+        }
+
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+        /* ─── MAIN ─── */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 36px 7% 60px;
+            gap: 24px;
+        }
+
+        /* ─── TITLE ─── */
+        .game-header { text-align: center; }
+
+        .eyebrow {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.4rem;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        h1 em { font-style: italic; color: var(--accent); }
+
+        .subtitle {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.73rem;
+            color: var(--ink-muted);
+            letter-spacing: 0.08em;
+            margin-top: 8px;
+        }
+
+        /* ─── STATS ─── */
+        .stats-bar {
+            display: flex;
+            border: 1px solid var(--rule);
+            border-radius: 4px;
+            overflow: hidden;
+            background: var(--paper-card);
+        }
+
+        .stat {
+            padding: 10px 28px;
+            text-align: center;
+            border-right: 1px solid var(--rule);
+        }
+
+        .stat:last-child { border-right: none; }
+
+        .stat .val {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem;
+            color: var(--ink);
+            display: block;
+            line-height: 1;
+            transition: transform 0.15s ease;
+        }
+
+        .stat .val.bump {
+            animation: bump 0.2s ease;
+        }
+
+        @keyframes bump {
+            0%   { transform: scale(1); }
+            50%  { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        .stat .lbl {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
+            margin-top: 3px;
+            display: block;
+        }
+
+        /* ─── CARD GRID ─── */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 480px;
+        }
+
+        /* ─── MEMORY CARD ─── */
+        .card {
+            aspect-ratio: 1;
+            cursor: pointer;
+            perspective: 600px;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 6px;
+        }
+
+        .card.flipped .card-inner,
+        .card.matched .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* Front (hidden face — question mark) */
+        .card-front,
+        .card-back {
+            position: absolute;
+            inset: 0;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .card-front {
+            background: var(--paper-card);
+            border: 1.5px solid var(--rule);
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .card:hover:not(.flipped):not(.matched) .card-front {
+            background: var(--paper-warm);
+            border-color: rgba(15,14,13,0.2);
+        }
+
+        .card-front-icon {
+            font-size: 1.3rem;
+            color: var(--rule);
+            transition: color 0.2s;
+        }
+
+        .card:hover:not(.flipped):not(.matched) .card-front-icon {
+            color: var(--ink-muted);
+        }
+
+        /* Back (revealed emoji face) */
+        .card-back {
+            background: var(--paper-warm);
+            border: 1.5px solid var(--rule);
+            transform: rotateY(180deg);
+            font-size: 2rem;
+        }
+
+        /* Matched state */
+        .card.matched .card-back {
+            background: rgba(44, 122, 110, 0.1);
+            border-color: rgba(44, 122, 110, 0.4);
+            animation: matchPop 0.35s ease forwards;
+        }
+
+        @keyframes matchPop {
+            0%   { transform: rotateY(180deg) scale(1); }
+            50%  { transform: rotateY(180deg) scale(1.1); }
+            100% { transform: rotateY(180deg) scale(1); }
+        }
+
+        /* Wrong shake */
+        .card.wrong .card-inner {
+            animation: wrongShake 0.4s ease;
+        }
+
+        @keyframes wrongShake {
+            0%,100% { transform: rotateY(180deg) translateX(0); }
+            25%      { transform: rotateY(180deg) translateX(-5px); }
+            75%      { transform: rotateY(180deg) translateX(5px); }
+        }
+
+        /* ─── RESTART ─── */
+        .btn-restart {
+            background: var(--ink);
+            color: var(--paper);
+            border: 1.5px solid var(--ink);
+            border-radius: 3px;
+            padding: 11px 30px;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s;
+        }
+
+        .btn-restart:hover { background: var(--accent); border-color: var(--accent); }
+
+        /* ─── WIN OVERLAY ─── */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15,14,13,0.88);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease;
+        }
+
+        .overlay.show { opacity: 1; pointer-events: all; }
+
+        .overlay-box {
+            background: var(--paper-card);
+            border: 1px solid var(--rule);
+            border-radius: 8px;
+            padding: 44px 52px;
+            text-align: center;
+            max-width: 360px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(20px);
+            transition: transform 0.35s ease;
+        }
+
+        .overlay.show .overlay-box { transform: translateY(0); }
+
+        .overlay-emoji { font-size: 3rem; line-height: 1; }
+
+        .overlay-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.2rem;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        .overlay-title em { font-style: italic; color: var(--accent-cool); }
+
+        .overlay-sub {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--ink-muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .overlay-sub span { color: var(--ink); }
+
+        .overlay-sub .new-best {
+            color: var(--accent-warm);
+        }
+
+        .overlay-btn {
+            margin-top: 12px;
+            background: var(--ink);
+            color: var(--paper);
+            border: none;
+            border-radius: 3px;
+            padding: 12px 32px;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .overlay-btn:hover { background: var(--accent); transform: translateY(-2px); }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 460px) {
+            .card-grid { gap: 8px; max-width: 340px; }
+            h1 { font-size: 1.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Games</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="game-header">
+            <div class="eyebrow">Game 03</div>
+            <h1>Memory <em>Cards</em></h1>
+            <p class="subtitle">Find all 6 pairs in as few moves as possible</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-bar">
+            <div class="stat">
+                <span class="val" id="movesVal">0</span>
+                <span class="lbl">Moves</span>
+            </div>
+            <div class="stat">
+                <span class="val" id="pairsVal">0 / 6</span>
+                <span class="lbl">Pairs</span>
+            </div>
+            <div class="stat">
+                <span class="val" id="bestVal">—</span>
+                <span class="lbl">Best</span>
+            </div>
+        </div>
+
+        <!-- Grid -->
+        <div class="card-grid" id="cardGrid"></div>
+
+        <!-- Restart -->
+        <button class="btn-restart" onclick="initGame()">
+            <i class="fas fa-rotate-right"></i> New Game
+        </button>
+    </main>
+
+    <!-- Win overlay -->
+    <div class="overlay" id="overlay">
+        <div class="overlay-box">
+            <div class="overlay-emoji">🎉</div>
+            <div class="overlay-title">All <em>Matched!</em></div>
+            <div class="overlay-sub" id="overlaySub">
+                Finished in <span id="finalMoves">0</span> moves
+            </div>
+            <button class="overlay-btn" onclick="initGame()">
+                <i class="fas fa-rotate-right"></i> Play Again
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const EMOJIS = ['🐶','🐱','🐸','🦊','🐼','🦁','🐧','🦋','🍓','🍋','🍕','🎸'];
+        // 6 pairs from first 6
+        const PAIRS  = EMOJIS.slice(0, 6);
+
+        let cards        = [];   // shuffled emoji array (12 items)
+        let flipped      = [];   // indices of currently flipped cards
+        let matched      = new Set();
+        let moves        = 0;
+        let pairs        = 0;
+        let locked       = false;
+        let best         = null;
+
+        // ─── SHUFFLE ──────────────────────────────────────────────────────
+        function shuffle(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        // ─── INIT ─────────────────────────────────────────────────────────
+        function initGame() {
+            cards   = shuffle([...PAIRS, ...PAIRS]);
+            flipped = [];
+            matched = new Set();
+            moves   = 0;
+            pairs   = 0;
+            locked  = false;
+
+            document.getElementById('overlay').classList.remove('show');
+            updateStats();
+            renderGrid();
+        }
+
+        // ─── RENDER ───────────────────────────────────────────────────────
+        function renderGrid() {
+            const grid = document.getElementById('cardGrid');
+            grid.innerHTML = '';
+
+            cards.forEach((emoji, i) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.dataset.index = i;
+
+                card.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <i class="fas fa-question card-front-icon"></i>
+                        </div>
+                        <div class="card-back">${emoji}</div>
+                    </div>
+                `;
+
+                if (matched.has(i)) card.classList.add('matched');
+
+                card.addEventListener('click', () => onCardClick(i));
+                grid.appendChild(card);
+            });
+        }
+
+        // ─── CLICK ────────────────────────────────────────────────────────
+        function onCardClick(index) {
+            if (locked) return;
+            if (matched.has(index)) return;
+            if (flipped.includes(index)) return;
+            if (flipped.length >= 2) return;
+
+            // Flip card
+            flipCard(index, true);
+            flipped.push(index);
+
+            if (flipped.length === 2) {
+                moves++;
+                bumpStat('movesVal');
+                updateStats();
+                checkMatch();
+            }
+        }
+
+        // ─── FLIP VISUAL ─────────────────────────────────────────────────
+        function flipCard(index, state) {
+            const el = document.querySelector(`.card[data-index="${index}"]`);
+            if (!el) return;
+            if (state) el.classList.add('flipped');
+            else       el.classList.remove('flipped');
+        }
+
+        function markWrong(index) {
+            const el = document.querySelector(`.card[data-index="${index}"]`);
+            if (!el) return;
+            el.classList.add('wrong');
+            setTimeout(() => el.classList.remove('wrong'), 400);
+        }
+
+        function markMatched(index) {
+            const el = document.querySelector(`.card[data-index="${index}"]`);
+            if (!el) return;
+            el.classList.remove('flipped');
+            el.classList.add('matched');
+        }
+
+        // ─── CHECK MATCH ─────────────────────────────────────────────────
+        function checkMatch() {
+            const [a, b] = flipped;
+            if (cards[a] === cards[b]) {
+                // Match!
+                locked = true;
+                setTimeout(() => {
+                    markMatched(a);
+                    markMatched(b);
+                    matched.add(a);
+                    matched.add(b);
+                    pairs++;
+                    bumpStat('pairsVal');
+                    updateStats();
+                    flipped = [];
+                    locked  = false;
+
+                    if (pairs === PAIRS.length) {
+                        setTimeout(winGame, 400);
+                    }
+                }, 300);
+
+            } else {
+                // No match — shake and flip back
+                locked = true;
+                setTimeout(() => {
+                    markWrong(a);
+                    markWrong(b);
+                    setTimeout(() => {
+                        flipCard(a, false);
+                        flipCard(b, false);
+                        flipped = [];
+                        locked  = false;
+                    }, 450);
+                }, 600);
+            }
+        }
+
+        // ─── WIN ──────────────────────────────────────────────────────────
+        function winGame() {
+            const isNewBest = best === null || moves < best;
+            if (isNewBest) best = moves;
+
+            document.getElementById('finalMoves').textContent = moves;
+
+            const sub = document.getElementById('overlaySub');
+            if (isNewBest && best !== null && moves === best && !(best === moves && best === null)) {
+                sub.innerHTML = `Finished in <span>${moves}</span> moves ${moves <= 12 ? '— <span class="new-best">New best! 🏆</span>' : ''}`;
+            } else {
+                sub.innerHTML = `Finished in <span>${moves}</span> moves · Best: <span>${best}</span>`;
+            }
+
+            updateStats();
+            setTimeout(() => document.getElementById('overlay').classList.add('show'), 200);
+        }
+
+        // ─── STATS ────────────────────────────────────────────────────────
+        function updateStats() {
+            document.getElementById('movesVal').textContent = moves;
+            document.getElementById('pairsVal').textContent = `${pairs} / ${PAIRS.length}`;
+            document.getElementById('bestVal').textContent  = best !== null ? best : '—';
+        }
+
+        function bumpStat(id) {
+            const el = document.getElementById(id);
+            el.classList.remove('bump');
+            void el.offsetWidth;
+            el.classList.add('bump');
+            setTimeout(() => el.classList.remove('bump'), 250);
+        }
+
+        // ─── START ────────────────────────────────────────────────────────
+        initGame();
+    </script>
+</body>
+</html>
