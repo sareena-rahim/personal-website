@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Guess · Sareena Rahim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f0e0d;
+            --paper: #f5f2ed;
+            --paper-warm: #ede9e2;
+            --paper-card: #f9f7f4;
+            --accent: #c0392b;
+            --accent-warm: #e67e22;
+            --accent-cool: #2c7a6e;
+            --ink-muted: #7a7672;
+            --rule: rgba(15,14,13,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--paper);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.4;
+        }
+
+        /* ─── HEADER ─── */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(245,242,237,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 7%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem;
+            color: var(--ink);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .logo sup {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.48rem;
+            color: var(--accent);
+            vertical-align: super;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .back-btn {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            border: 1.5px solid var(--ink);
+            padding: 8px 18px;
+            border-radius: 3px;
+            text-decoration: none;
+            color: var(--ink);
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s;
+        }
+
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+        /* ─── MAIN ─── */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 7% 60px;
+            gap: 24px;
+        }
+
+        /* ─── TITLE ─── */
+        .game-header { text-align: center; }
+
+        .eyebrow {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.4rem;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        h1 em { font-style: italic; color: var(--accent); }
+
+        .subtitle {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.73rem;
+            color: var(--ink-muted);
+            letter-spacing: 0.08em;
+            margin-top: 8px;
+        }
+
+        /* ─── STATS ─── */
+        .stats-bar {
+            display: flex;
+            border: 1px solid var(--rule);
+            border-radius: 4px;
+            overflow: hidden;
+            background: var(--paper-card);
+        }
+
+        .stat {
+            padding: 10px 28px;
+            text-align: center;
+            border-right: 1px solid var(--rule);
+        }
+
+        .stat:last-child { border-right: none; }
+
+        .stat .val {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem;
+            color: var(--ink);
+            display: block;
+            line-height: 1;
+        }
+
+        .stat .val.bump { animation: bump 0.22s ease; }
+
+        @keyframes bump {
+            0%,100% { transform: scale(1); }
+            50%      { transform: scale(1.35); }
+        }
+
+        .stat .lbl {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
+            margin-top: 3px;
+            display: block;
+        }
+
+        /* ─── GAME CARD ─── */
+        .game-card {
+            width: 100%;
+            max-width: 420px;
+            background: var(--paper-card);
+            border: 1px solid var(--rule);
+            border-radius: 6px;
+            padding: 36px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Range display */
+        .range-display {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            width: 100%;
+        }
+
+        .range-num {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.1rem;
+            color: var(--ink-muted);
+            min-width: 28px;
+            text-align: center;
+        }
+
+        .range-track {
+            flex: 1;
+            height: 4px;
+            background: var(--paper-warm);
+            border-radius: 2px;
+            position: relative;
+            margin: 0 10px;
+        }
+
+        /* Narrowing range fill */
+        .range-fill {
+            position: absolute;
+            top: 0; bottom: 0;
+            background: var(--accent);
+            border-radius: 2px;
+            transition: left 0.5s ease, right 0.5s ease;
+        }
+
+        /* Guess marker on track */
+        .range-marker {
+            position: absolute;
+            top: 50%;
+            width: 10px; height: 10px;
+            background: var(--ink);
+            border-radius: 50%;
+            border: 2px solid var(--paper);
+            transform: translate(-50%, -50%);
+            transition: left 0.5s cubic-bezier(0.34,1.4,0.64,1);
+            display: none;
+        }
+
+        /* Input row */
+        .input-row {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .guess-input {
+            flex: 1;
+            padding: 13px 16px;
+            background: var(--paper);
+            border: 1.5px solid var(--rule);
+            border-radius: 4px;
+            font-family: 'DM Mono', monospace;
+            font-size: 1.2rem;
+            color: var(--ink);
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s;
+            -moz-appearance: textfield;
+        }
+
+        .guess-input::-webkit-outer-spin-button,
+        .guess-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+        .guess-input:focus { border-color: var(--ink); }
+        .guess-input.shake { animation: shake 0.35s ease; border-color: var(--accent); }
+
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            25%      { transform: translateX(-6px); }
+            75%      { transform: translateX(6px); }
+        }
+
+        .guess-btn {
+            background: var(--ink);
+            color: var(--paper);
+            border: none;
+            border-radius: 4px;
+            padding: 13px 22px;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .guess-btn:hover   { background: var(--accent); transform: translateY(-1px); }
+        .guess-btn:active  { transform: translateY(0); }
+        .guess-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+        /* Feedback */
+        .feedback-row {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            min-height: 54px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .feedback-icon {
+            font-size: 1.6rem;
+            line-height: 1;
+            min-height: 1.6rem;
+        }
+
+        .feedback-text {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        .feedback-hint {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
+        }
+
+        .feedback-text.high { color: var(--accent); }
+        .feedback-text.low  { color: var(--accent-cool); }
+        .feedback-text.win  { color: var(--accent-cool); }
+
+        /* History */
+        .history-wrap {
+            width: 100%;
+        }
+
+        .history-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
+            margin-bottom: 8px;
+        }
+
+        .history-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            min-height: 26px;
+        }
+
+        .pill {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            border-radius: 2px;
+            border: 1px solid var(--rule);
+            background: var(--paper-warm);
+            color: var(--ink-soft);
+            letter-spacing: 0.04em;
+            animation: pillIn 0.2s ease;
+        }
+
+        @keyframes pillIn {
+            from { opacity: 0; transform: translateY(4px) scale(0.9); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .pill.high { background: rgba(192,57,43,0.08); border-color: rgba(192,57,43,0.25); color: var(--accent); }
+        .pill.low  { background: rgba(44,122,110,0.08); border-color: rgba(44,122,110,0.25); color: var(--accent-cool); }
+
+        /* ─── WIN OVERLAY ─── */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15,14,13,0.88);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease;
+        }
+
+        .overlay.show { opacity: 1; pointer-events: all; }
+
+        .overlay-box {
+            background: var(--paper-card);
+            border: 1px solid var(--rule);
+            border-radius: 8px;
+            padding: 44px 52px;
+            text-align: center;
+            max-width: 360px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(20px);
+            transition: transform 0.35s ease;
+        }
+
+        .overlay.show .overlay-box { transform: translateY(0); }
+
+        .overlay-emoji { font-size: 3rem; line-height: 1; }
+
+        .overlay-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.2rem;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        .overlay-title em { font-style: italic; color: var(--accent-cool); }
+
+        .overlay-sub {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--ink-muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-top: 4px;
+            line-height: 1.8;
+        }
+
+        .overlay-sub span { color: var(--ink); }
+
+        .overlay-btn {
+            margin-top: 12px;
+            background: var(--ink);
+            color: var(--paper);
+            border: none;
+            border-radius: 3px;
+            padding: 12px 32px;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .overlay-btn:hover { background: var(--accent); transform: translateY(-2px); }
+
+        @media (max-width: 460px) {
+            .game-card { padding: 28px 22px; }
+            h1 { font-size: 1.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Games</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="game-header">
+            <div class="eyebrow">Game 04</div>
+            <h1>Number <em>Guess</em></h1>
+            <p class="subtitle">I'm thinking of a number between 1 and 100</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-bar">
+            <div class="stat">
+                <span class="val" id="guessCount">0</span>
+                <span class="lbl">Guesses</span>
+            </div>
+            <div class="stat">
+                <span class="val" id="bestVal">—</span>
+                <span class="lbl">Best</span>
+            </div>
+        </div>
+
+        <!-- Game card -->
+        <div class="game-card">
+
+            <!-- Range tracker -->
+            <div class="range-display">
+                <span class="range-num" id="rangeLow">1</span>
+                <div class="range-track">
+                    <div class="range-fill" id="rangeFill"></div>
+                    <div class="range-marker" id="rangeMarker"></div>
+                </div>
+                <span class="range-num" id="rangeHigh">100</span>
+            </div>
+
+            <!-- Input -->
+            <div class="input-row">
+                <input
+                    type="number"
+                    class="guess-input"
+                    id="guessInput"
+                    placeholder="?"
+                    min="1" max="100"
+                    autocomplete="off"
+                >
+                <button class="guess-btn" id="guessBtn" onclick="submitGuess()">Guess</button>
+            </div>
+
+            <!-- Feedback -->
+            <div class="feedback-row">
+                <div class="feedback-icon" id="feedbackIcon"></div>
+                <div class="feedback-text" id="feedbackText"></div>
+                <div class="feedback-hint" id="feedbackHint">Enter a number and press Guess</div>
+            </div>
+
+            <!-- History -->
+            <div class="history-wrap">
+                <div class="history-label">Your guesses</div>
+                <div class="history-pills" id="historyPills"></div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Win overlay -->
+    <div class="overlay" id="overlay">
+        <div class="overlay-box">
+            <div class="overlay-emoji" id="overlayEmoji">🎉</div>
+            <div class="overlay-title">You <em>Got It!</em></div>
+            <div class="overlay-sub" id="overlaySub"></div>
+            <button class="overlay-btn" onclick="initGame()">
+                <i class="fas fa-rotate-right"></i> Play Again
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ─── STATE ────────────────────────────────────────────────────────
+        let secret   = 0;
+        let guesses  = 0;
+        let low      = 1;
+        let high     = 100;
+        let best     = null;
+        let gameOver = false;
+        let history  = [];   // { val, result: 'high'|'low'|'win' }
+
+        // ─── INIT ─────────────────────────────────────────────────────────
+        function initGame() {
+            // Step 1 — pick a secret number between 1 and 100
+            secret   = Math.floor(Math.random() * 100) + 1;
+            guesses  = 0;
+            low      = 1;
+            high     = 100;
+            gameOver = false;
+            history  = [];
+
+            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('guessInput').value   = '';
+            document.getElementById('guessInput').disabled = false;
+            document.getElementById('guessBtn').disabled   = false;
+            document.getElementById('feedbackIcon').textContent = '';
+            document.getElementById('feedbackText').textContent = '';
+            document.getElementById('feedbackText').className   = 'feedback-text';
+            document.getElementById('feedbackHint').textContent = 'Enter a number and press Guess';
+            document.getElementById('historyPills').innerHTML   = '';
+            document.getElementById('rangeLow').textContent  = '1';
+            document.getElementById('rangeHigh').textContent = '100';
+            document.getElementById('rangeMarker').style.display = 'none';
+
+            updateStats();
+            updateRangeTrack();
+            document.getElementById('guessInput').focus();
+        }
+
+        // ─── SUBMIT GUESS ─────────────────────────────────────────────────
+        function submitGuess() {
+            if (gameOver) return;
+
+            const input = document.getElementById('guessInput');
+            const val   = parseInt(input.value);
+
+            // Step 2 — validate input
+            if (isNaN(val) || val < 1 || val > 100) {
+                input.classList.remove('shake');
+                void input.offsetWidth;
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 400);
+                document.getElementById('feedbackHint').textContent = 'Please enter a number between 1 and 100';
+                return;
+            }
+
+            guesses++;
+            history.push({ val, result: val > secret ? 'high' : val < secret ? 'low' : 'win' });
+
+            // Step 3 — compare guess to secret
+            if (val > secret) {
+                // Too high — narrow upper bound
+                high = Math.min(high, val - 1);
+                showFeedback('high', val);
+                updateRangeBounds();
+            } else if (val < secret) {
+                // Too low — narrow lower bound
+                low = Math.max(low, val + 1);
+                showFeedback('low', val);
+                updateRangeBounds();
+            } else {
+                // Correct!
+                showFeedback('win', val);
+                gameOver = true;
+                document.getElementById('guessInput').disabled = true;
+                document.getElementById('guessBtn').disabled   = true;
+                if (best === null || guesses < best) best = guesses;
+                updateStats();
+                setTimeout(showWin, 500);
+            }
+
+            // Step 4 — update guess count and history
+            updateStats();
+            addPill(val, history[history.length - 1].result);
+            updateRangeMarker(val);
+            input.value = '';
+            input.focus();
+        }
+
+        // ─── FEEDBACK ────────────────────────────────────────────────────
+        // Step 3 continued — display the right message
+        function showFeedback(result, val) {
+            const icon = document.getElementById('feedbackIcon');
+            const text = document.getElementById('feedbackText');
+            const hint = document.getElementById('feedbackHint');
+
+            text.className = 'feedback-text';
+
+            if (result === 'high') {
+                icon.textContent = '📉';
+                text.textContent = 'Too High!';
+                text.classList.add('high');
+                hint.textContent = `${val} is too high — try lower`;
+            } else if (result === 'low') {
+                icon.textContent = '📈';
+                text.textContent = 'Too Low!';
+                text.classList.add('low');
+                hint.textContent = `${val} is too low — try higher`;
+            } else {
+                icon.textContent = '🎯';
+                text.textContent = 'Correct!';
+                text.classList.add('win');
+                hint.textContent = `The number was ${val}`;
+            }
+        }
+
+        // ─── WIN OVERLAY ─────────────────────────────────────────────────
+        // Step 5 — show win screen with attempt count
+        function showWin() {
+            const rating = guesses <= 5 ? '🏆 Excellent!' : guesses <= 8 ? '👍 Well done!' : '😅 Keep practising!';
+            document.getElementById('overlaySub').innerHTML =
+                `The number was <span>${secret}</span><br>
+                 Guessed in <span>${guesses}</span> ${guesses === 1 ? 'try' : 'tries'}<br>
+                 Best: <span>${best}</span> · ${rating}`;
+            document.getElementById('overlay').classList.add('show');
+        }
+
+        // ─── RANGE TRACK ─────────────────────────────────────────────────
+        function updateRangeTrack() {
+            const fill = document.getElementById('rangeFill');
+            const leftPct  = ((low  - 1) / 99) * 100;
+            const rightPct = ((100 - high) / 99) * 100;
+            fill.style.left  = `${leftPct}%`;
+            fill.style.right = `${rightPct}%`;
+        }
+
+        function updateRangeBounds() {
+            document.getElementById('rangeLow').textContent  = low;
+            document.getElementById('rangeHigh').textContent = high;
+            updateRangeTrack();
+        }
+
+        function updateRangeMarker(val) {
+            const marker = document.getElementById('rangeMarker');
+            marker.style.display = 'block';
+            marker.style.left    = `${((val - 1) / 99) * 100}%`;
+        }
+
+        // ─── STATS ────────────────────────────────────────────────────────
+        function updateStats() {
+            const el = document.getElementById('guessCount');
+            el.textContent = guesses;
+            el.classList.remove('bump');
+            void el.offsetWidth;
+            if (guesses > 0) el.classList.add('bump');
+            document.getElementById('bestVal').textContent = best !== null ? best : '—';
+        }
+
+        // ─── HISTORY PILLS ────────────────────────────────────────────────
+        function addPill(val, result) {
+            const pill = document.createElement('span');
+            pill.className = `pill ${result !== 'win' ? result : ''}`;
+            pill.textContent = val;
+            document.getElementById('historyPills').appendChild(pill);
+        }
+
+        // ─── KEYBOARD ────────────────────────────────────────────────────
+        document.getElementById('guessInput').addEventListener('keydown', e => {
+            if (e.key === 'Enter') submitGuess();
+        });
+
+        // ─── START ────────────────────────────────────────────────────────
+        initGame();
+    </script>
+</body>
+</html>
