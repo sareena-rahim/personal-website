@@ -34,8 +34,7 @@
         body::before {
             content: '';
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            inset: 0;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
             pointer-events: none;
             z-index: 9999;
@@ -47,7 +46,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(245, 242, 237, 0.88);
+            background: rgba(245,242,237,0.88);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--rule);
         }
@@ -162,11 +161,10 @@
             margin: 0 auto;
         }
 
-        /* 3 columns, wraps to 2 then 1 */
         .games-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
         }
 
         /* ─── GAME CARD ─── */
@@ -199,12 +197,12 @@
         .game-card:hover {
             transform: translateY(-7px);
             box-shadow: 0 28px 56px rgba(0,0,0,0.09);
-            border-color: rgba(192, 57, 43, 0.2);
+            border-color: rgba(192,57,43,0.2);
         }
 
         /* ─── BANNERS ─── */
         .game-banner {
-            height: 200px;
+            height: 180px;
             position: relative;
             display: flex;
             align-items: center;
@@ -212,37 +210,37 @@
             overflow: hidden;
         }
 
-        /* — Maze — */
+        /* Maze */
         .banner-maze { background: #1a1a1a; }
 
         .maze-grid {
             display: grid;
-            grid-template-columns: repeat(9, 22px);
-            grid-template-rows: repeat(5, 22px);
-            gap: 3px;
+            grid-template-columns: repeat(9, 18px);
+            grid-template-rows: repeat(5, 18px);
+            gap: 2px;
             opacity: 0.85;
             transition: opacity 0.3s;
         }
 
         .game-card:hover .maze-grid { opacity: 1; }
 
-        .maze-cell            { background: #2a2a2a; border-radius: 2px; }
-        .maze-cell.wall       { background: #c0392b; }
-        .maze-cell.path       { background: #3a3a3a; }
-        .maze-cell.start      { background: #2c7a6e; }
-        .maze-cell.end        { background: #e67e22; }
-        .maze-cell.player     { background: #f5f2ed; box-shadow: 0 0 8px rgba(245,242,237,0.6); }
+        .maze-cell         { background: #2a2a2a; border-radius: 2px; }
+        .maze-cell.wall    { background: #c0392b; }
+        .maze-cell.path    { background: #3a3a3a; }
+        .maze-cell.start   { background: #2c7a6e; }
+        .maze-cell.end     { background: #e67e22; }
+        .maze-cell.player  { background: #f5f2ed; box-shadow: 0 0 8px rgba(245,242,237,0.6); }
 
-        /* — Tug of War — */
+        /* Tug of War */
         .banner-tug { background: #1a2535; }
 
         .tug-scene {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             width: 100%;
-            padding: 0 28px;
+            padding: 0 24px;
         }
 
         .tug-side-labels {
@@ -253,7 +251,7 @@
 
         .tug-side-label {
             font-family: 'DM Mono', monospace;
-            font-size: 0.62rem;
+            font-size: 0.58rem;
             letter-spacing: 0.1em;
             text-transform: uppercase;
         }
@@ -268,11 +266,11 @@
             gap: 6px;
         }
 
-        .tug-emoji { font-size: 1.8rem; flex-shrink: 0; }
+        .tug-emoji { font-size: 1.6rem; flex-shrink: 0; }
 
         .tug-rope {
             flex: 1;
-            height: 8px;
+            height: 7px;
             background: repeating-linear-gradient(90deg, #b5894f 0px, #d4a96a 6px, #b5894f 12px);
             border-radius: 4px;
             position: relative;
@@ -282,8 +280,8 @@
         .tug-knot {
             position: absolute;
             top: 50%; left: 55%;
-            transform: translate(-50%, -50%);
-            width: 18px; height: 18px;
+            transform: translate(-50%,-50%);
+            width: 16px; height: 16px;
             background: #e67e22;
             border-radius: 50%;
             border: 2px solid #c0392b;
@@ -291,7 +289,7 @@
         }
 
         .tug-bar-wrap {
-            width: 100%; height: 5px;
+            width: 100%; height: 4px;
             background: rgba(255,255,255,0.08);
             border-radius: 3px;
             overflow: hidden;
@@ -303,14 +301,14 @@
             border-radius: 3px;
         }
 
-        /* — Memory Cards — */
+        /* Memory */
         .banner-memory { background: var(--paper-warm); }
 
         .memory-preview {
             display: grid;
-            grid-template-columns: repeat(4, 44px);
-            grid-template-rows: repeat(3, 44px);
-            gap: 6px;
+            grid-template-columns: repeat(4, 38px);
+            grid-template-rows: repeat(3, 38px);
+            gap: 5px;
             opacity: 0.9;
             transition: opacity 0.3s;
         }
@@ -320,11 +318,11 @@
         .mem-card {
             background: var(--paper-card);
             border: 1.5px solid var(--rule);
-            border-radius: 5px;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
+            font-size: 1.15rem;
         }
 
         .mem-card.hidden {
@@ -338,11 +336,89 @@
             border-color: rgba(44,122,110,0.35);
         }
 
+        /* Number Guess */
+        .banner-guess { background: #0f0e0d; }
+
+        .guess-scene {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            padding: 0 28px;
+        }
+
+        .guess-big {
+            font-family: 'DM Serif Display', serif;
+            font-size: 3.2rem;
+            color: rgba(245,242,237,0.08);
+            letter-spacing: -0.04em;
+            line-height: 1;
+            user-select: none;
+        }
+
+        .guess-track-wrap {
+            width: 100%;
+        }
+
+        .guess-track-label {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.58rem;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 0.1em;
+            margin-bottom: 5px;
+        }
+
+        .guess-track {
+            width: 100%;
+            height: 5px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 3px;
+            position: relative;
+        }
+
+        .guess-fill {
+            position: absolute;
+            top: 0; bottom: 0;
+            left: 25%; right: 35%;
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .guess-dot {
+            position: absolute;
+            top: 50%; left: 65%;
+            transform: translate(-50%,-50%);
+            width: 10px; height: 10px;
+            background: var(--paper);
+            border-radius: 50%;
+            box-shadow: 0 0 6px rgba(245,242,237,0.5);
+        }
+
+        .guess-pills {
+            display: flex;
+            gap: 5px;
+        }
+
+        .guess-pill {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem;
+            padding: 2px 8px;
+            border-radius: 2px;
+            letter-spacing: 0.04em;
+        }
+
+        .guess-pill.h { background: rgba(192,57,43,0.25); color: #e88; }
+        .guess-pill.l { background: rgba(44,122,110,0.25); color: #8cc; }
+        .guess-pill.w { background: rgba(44,122,110,0.4);  color: #aee; }
+
         /* Shared hover overlay */
         .banner-overlay {
             position: absolute;
             inset: 0;
-            background: rgba(192, 57, 43, 0.08);
+            background: rgba(192,57,43,0.08);
             opacity: 0;
             transition: opacity 0.3s;
             display: flex;
@@ -368,16 +444,16 @@
 
         /* ─── CARD BODY ─── */
         .game-body {
-            padding: 28px 30px 30px;
+            padding: 24px 26px 28px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 9px;
             flex: 1;
         }
 
         .game-num {
             font-family: 'DM Mono', monospace;
-            font-size: 0.68rem;
+            font-size: 0.66rem;
             color: var(--ink-muted);
             letter-spacing: 0.15em;
             text-transform: uppercase;
@@ -385,14 +461,14 @@
 
         .game-body h2 {
             font-family: 'DM Serif Display', serif;
-            font-size: 1.7rem;
+            font-size: 1.55rem;
             letter-spacing: -0.025em;
             color: var(--ink);
             line-height: 1.1;
         }
 
         .game-body p {
-            font-size: 0.88rem;
+            font-size: 0.84rem;
             color: var(--ink-muted);
             line-height: 1.6;
         }
@@ -400,32 +476,32 @@
         .game-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 7px;
-            margin-top: 4px;
+            gap: 6px;
+            margin-top: 2px;
         }
 
         .tag {
             font-family: 'DM Mono', monospace;
-            font-size: 0.66rem;
+            font-size: 0.64rem;
             letter-spacing: 0.08em;
             text-transform: uppercase;
             background: var(--paper-warm);
             border: 1px solid var(--rule);
-            padding: 3px 10px;
+            padding: 3px 9px;
             border-radius: 2px;
             color: var(--ink-soft);
         }
 
         .play-link {
             font-family: 'DM Mono', monospace;
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             letter-spacing: 0.1em;
             text-transform: uppercase;
             color: var(--accent);
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-top: 6px;
+            margin-top: 4px;
         }
 
         .play-link i { transition: transform 0.25s ease; }
@@ -437,6 +513,7 @@
             transform: translateY(20px);
             transition: opacity 0.55s ease, transform 0.55s ease;
         }
+
         .fade-in.visible { opacity: 1; transform: translateY(0); }
 
         /* ─── FOOTER ─── */
@@ -459,7 +536,7 @@
 
         .footer-bar span { color: var(--accent); }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
             .games-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
@@ -467,7 +544,7 @@
             .games-grid    { grid-template-columns: 1fr; }
             .page-hero     { padding: 50px 7% 36px; }
             .games-section { padding: 40px 7% 70px; }
-            .game-body     { padding: 22px; }
+            .game-body     { padding: 20px 22px 24px; }
         }
     </style>
 </head>
@@ -489,14 +566,14 @@
         <h1>Inter&shy;active <em>Games</em></h1>
         <div class="page-hero-meta">
             <p>Logic-based browser games. No installs. Play right here.</p>
-            <span class="game-count">03 Games</span>
+            <span class="game-count">04 Games</span>
         </div>
     </div>
 
     <div class="games-section">
         <div class="games-grid">
 
-            <!-- ── 01 Maze ── -->
+            <!-- 01 Maze -->
             <a href="maze/index.html" class="game-card fade-in">
                 <div class="game-banner banner-maze">
                     <div class="maze-grid">
@@ -521,8 +598,8 @@
                 </div>
             </a>
 
-            <!-- ── 02 Tug of War ── -->
-            <a href="tug-of-war/index.html" class="game-card fade-in" style="transition-delay:0.08s;">
+            <!-- 02 Tug of War -->
+            <a href="tug-of-war/index.html" class="game-card fade-in" style="transition-delay:0.07s;">
                 <div class="game-banner banner-tug">
                     <div class="tug-scene">
                         <div class="tug-side-labels">
@@ -557,8 +634,8 @@
                 </div>
             </a>
 
-            <!-- ── 03 Memory Cards ── -->
-            <a href="memory-cards/index.html" class="game-card fade-in" style="transition-delay:0.16s;">
+            <!-- 03 Memory Cards -->
+            <a href="memory-cards/index.html" class="game-card fade-in" style="transition-delay:0.14s;">
                 <div class="game-banner banner-memory">
                     <div class="memory-preview">
                         <div class="mem-card matched">🐶</div>
@@ -583,6 +660,43 @@
                     <div class="game-tags">
                         <span class="tag">Memory</span>
                         <span class="tag">Emojis</span>
+                        <span class="tag">Single Player</span>
+                    </div>
+                    <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- 04 Number Guess -->
+            <a href="number-guess/index.html" class="game-card fade-in" style="transition-delay:0.21s;">
+                <div class="game-banner banner-guess">
+                    <div class="guess-scene">
+                        <div class="guess-big">?</div>
+                        <div class="guess-track-wrap">
+                            <div class="guess-track-label">
+                                <span>1</span>
+                                <span>100</span>
+                            </div>
+                            <div class="guess-track">
+                                <div class="guess-fill"></div>
+                                <div class="guess-dot"></div>
+                            </div>
+                        </div>
+                        <div class="guess-pills">
+                            <span class="guess-pill h">72 ↑</span>
+                            <span class="guess-pill l">41 ↓</span>
+                            <span class="guess-pill l">55 ↓</span>
+                            <span class="guess-pill w">63 ✓</span>
+                        </div>
+                    </div>
+                    <div class="banner-overlay"><span>Play Now</span></div>
+                </div>
+                <div class="game-body">
+                    <div class="game-num">04 / Guessing</div>
+                    <h2>Number<br>Guess</h2>
+                    <p>I'm thinking of a number between 1 and 100. Use the hot and cold hints to find it in as few guesses as you can.</p>
+                    <div class="game-tags">
+                        <span class="tag">Logic</span>
+                        <span class="tag">Numbers</span>
                         <span class="tag">Single Player</span>
                     </div>
                     <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
