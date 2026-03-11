@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Generator · Sareena Rahim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --ink: #0f0e0d;
+            --paper: #f5f2ed;
+            --paper-warm: #ede9e2;
+            --paper-card: #f9f7f4;
+            --accent: #c0392b;
+            --accent-cool: #2c7a6e;
+            --ink-muted: #7a7672;
+            --rule: rgba(15,14,13,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--paper);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.4;
+        }
+
+        /* ─── HEADER ─── */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(245,242,237,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 7%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem;
+            color: var(--ink);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .logo sup {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.48rem;
+            color: var(--accent);
+            vertical-align: super;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .back-btn {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            border: 1.5px solid var(--ink);
+            padding: 8px 18px;
+            border-radius: 3px;
+            text-decoration: none;
+            color: var(--ink);
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s;
+        }
+
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+        /* ─── MAIN ─── */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 7% 60px;
+            gap: 28px;
+        }
+
+        .tool-header { text-align: center; }
+
+        .eyebrow {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.4rem;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        h1 em { font-style: italic; color: var(--accent); }
+
+        .subtitle {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.73rem;
+            color: var(--ink-muted);
+            letter-spacing: 0.08em;
+            margin-top: 8px;
+        }
+
+        /* ─── CARD ─── */
+        .tool-card {
+            width: 100%;
+            max-width: 440px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* ─── INPUT BOX ─── */
+        .input-box {
+            background: var(--paper-card);
+            border: 1px solid var(--rule);
+            border-radius: 6px;
+            padding: 26px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .field-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--paper);
+            border: 1.5px solid var(--rule);
+            border-radius: 4px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--ink);
+            outline: none;
+            transition: border-color 0.2s;
+            resize: none;
+        }
+
+        .text-input:focus { border-color: var(--ink); }
+        .text-input::placeholder { color: var(--ink-muted); }
+
+        /* ─── QR DISPLAY ─── */
+        .qr-box {
+            background: var(--paper-card);
+            border: 1px solid var(--rule);
+            border-radius: 6px;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            min-height: 220px;
+        }
+
+        /* Placeholder dots when empty */
+        .qr-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            opacity: 0.3;
+        }
+
+        .placeholder-icon {
+            font-size: 2.4rem;
+            color: var(--ink-muted);
+        }
+
+        .placeholder-text {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
+        }
+
+        /* QR output */
+        #qrOutput {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            animation: fadeUp 0.3s ease;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        #qrOutput.show { display: flex; }
+
+        #qrCanvas {
+            background: white;
+            padding: 14px;
+            border-radius: 4px;
+            border: 1px solid var(--rule);
+            box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+            line-height: 0;
+        }
+
+        #qrCanvas canvas,
+        #qrCanvas img { display: block; }
+
+        .url-preview {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            color: var(--ink-muted);
+            letter-spacing: 0.04em;
+            text-align: center;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ─── DOWNLOAD BTN ─── */
+        .download-btn {
+            width: 100%;
+            padding: 13px;
+            background: var(--ink);
+            color: var(--paper);
+            border: none;
+            border-radius: 4px;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .download-btn:hover  { background: var(--accent-cool); transform: translateY(-1px); }
+        .download-btn:active { transform: translateY(0); }
+        .download-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ─── TOAST ─── */
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(16px);
+            background: var(--ink);
+            color: var(--paper);
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            padding: 10px 22px;
+            border-radius: 3px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 500;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 1.9rem; }
+            .input-box, .qr-box { padding: 22px 18px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Tools</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="tool-header">
+            <div class="eyebrow">Web Tool</div>
+            <h1>QR <em>Generator</em></h1>
+            <p class="subtitle">Type any URL or text — get a scannable QR code instantly</p>
+        </div>
+
+        <div class="tool-card">
+
+            <!-- Input -->
+            <div class="input-box">
+                <label class="field-label" for="qrInput">URL or Text</label>
+                <textarea
+                    class="text-input"
+                    id="qrInput"
+                    rows="3"
+                    placeholder="https://yourwebsite.com"
+                    maxlength="500"
+                    oninput="onInput()"
+                ></textarea>
+            </div>
+
+            <!-- QR display -->
+            <div class="qr-box">
+                <div class="qr-placeholder" id="qrPlaceholder">
+                    <div class="placeholder-icon"><i class="fas fa-qrcode"></i></div>
+                    <span class="placeholder-text">Your QR code will appear here</span>
+                </div>
+                <div id="qrOutput">
+                    <div id="qrCanvas"></div>
+                    <div class="url-preview" id="urlPreview"></div>
+                </div>
+            </div>
+
+            <!-- Download -->
+            <button class="download-btn" id="downloadBtn" onclick="downloadQR()" disabled>
+                <i class="fas fa-download"></i> Download PNG
+            </button>
+
+        </div>
+    </main>
+
+    <div class="toast" id="toast">Downloaded!</div>
+
+    <script>
+        let qrInstance    = null;
+        let debounceTimer = null;
+
+        function onInput() {
+            const val = document.getElementById('qrInput').value.trim();
+            clearTimeout(debounceTimer);
+            if (!val) { resetDisplay(); return; }
+            debounceTimer = setTimeout(() => generateQR(val), 350);
+        }
+
+        function generateQR(text) {
+            const container = document.getElementById('qrCanvas');
+            container.innerHTML = '';
+            qrInstance = null;
+
+            qrInstance = new QRCode(container, {
+                text:          text,
+                width:         220,
+                height:        220,
+                colorDark:     '#0f0e0d',
+                colorLight:    '#ffffff',
+                correctLevel:  QRCode.CorrectLevel.H
+            });
+
+            document.getElementById('qrPlaceholder').style.display = 'none';
+            document.getElementById('qrOutput').classList.add('show');
+            document.getElementById('urlPreview').textContent =
+                text.length > 48 ? text.slice(0, 48) + '…' : text;
+            document.getElementById('downloadBtn').disabled = false;
+        }
+
+        function resetDisplay() {
+            document.getElementById('qrPlaceholder').style.display = 'flex';
+            document.getElementById('qrOutput').classList.remove('show');
+            document.getElementById('qrCanvas').innerHTML = '';
+            document.getElementById('downloadBtn').disabled = true;
+            qrInstance = null;
+        }
+
+        function downloadQR() {
+            const canvas = document.getElementById('qrCanvas').querySelector('canvas');
+            if (canvas) { triggerDownload(canvas.toDataURL('image/png')); return; }
+
+            const img = document.getElementById('qrCanvas').querySelector('img');
+            if (!img) return;
+            const c = document.createElement('canvas');
+            c.width = c.height = 220;
+            c.getContext('2d').drawImage(img, 0, 0);
+            triggerDownload(c.toDataURL('image/png'));
+        }
+
+        function triggerDownload(dataUrl) {
+            const a = document.createElement('a');
+            a.href = dataUrl;
+            a.download = 'qr-code.png';
+            a.click();
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        document.getElementById('qrInput').focus();
+    </script>
+</body>
+</html>
