@@ -357,9 +357,7 @@
             user-select: none;
         }
 
-        .guess-track-wrap {
-            width: 100%;
-        }
+        .guess-track-wrap { width: 100%; }
 
         .guess-track-label {
             display: flex;
@@ -397,10 +395,7 @@
             box-shadow: 0 0 6px rgba(245,242,237,0.5);
         }
 
-        .guess-pills {
-            display: flex;
-            gap: 5px;
-        }
+        .guess-pills { display: flex; gap: 5px; }
 
         .guess-pill {
             font-family: 'DM Mono', monospace;
@@ -413,6 +408,62 @@
         .guess-pill.h { background: rgba(192,57,43,0.25); color: #e88; }
         .guess-pill.l { background: rgba(44,122,110,0.25); color: #8cc; }
         .guess-pill.w { background: rgba(44,122,110,0.4);  color: #aee; }
+
+        /* ─── ODD OR EVEN BANNER ─── */
+        .banner-odd { background: #f5f2ed; }
+
+        .odd-scene {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 0 24px;
+        }
+
+        .odd-number {
+            font-family: 'DM Serif Display', serif;
+            font-size: 4rem;
+            letter-spacing: -0.04em;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        .odd-btn-row {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .odd-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 3px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .odd-btn.o { background: rgba(44,122,110,0.12); color: var(--accent-cool); border: 1.5px solid rgba(44,122,110,0.25); }
+        .odd-btn.e { background: rgba(230,126,34,0.12); color: var(--accent-warm); border: 1.5px solid rgba(230,126,34,0.25); }
+
+        .odd-timer {
+            width: 100%;
+            height: 4px;
+            background: var(--paper-warm);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .odd-timer-fill {
+            height: 100%;
+            width: 60%;
+            background: linear-gradient(90deg, var(--accent-cool), var(--accent-warm), var(--accent));
+            border-radius: 2px;
+        }
 
         /* Shared hover overlay */
         .banner-overlay {
@@ -566,10 +617,9 @@
         <h1>Inter&shy;active <em>Games</em></h1>
         <div class="page-hero-meta">
             <p>Logic-based browser games. No installs. Play right here.</p>
-            <span class="game-count">04 Games</span>
+            <span class="game-count">05 Games</span>
         </div>
     </div>
-
     <div class="games-section">
         <div class="games-grid">
 
@@ -697,6 +747,34 @@
                     <div class="game-tags">
                         <span class="tag">Logic</span>
                         <span class="tag">Numbers</span>
+                        <span class="tag">Single Player</span>
+                    </div>
+                    <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- 05 Odd or Even -->
+            <a href="odd-or-even/index.html" class="game-card fade-in" style="transition-delay:0.28s;">
+                <div class="game-banner banner-odd">
+                    <div class="odd-scene">
+                        <div class="odd-number">37</div>
+                        <div class="odd-btn-row">
+                            <div class="odd-btn o">Odd</div>
+                            <div class="odd-btn e">Even</div>
+                        </div>
+                        <div class="odd-timer">
+                            <div class="odd-timer-fill"></div>
+                        </div>
+                    </div>
+                    <div class="banner-overlay"><span>Play Now</span></div>
+                </div>
+                <div class="game-body">
+                    <div class="game-num">05 / Reflex</div>
+                    <h2>Odd or<br>Even?</h2>
+                    <p>A number appears — is it odd or even? You have 4 seconds. The background turns red as time runs out. How far can you streak?</p>
+                    <div class="game-tags">
+                        <span class="tag">Reflex</span>
+                        <span class="tag">Timer</span>
                         <span class="tag">Single Player</span>
                     </div>
                     <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
