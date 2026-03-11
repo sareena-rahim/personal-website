@@ -93,12 +93,9 @@
             transition: all 0.25s ease;
         }
 
-        .back-btn:hover {
-            background: var(--ink);
-            color: var(--paper);
-        }
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
 
-        /* ─── PAGE HEADER ─── */
+        /* ─── PAGE HERO ─── */
         .page-hero {
             padding: 70px 7% 50px;
             max-width: 1400px;
@@ -118,12 +115,7 @@
             gap: 8px;
         }
 
-        .breadcrumb a {
-            color: var(--ink-muted);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
+        .breadcrumb a { color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
         .breadcrumb a:hover { color: var(--accent); }
         .breadcrumb span { color: var(--accent); }
 
@@ -135,10 +127,7 @@
             color: var(--ink);
         }
 
-        .page-hero h1 em {
-            font-style: italic;
-            color: var(--accent);
-        }
+        .page-hero h1 em { font-style: italic; color: var(--accent); }
 
         .page-hero-meta {
             display: flex;
@@ -179,6 +168,7 @@
             gap: 24px;
         }
 
+        /* ─── TOOL CARD ─── */
         .tool-card {
             background: var(--paper-card);
             border: 1px solid var(--rule);
@@ -188,13 +178,11 @@
             color: inherit;
             display: flex;
             flex-direction: column;
-            gap: 0;
             position: relative;
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        /* Accent line on hover */
         .tool-card::after {
             content: '';
             position: absolute;
@@ -214,7 +202,6 @@
             border-color: rgba(192, 57, 43, 0.2);
         }
 
-        /* Tool number */
         .tool-num {
             font-family: 'DM Mono', monospace;
             font-size: 0.68rem;
@@ -224,7 +211,6 @@
             margin-bottom: 28px;
         }
 
-        /* Icon area */
         .tool-icon-wrap {
             width: 60px;
             height: 60px;
@@ -238,10 +224,7 @@
             transition: all 0.3s ease;
         }
 
-        .tool-card:hover .tool-icon-wrap {
-            background: var(--accent);
-            border-color: var(--accent);
-        }
+        .tool-card:hover .tool-icon-wrap { background: var(--accent); border-color: var(--accent); }
 
         .tool-icon-wrap i {
             font-size: 1.4rem;
@@ -249,9 +232,7 @@
             transition: color 0.3s ease;
         }
 
-        .tool-card:hover .tool-icon-wrap i {
-            color: white;
-        }
+        .tool-card:hover .tool-icon-wrap i { color: white; }
 
         .tool-card h2 {
             font-family: 'DM Serif Display', serif;
@@ -301,34 +282,8 @@
             margin-top: auto;
         }
 
-        .open-link i {
-            transition: transform 0.25s ease;
-        }
-
-        .tool-card:hover .open-link i {
-            transform: translateX(5px);
-        }
-
-        /* ─── COMING SOON CARD ─── */
-        .tool-card.coming-soon {
-            opacity: 0.55;
-            cursor: default;
-            pointer-events: none;
-        }
-
-        .coming-badge {
-            position: absolute;
-            top: 20px; right: 20px;
-            font-family: 'DM Mono', monospace;
-            font-size: 0.62rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            background: var(--paper-warm);
-            border: 1px solid var(--rule);
-            padding: 4px 10px;
-            border-radius: 2px;
-            color: var(--ink-muted);
-        }
+        .open-link i { transition: transform 0.25s ease; }
+        .tool-card:hover .open-link i { transform: translateX(5px); }
 
         /* ─── FADE IN ─── */
         .fade-in {
@@ -336,10 +291,8 @@
             transform: translateY(20px);
             transition: opacity 0.55s ease, transform 0.55s ease;
         }
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
 
         /* ─── FOOTER ─── */
         .footer-bar {
@@ -361,10 +314,9 @@
 
         .footer-bar span { color: var(--accent); }
 
-        /* ─── RESPONSIVE ─── */
         @media (max-width: 768px) {
-            .tools-grid { grid-template-columns: 1fr; }
-            .page-hero { padding: 50px 7% 36px; }
+            .tools-grid    { grid-template-columns: 1fr; }
+            .page-hero     { padding: 50px 7% 36px; }
             .tools-section { padding: 40px 7% 70px; }
         }
 
@@ -375,7 +327,6 @@
 </head>
 <body>
 
-    <!-- ─── HEADER ─── -->
     <header>
         <nav>
             <a href="../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
@@ -383,7 +334,6 @@
         </nav>
     </header>
 
-    <!-- ─── PAGE HERO ─── -->
     <div class="page-hero">
         <div class="breadcrumb">
             <a href="../index.html">Home</a>
@@ -393,20 +343,17 @@
         <h1>Web <em>Tools</em></h1>
         <div class="page-hero-meta">
             <p>Browser-based utilities. No installs. No accounts. Just open and use.</p>
-            <span class="tool-count">04 Tools</span>
+            <span class="tool-count">05 Tools</span>
         </div>
     </div>
 
-    <!-- ─── TOOLS GRID ─── -->
     <div class="tools-section">
         <div class="tools-grid">
 
-            <!-- World Clock -->
+            <!-- 01 World Clock -->
             <a href="world-clock/index.html" class="tool-card fade-in">
                 <div class="tool-num">01 / World Clock</div>
-                <div class="tool-icon-wrap">
-                    <i class="fas fa-globe"></i>
-                </div>
+                <div class="tool-icon-wrap"><i class="fas fa-globe"></i></div>
                 <h2>World<br>Clock</h2>
                 <p>Track current time across multiple timezones simultaneously. Useful for coordinating with remote teams or planning international calls.</p>
                 <div class="tool-tags">
@@ -417,12 +364,10 @@
                 <span class="open-link">Open Tool <i class="fas fa-arrow-right"></i></span>
             </a>
 
-            <!-- Age Calculator -->
-            <a href="age-calculator/index.html" class="tool-card fade-in" style="transition-delay: 0.08s;">
+            <!-- 02 Age Calculator -->
+            <a href="age-calculator/index.html" class="tool-card fade-in" style="transition-delay:0.08s;">
                 <div class="tool-num">02 / Age Calculator</div>
-                <div class="tool-icon-wrap">
-                    <i class="fas fa-cake-candles"></i>
-                </div>
+                <div class="tool-icon-wrap"><i class="fas fa-cake-candles"></i></div>
                 <h2>Age<br>Calculator</h2>
                 <p>Enter a date of birth and instantly get your exact age in years, months, and days. Also shows days until your next birthday.</p>
                 <div class="tool-tags">
@@ -433,12 +378,10 @@
                 <span class="open-link">Open Tool <i class="fas fa-arrow-right"></i></span>
             </a>
 
-            <!-- Stopwatch -->
-            <a href="stopwatch/index.html" class="tool-card fade-in" style="transition-delay: 0.14s;">
+            <!-- 03 Stopwatch -->
+            <a href="stopwatch/index.html" class="tool-card fade-in" style="transition-delay:0.14s;">
                 <div class="tool-num">03 / Stopwatch</div>
-                <div class="tool-icon-wrap">
-                    <i class="fas fa-stopwatch"></i>
-                </div>
+                <div class="tool-icon-wrap"><i class="fas fa-stopwatch"></i></div>
                 <h2>Stop-<br>watch</h2>
                 <p>A clean, precise stopwatch with lap tracking. Start, stop, record laps, and reset — all from the keyboard or a single click.</p>
                 <div class="tool-tags">
@@ -449,12 +392,10 @@
                 <span class="open-link">Open Tool <i class="fas fa-arrow-right"></i></span>
             </a>
 
-            <!-- Multiplication Table -->
-            <a href="multiplication-table/index.html" class="tool-card fade-in" style="transition-delay: 0.2s;">
+            <!-- 04 Multiplication Table -->
+            <a href="multiplication-table/index.html" class="tool-card fade-in" style="transition-delay:0.2s;">
                 <div class="tool-num">04 / Multiplication Table</div>
-                <div class="tool-icon-wrap">
-                    <i class="fas fa-table-cells"></i>
-                </div>
+                <div class="tool-icon-wrap"><i class="fas fa-table-cells"></i></div>
                 <h2>Multiplication<br>Table</h2>
                 <p>Generate and explore multiplication tables for any number instantly. Highlights patterns and lets you print or copy the result.</p>
                 <div class="tool-tags">
@@ -465,12 +406,25 @@
                 <span class="open-link">Open Tool <i class="fas fa-arrow-right"></i></span>
             </a>
 
+            <!-- 05 QR Generator -->
+            <a href="qr-generator/index.html" class="tool-card fade-in" style="transition-delay:0.26s;">
+                <div class="tool-num">05 / QR Generator</div>
+                <div class="tool-icon-wrap"><i class="fas fa-qrcode"></i></div>
+                <h2>QR<br>Generator</h2>
+                <p>Type any URL or text and instantly get a scannable QR code. Download it as a PNG with one click — no sign up needed.</p>
+                <div class="tool-tags">
+                    <span class="tag">QR Code</span>
+                    <span class="tag">Generator</span>
+                    <span class="tag">JS</span>
+                </div>
+                <span class="open-link">Open Tool <i class="fas fa-arrow-right"></i></span>
+            </a>
+
         </div>
     </div>
 
-    <!-- ─── FOOTER ─── -->
     <div class="footer-bar">
-        <p>© 2025 Sareena Rahim</p>
+        <p>© 2026 Sareena Rahim</p>
         <p>Part of <span>·</span> <a href="../index.html" style="color:var(--ink-muted); text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--ink-muted)'">sareenarahim.dev</a></p>
     </div>
 
@@ -486,11 +440,7 @@
         }, { threshold: 0.1 });
 
         fadeEls.forEach(el => observer.observe(el));
-
-        // Trigger cards immediately since they're all visible on load
-        setTimeout(() => {
-            fadeEls.forEach(el => el.classList.add('visible'));
-        }, 80);
+        setTimeout(() => fadeEls.forEach(el => el.classList.add('visible')), 80);
     </script>
 </body>
 </html>
