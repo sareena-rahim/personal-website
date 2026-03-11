@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odd or Even · Sareena Rahim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f0e0d;
+            --paper: #f5f2ed;
+            --paper-warm: #ede9e2;
+            --paper-card: #f9f7f4;
+            --accent: #c0392b;
+            --accent-warm: #e67e22;
+            --accent-cool: #2c7a6e;
+            --ink-muted: #7a7672;
+            --rule: rgba(15,14,13,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--paper);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.4s ease;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.4;
+        }
+
+        /* ─── HEADER ─── */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(245,242,237,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+            transition: background 0.4s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 7%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem;
+            color: var(--ink);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .logo sup {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.48rem;
+            color: var(--accent);
+            vertical-align: super;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .back-btn {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            border: 1.5px solid var(--ink);
+            padding: 8px 18px;
+            border-radius: 3px;
+            text-decoration: none;
+            color: var(--ink);
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s;
+        }
+
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+        /* ─── MAIN ─── */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 7% 60px;
+            gap: 24px;
+        }
+
+        /* ─── TITLE ─── */
+        .game-header { text-align: center; }
+
+        .eyebrow {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.4rem;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        h1 em { font-style: italic; color: var(--accent); }
+
+        .subtitle {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.73rem;
+            color: var(--ink-muted);
+            letter-spacing: 0.08em;
+            margin-top: 8px;
+        }
+
+        /* ─── STATS ─── */
+        .stats-bar {
+            display: flex;
+            border: 1px solid var(--rule);
+            border-radius: 4px;
+            overflow: hidden;
+            background: var(--paper-card);
+        }
+
+        .stat {
+            padding: 10px 32px;
+            text-align: center;
+            border-right: 1px solid var(--rule);
+        }
+
+        .stat:last-child { border-right: none; }
+
+        .stat .val {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem;
+            color: var(--ink);
+            display: block;
+            line-height: 1;
+        }
+
+        .stat .val.bump { animation: bump 0.22s ease; }
+
+        @keyframes bump {
+            0%,100% { transform: scale(1); }
+            50%      { transform: scale(1.4); }
+        }
+
+        .stat .lbl {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
+            margin-top: 3px;
+            display: block;
+        }
+
+        /* ─── TIMER DISPLAY ─── */
+        .timer-display {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.85rem;
+            letter-spacing: 0.14em;
+            color: var(--ink-muted);
+            text-transform: uppercase;
+            transition: color 0.4s ease;
+        }
+
+        .timer-display.urgent { color: var(--accent); font-weight: 700; }
+
+        /* ─── GAME CARD ─── */
+        .game-card {
+            width: 100%;
+            max-width: 380px;
+            background: var(--paper-card);
+            border: 1px solid var(--rule);
+            border-radius: 6px;
+            padding: 40px 36px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 28px;
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        /* card pulses red when urgent */
+        .game-card.urgent {
+            border-color: rgba(192,57,43,0.4);
+            box-shadow: 0 0 0 4px rgba(192,57,43,0.08);
+        }
+
+        /* ─── NUMBER ─── */
+        .number-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .number-display {
+            font-family: 'DM Serif Display', serif;
+            font-size: 6rem;
+            letter-spacing: -0.04em;
+            color: var(--ink);
+            line-height: 1;
+            min-width: 160px;
+            text-align: center;
+            transition: color 0.2s;
+        }
+
+        .number-display.flash  { animation: flash 0.2s ease; }
+        .number-display.correct { color: var(--accent-cool); }
+        .number-display.wrong   { color: var(--accent); }
+
+        @keyframes flash {
+            0%   { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .number-hint {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
+            min-height: 1rem;
+            transition: color 0.2s;
+        }
+
+        .number-hint.correct { color: var(--accent-cool); }
+        .number-hint.wrong   { color: var(--accent); }
+
+        /* ─── BUTTONS ─── */
+        .btn-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .choice-btn {
+            padding: 16px;
+            border: 1.5px solid var(--rule);
+            border-radius: 4px;
+            background: var(--paper);
+            font-family: 'Syne', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--ink);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .choice-btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); transform: translateY(-2px); }
+        .choice-btn:active { transform: translateY(0); }
+        .choice-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+        .choice-btn.odd:hover  { background: var(--accent-cool); border-color: var(--accent-cool); }
+        .choice-btn.even:hover { background: var(--accent-warm); border-color: var(--accent-warm); }
+
+        /* ─── OVERLAY ─── */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15,14,13,0.88);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease;
+        }
+
+        .overlay.show { opacity: 1; pointer-events: all; }
+
+        .overlay-box {
+            background: var(--paper-card);
+            border: 1px solid var(--rule);
+            border-radius: 8px;
+            padding: 44px 52px;
+            text-align: center;
+            max-width: 340px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(20px);
+            transition: transform 0.35s ease;
+        }
+
+        .overlay.show .overlay-box { transform: translateY(0); }
+
+        .overlay-emoji { font-size: 3rem; line-height: 1; }
+
+        .overlay-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.2rem;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        .overlay-title em { font-style: italic; color: var(--accent); }
+
+        .overlay-sub {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--ink-muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-top: 4px;
+            line-height: 1.9;
+        }
+
+        .overlay-sub span { color: var(--ink); }
+
+        .overlay-btn {
+            margin-top: 12px;
+            background: var(--ink);
+            color: var(--paper);
+            border: none;
+            border-radius: 3px;
+            padding: 12px 32px;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .overlay-btn:hover { background: var(--accent); transform: translateY(-2px); }
+
+        @media (max-width: 420px) {
+            h1 { font-size: 1.9rem; }
+            .game-card { padding: 32px 22px; }
+            .number-display { font-size: 5rem; }
+        }
+    </style>
+</head>
+<body id="body">
+
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Games</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="game-header">
+            <div class="eyebrow">Game 05</div>
+            <h1>Odd or <em>Even?</em></h1>
+            <p class="subtitle">4 seconds per number — how long can you streak?</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat">
+                <span class="val" id="streakVal">0</span>
+                <span class="lbl">Streak</span>
+            </div>
+            <div class="stat">
+                <span class="val" id="bestVal">0</span>
+                <span class="lbl">Best</span>
+            </div>
+        </div>
+
+        <!-- Timer -->
+        <div class="timer-display" id="timerDisplay">4.0s</div>
+
+        <div class="game-card" id="gameCard">
+            <div class="number-wrap">
+                <div class="number-display" id="numberDisplay">?</div>
+                <div class="number-hint" id="numberHint"></div>
+            </div>
+            <div class="btn-row">
+                <button class="choice-btn odd"  id="btnOdd"  onclick="guess('odd')">Odd</button>
+                <button class="choice-btn even" id="btnEven" onclick="guess('even')">Even</button>
+            </div>
+        </div>
+    </main>
+
+    <div class="overlay" id="overlay">
+        <div class="overlay-box">
+            <div class="overlay-emoji" id="overlayEmoji">😬</div>
+            <div class="overlay-title"><em id="overlayTitle">Too Slow!</em></div>
+            <div class="overlay-sub" id="overlaySub"></div>
+            <button class="overlay-btn" onclick="resetGame()">
+                <i class="fas fa-rotate-right"></i> Try Again
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ─── CONFIG ───────────────────────────────────────────────────────
+        const TIME_LIMIT = 4.0;   // seconds per question
+        const TICK       = 100;   // ms per tick
+
+        // Background colours: calm → warn → danger
+        // Interpolated based on time remaining
+        const BG_SAFE   = { r: 245, g: 242, b: 237 }; // --paper (full time)
+        const BG_WARN   = { r: 255, g: 220, b: 160 }; // warm orange (2s left)
+        const BG_DANGER = { r: 220, g: 80,  b: 60  }; // deep red (0s left)
+
+        // ─── STATE ────────────────────────────────────────────────────────
+        let currentNumber = 0;
+        let streak        = 0;
+        let best          = 0;
+        let timeLeft      = TIME_LIMIT;
+        let timerInterval = null;
+        let gameOver      = false;
+
+        // ─── START TIMER ─────────────────────────────────────────────────
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = TIME_LIMIT;
+            updateTimerUI();
+
+            timerInterval = setInterval(() => {
+                timeLeft = Math.max(0, timeLeft - TICK / 1000);
+                updateTimerUI();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    onTimeout();
+                }
+            }, TICK);
+        }
+
+        // ─── TIMER UI (background colour change) ─────────────────────────
+        function updateTimerUI() {
+            const pct     = timeLeft / TIME_LIMIT;  // 1 = full, 0 = out
+            const body    = document.getElementById('body');
+            const display = document.getElementById('timerDisplay');
+            const card    = document.getElementById('gameCard');
+
+            // Interpolate background colour
+            let r, g, b;
+            if (pct > 0.5) {
+                // Safe → Warn  (100% → 50% time)
+                const t = 1 - (pct - 0.5) / 0.5;
+                r = Math.round(BG_SAFE.r + (BG_WARN.r - BG_SAFE.r) * t);
+                g = Math.round(BG_SAFE.g + (BG_WARN.g - BG_SAFE.g) * t);
+                b = Math.round(BG_SAFE.b + (BG_WARN.b - BG_SAFE.b) * t);
+            } else {
+                // Warn → Danger  (50% → 0% time)
+                const t = 1 - pct / 0.5;
+                r = Math.round(BG_WARN.r + (BG_DANGER.r - BG_WARN.r) * t);
+                g = Math.round(BG_WARN.g + (BG_DANGER.g - BG_WARN.g) * t);
+                b = Math.round(BG_WARN.b + (BG_DANGER.b - BG_WARN.b) * t);
+            }
+
+            body.style.background = `rgb(${r},${g},${b})`;
+
+            // Timer text
+            display.textContent = `${timeLeft.toFixed(1)}s`;
+            if (pct <= 0.5) {
+                display.classList.add('urgent');
+                card.classList.add('urgent');
+            } else {
+                display.classList.remove('urgent');
+                card.classList.remove('urgent');
+            }
+        }
+
+        // ─── RESET BG ────────────────────────────────────────────────────
+        function resetBg() {
+            document.getElementById('body').style.background = `rgb(${BG_SAFE.r},${BG_SAFE.g},${BG_SAFE.b})`;
+            document.getElementById('timerDisplay').classList.remove('urgent');
+            document.getElementById('gameCard').classList.remove('urgent');
+        }
+
+        // ─── NEW NUMBER ───────────────────────────────────────────────────
+        function newNumber() {
+            currentNumber = Math.floor(Math.random() * 99) + 1;
+            const display = document.getElementById('numberDisplay');
+            display.textContent = currentNumber;
+            display.className   = 'number-display flash';
+            document.getElementById('numberHint').textContent = '';
+            document.getElementById('numberHint').className   = 'number-hint';
+            startTimer();
+        }
+
+        // ─── GUESS ────────────────────────────────────────────────────────
+        function guess(choice) {
+            if (gameOver) return;
+            clearInterval(timerInterval);
+
+            const correct = currentNumber % 2 === 0 ? 'even' : 'odd';
+            const display = document.getElementById('numberDisplay');
+            const hint    = document.getElementById('numberHint');
+
+            if (choice === correct) {
+                streak++;
+                if (streak > best) best = streak;
+
+                display.className  = 'number-display flash correct';
+                hint.textContent   = `✓ ${currentNumber} is ${correct}`;
+                hint.className     = 'number-hint correct';
+
+                bumpStat('streakVal', streak);
+                bumpStat('bestVal', best);
+
+                disableBtns(true);
+                resetBg();
+
+                setTimeout(() => {
+                    disableBtns(false);
+                    newNumber();
+                }, 400);
+
+            } else {
+                endGame('wrong');
+            }
+        }
+
+        // ─── TIMEOUT ─────────────────────────────────────────────────────
+        function onTimeout() {
+            endGame('timeout');
+        }
+
+        // ─── END GAME ────────────────────────────────────────────────────
+        function endGame(reason) {
+            gameOver = true;
+            clearInterval(timerInterval);
+            disableBtns(true);
+
+            const display = document.getElementById('numberDisplay');
+            const hint    = document.getElementById('numberHint');
+            const correct = currentNumber % 2 === 0 ? 'even' : 'odd';
+
+            display.className = 'number-display wrong';
+            hint.className    = 'number-hint wrong';
+
+            if (reason === 'timeout') {
+                hint.textContent = `⏱ Time's up! It was ${correct}`;
+                document.getElementById('overlayEmoji').textContent  = '⏱';
+                document.getElementById('overlayTitle').textContent  = 'Too Slow!';
+            } else {
+                hint.textContent = `✗ ${currentNumber} is ${correct}!`;
+                document.getElementById('overlayEmoji').textContent  = '😬';
+                document.getElementById('overlayTitle').textContent  = 'Wrong!';
+            }
+
+            const msg = streak >= 10 ? '🔥 Incredible!' : streak >= 5 ? '👍 Nice streak!' : '';
+            document.getElementById('overlaySub').innerHTML =
+                `Streak: <span>${streak}</span> · Best: <span>${best}</span>${msg ? `<br>${msg}` : ''}`;
+
+            // Flash red bg then show overlay
+            document.getElementById('body').style.background = `rgb(${BG_DANGER.r},${BG_DANGER.g},${BG_DANGER.b})`;
+            setTimeout(() => {
+                resetBg();
+                document.getElementById('overlay').classList.add('show');
+            }, 500);
+        }
+
+        // ─── RESET ────────────────────────────────────────────────────────
+        function resetGame() {
+            streak   = 0;
+            gameOver = false;
+            clearInterval(timerInterval);
+            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('streakVal').textContent = 0;
+            disableBtns(false);
+            resetBg();
+            newNumber();
+        }
+
+        // ─── HELPERS ─────────────────────────────────────────────────────
+        function disableBtns(state) {
+            document.getElementById('btnOdd').disabled  = state;
+            document.getElementById('btnEven').disabled = state;
+        }
+
+        function bumpStat(id, val) {
+            const el = document.getElementById(id);
+            el.textContent = val;
+            el.classList.remove('bump');
+            void el.offsetWidth;
+            el.classList.add('bump');
+        }
+
+        // ─── KEYBOARD: O = Odd, E = Even ─────────────────────────────────
+        document.addEventListener('keydown', e => {
+            if (e.key === 'o' || e.key === 'O') guess('odd');
+            if (e.key === 'e' || e.key === 'E') guess('even');
+        });
+
+        // ─── START ────────────────────────────────────────────────────────
+        newNumber();
+    </script>
+</body>
+</html>
