@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tip Calculator · Sareena Rahim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f0e0d;
+            --ink-soft: #3a3835;
+            --ink-muted: #7a7672;
+            --paper: #f5f2ed;
+            --paper-warm: #ede9e2;
+            --paper-card: #f9f7f4;
+            --accent: #c0392b;
+            --accent-warm: #e67e22;
+            --accent-cool: #2c7a6e;
+            --rule: rgba(15,14,13,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.4;
+        }
+
+        /* ─── HEADER ─── */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(245,242,237,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+        }
+
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 7%; max-width: 1200px; margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem; color: var(--ink);
+            text-decoration: none; letter-spacing: -0.02em;
+        }
+
+        .logo sup {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.48rem; color: var(--accent);
+            vertical-align: super; letter-spacing: 0.1em; text-transform: uppercase;
+        }
+
+        .back-btn {
+            font-family: 'DM Mono', monospace; font-size: 0.75rem;
+            border: 1.5px solid var(--ink); padding: 8px 18px; border-radius: 3px;
+            text-decoration: none; color: var(--ink); letter-spacing: 0.05em;
+            display: flex; align-items: center; gap: 8px; transition: all 0.25s;
+        }
+
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+        /* ─── MAIN ─── */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px 7% 80px;
+            gap: 28px;
+        }
+
+        /* ─── PAGE HEADER ─── */
+        .page-header { text-align: center; }
+
+        .eyebrow {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem; color: var(--accent);
+            letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 8px;
+        }
+
+        .page-header h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            letter-spacing: -0.03em; color: var(--ink); line-height: 1;
+        }
+
+        .page-header h1 em { font-style: italic; color: var(--accent); }
+
+        .page-header p {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem; color: var(--ink-muted);
+            letter-spacing: 0.08em; margin-top: 10px;
+        }
+
+        /* ─── CARD ─── */
+        .card {
+            width: 100%;
+            max-width: 440px;
+            background: var(--paper-card);
+            border: 1px solid var(--rule);
+            border-radius: 6px;
+            padding: 36px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* ─── INPUT GROUP ─── */
+        .input-group label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem; color: var(--ink-muted);
+            letter-spacing: 0.12em; text-transform: uppercase;
+            display: block; margin-bottom: 8px;
+        }
+
+        .input-wrap {
+            display: flex; align-items: center;
+            border: 1.5px solid var(--rule);
+            border-radius: 4px; overflow: hidden;
+            background: var(--paper);
+            transition: border-color 0.2s;
+        }
+
+        .input-wrap:focus-within { border-color: var(--ink); }
+
+        .input-prefix {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.85rem; color: var(--ink-muted);
+            padding: 0 12px; height: 48px;
+            display: flex; align-items: center;
+            background: var(--paper-warm);
+            border-right: 1.5px solid var(--rule);
+        }
+
+        .input-wrap input {
+            flex: 1; border: none; outline: none;
+            background: transparent;
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem; color: var(--ink);
+            padding: 10px 14px; width: 100%;
+        }
+
+        .input-wrap input::placeholder { color: rgba(122,118,114,0.4); }
+
+        /* ─── TIP BUTTONS ─── */
+        .tip-btns {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .tip-btn {
+            padding: 10px 4px;
+            border: 1.5px solid var(--rule);
+            border-radius: 3px;
+            background: var(--paper);
+            font-family: 'DM Mono', monospace;
+            font-size: 0.78rem; font-weight: 500;
+            color: var(--ink-soft);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .tip-btn:hover { border-color: var(--ink); color: var(--ink); }
+
+        .tip-btn.active {
+            background: var(--ink);
+            border-color: var(--ink);
+            color: var(--paper);
+        }
+
+        /* ─── PEOPLE STEPPER ─── */
+        .stepper {
+            display: flex; align-items: center;
+            border: 1.5px solid var(--rule);
+            border-radius: 4px; overflow: hidden;
+            background: var(--paper);
+        }
+
+        .step-btn {
+            width: 48px; height: 48px;
+            border: none; background: var(--paper-warm);
+            font-size: 1rem; color: var(--ink-soft);
+            cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .step-btn:hover { background: var(--ink); color: var(--paper); }
+
+        .step-val {
+            flex: 1; text-align: center;
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem; color: var(--ink);
+            border-left: 1.5px solid var(--rule);
+            border-right: 1.5px solid var(--rule);
+            line-height: 48px;
+            user-select: none;
+        }
+
+        /* ─── DIVIDER ─── */
+        .divider {
+            height: 1px;
+            background: var(--rule);
+            margin: 0 -32px;
+        }
+
+        /* ─── RESULTS ─── */
+        .results { display: flex; flex-direction: column; gap: 14px; }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-lbl {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem; color: var(--ink-muted);
+            letter-spacing: 0.1em; text-transform: uppercase;
+        }
+
+        .result-amt {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem; color: var(--ink);
+            letter-spacing: -0.02em;
+            transition: all 0.18s ease;
+        }
+
+        /* ─── PER PERSON ─── */
+        .per-person-box {
+            background: var(--ink);
+            border-radius: 4px;
+            padding: 22px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 4px;
+        }
+
+        .per-person-lbl {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem; color: rgba(245,242,237,0.5);
+            letter-spacing: 0.12em; text-transform: uppercase;
+            line-height: 1.6;
+        }
+
+        .per-person-lbl span {
+            display: block;
+            color: rgba(245,242,237,0.3);
+            font-size: 0.6rem;
+        }
+
+        .per-person-amt {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.4rem; color: #fff;
+            letter-spacing: -0.03em; line-height: 1;
+            transition: all 0.18s ease;
+        }
+
+        /* ─── RESET ─── */
+        .reset-btn {
+            width: 100%; max-width: 440px;
+            padding: 13px;
+            background: transparent;
+            border: 1.5px solid var(--rule);
+            border-radius: 4px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+            color: var(--ink-muted); cursor: pointer;
+            transition: all 0.25s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+
+        .reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* ─── FOOTER ─── */
+        footer {
+            border-top: 1px solid var(--rule);
+            padding: 22px 7%;
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 1200px; margin: 0 auto; width: 100%;
+        }
+
+        footer p {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem; color: var(--ink-muted); letter-spacing: 0.08em;
+        }
+
+        footer span { color: var(--accent); }
+
+        @media (max-width: 500px) {
+            .card { padding: 28px 22px; }
+            .divider { margin: 0 -22px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Tools</a>
+        </nav>
+    </header>
+
+    <main>
+
+        <div class="page-header">
+            <div class="eyebrow">Tool 06</div>
+            <h1>Tip <em>Calculator</em></h1>
+            <p>Enter your bill, pick a tip, split between people.</p>
+        </div>
+
+        <div class="card">
+
+            <!-- Bill Amount -->
+            <div class="input-group">
+                <label>Bill Amount</label>
+                <div class="input-wrap">
+                    <span class="input-prefix">₹</span>
+                    <input type="number" id="billInput" placeholder="0.00" min="0" step="0.01" oninput="calculate()">
+                </div>
+            </div>
+
+            <!-- Tip % -->
+            <div class="input-group">
+                <label>Tip Percentage</label>
+                <div class="tip-btns">
+                    <button class="tip-btn"        onclick="setTip(10, this)">10%</button>
+                    <button class="tip-btn"        onclick="setTip(15, this)">15%</button>
+                    <button class="tip-btn active" onclick="setTip(20, this)">20%</button>
+                    <button class="tip-btn"        onclick="setTip(25, this)">25%</button>
+                </div>
+                <div class="input-wrap">
+                    <span class="input-prefix">%</span>
+                    <input type="number" id="tipInput" placeholder="Custom" min="0" max="100" value="20" oninput="clearActive(); calculate()">
+                </div>
+            </div>
+
+            <!-- People -->
+            <div class="input-group">
+                <label>Split Between</label>
+                <div class="stepper">
+                    <button class="step-btn" onclick="changePeople(-1)"><i class="fas fa-minus"></i></button>
+                    <div class="step-val" id="peopleVal">1</div>
+                    <button class="step-btn" onclick="changePeople(1)"><i class="fas fa-plus"></i></button>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Tip + Total -->
+            <div class="results">
+                <div class="result-row">
+                    <span class="result-lbl">Tip Amount</span>
+                    <span class="result-amt" id="tipAmt">₹0.00</span>
+                </div>
+                <div class="result-row">
+                    <span class="result-lbl">Total Bill</span>
+                    <span class="result-amt" id="totalBill">₹0.00</span>
+                </div>
+            </div>
+
+            <!-- Per Person -->
+            <div class="per-person-box">
+                <div class="per-person-lbl">
+                    Per Person
+                    <span id="splitLabel">÷ 1 person</span>
+                </div>
+                <div class="per-person-amt" id="perPerson">₹0.00</div>
+            </div>
+
+        </div>
+
+        <button class="reset-btn" onclick="resetAll()">
+            <i class="fas fa-rotate-right"></i> Reset
+        </button>
+
+    </main>
+
+    <footer>
+        <p>© 2026 Sareena Rahim</p>
+        <p>Part of <span>·</span>
+            <a href="../../index.html" style="color:var(--ink-muted); text-decoration:none; transition:color 0.2s;"
+               onmouseover="this.style.color='var(--accent)'"
+               onmouseout="this.style.color='var(--ink-muted)'">sareenarahim.dev</a>
+        </p>
+    </footer>
+
+    <script>
+        let people = 1;
+
+        function setTip(pct, btn) {
+            document.getElementById('tipInput').value = pct;
+            document.querySelectorAll('.tip-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            calculate();
+        }
+
+        function clearActive() {
+            document.querySelectorAll('.tip-btn').forEach(b => b.classList.remove('active'));
+        }
+
+        function changePeople(delta) {
+            people = Math.max(1, Math.min(50, people + delta));
+            document.getElementById('peopleVal').textContent = people;
+            document.getElementById('splitLabel').textContent = `÷ ${people} ${people === 1 ? 'person' : 'people'}`;
+            calculate();
+        }
+
+        function calculate() {
+            const bill   = parseFloat(document.getElementById('billInput').value) || 0;
+            const tipPct = parseFloat(document.getElementById('tipInput').value)  || 0;
+
+            const tip    = bill * (tipPct / 100);
+            const total  = bill + tip;
+            const per    = total / people;
+
+            animateVal('tipAmt',    fmt(tip));
+            animateVal('totalBill', fmt(total));
+            animateVal('perPerson', fmt(per));
+        }
+
+        function fmt(n) {
+            return '₹' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        function animateVal(id, val) {
+            const el = document.getElementById(id);
+            el.style.opacity   = '0.3';
+            el.style.transform = 'translateY(3px)';
+            setTimeout(() => {
+                el.textContent     = val;
+                el.style.transition = 'all 0.18s ease';
+                el.style.opacity   = '1';
+                el.style.transform = 'translateY(0)';
+            }, 40);
+        }
+
+        function resetAll() {
+            document.getElementById('billInput').value = '';
+            document.getElementById('tipInput').value  = 20;
+            people = 1;
+            document.getElementById('peopleVal').textContent  = 1;
+            document.getElementById('splitLabel').textContent = '÷ 1 person';
+            document.querySelectorAll('.tip-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tip-btn')[2].classList.add('active');
+            ['tipAmt','totalBill','perPerson'].forEach(id => {
+                document.getElementById(id).textContent = '₹0.00';
+            });
+        }
+    </script>
+
+</body>
+</html>
