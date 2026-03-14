@@ -43,75 +43,48 @@
 
         /* ─── HEADER ─── */
         header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            position: sticky; top: 0; z-index: 100;
             background: rgba(245,242,237,0.88);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--rule);
         }
 
         nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 7%;
-            max-width: 1400px;
-            margin: 0 auto;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 18px 7%; max-width: 1400px; margin: 0 auto;
         }
 
         .logo {
             font-family: 'DM Serif Display', serif;
-            font-size: 1.4rem;
-            color: var(--ink);
-            text-decoration: none;
-            letter-spacing: -0.02em;
+            font-size: 1.4rem; color: var(--ink);
+            text-decoration: none; letter-spacing: -0.02em;
         }
 
         .logo sup {
             font-family: 'DM Mono', monospace;
-            font-size: 0.5rem;
-            color: var(--accent);
-            vertical-align: super;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
+            font-size: 0.5rem; color: var(--accent);
+            vertical-align: super; letter-spacing: 0.1em; text-transform: uppercase;
         }
 
         .back-btn {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.78rem;
-            border: 1.5px solid var(--ink);
-            padding: 9px 22px;
-            border-radius: 3px;
-            text-decoration: none;
-            color: var(--ink);
-            letter-spacing: 0.05em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.25s ease;
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            border: 1.5px solid var(--ink); padding: 9px 22px; border-radius: 3px;
+            text-decoration: none; color: var(--ink); letter-spacing: 0.05em;
+            display: flex; align-items: center; gap: 8px; transition: all 0.25s ease;
         }
 
         .back-btn:hover { background: var(--ink); color: var(--paper); }
 
         /* ─── PAGE HERO ─── */
         .page-hero {
-            padding: 70px 7% 50px;
-            max-width: 1400px;
-            margin: 0 auto;
-            border-bottom: 1px solid var(--rule);
+            padding: 70px 7% 50px; max-width: 1400px;
+            margin: 0 auto; border-bottom: 1px solid var(--rule);
         }
 
         .breadcrumb {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.72rem;
-            color: var(--ink-muted);
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-muted); letter-spacing: 0.12em; text-transform: uppercase;
+            margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
         }
 
         .breadcrumb a { color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
@@ -121,44 +94,31 @@
         .page-hero h1 {
             font-family: 'DM Serif Display', serif;
             font-size: clamp(2.5rem, 5vw, 4rem);
-            letter-spacing: -0.03em;
-            line-height: 1.08;
-            color: var(--ink);
+            letter-spacing: -0.03em; line-height: 1.08; color: var(--ink);
         }
 
         .page-hero h1 em { font-style: italic; color: var(--accent); }
 
         .page-hero-meta {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            margin-top: 20px;
-            flex-wrap: wrap;
+            display: flex; align-items: center; gap: 30px;
+            margin-top: 20px; flex-wrap: wrap;
         }
 
         .page-hero-meta p {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.8rem;
-            color: var(--ink-muted);
-            letter-spacing: 0.08em;
+            font-family: 'DM Mono', monospace; font-size: 0.8rem;
+            color: var(--ink-muted); letter-spacing: 0.08em;
         }
 
         .game-count {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.72rem;
-            background: var(--paper-warm);
-            border: 1px solid var(--rule);
-            padding: 5px 14px;
-            border-radius: 2px;
-            color: var(--ink-soft);
-            letter-spacing: 0.1em;
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            background: var(--paper-warm); border: 1px solid var(--rule);
+            padding: 5px 14px; border-radius: 2px;
+            color: var(--ink-soft); letter-spacing: 0.1em;
         }
 
         /* ─── GAMES SECTION ─── */
         .games-section {
-            padding: 60px 7% 100px;
-            max-width: 1400px;
-            margin: 0 auto;
+            padding: 60px 7% 100px; max-width: 1400px; margin: 0 auto;
         }
 
         .games-grid {
@@ -169,31 +129,20 @@
 
         /* ─── GAME CARD ─── */
         .game-card {
-            background: var(--paper-card);
-            border: 1px solid var(--rule);
-            border-radius: 6px;
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            background: var(--paper-card); border: 1px solid var(--rule);
+            border-radius: 6px; text-decoration: none; color: inherit;
+            display: flex; flex-direction: column; position: relative;
+            overflow: hidden; transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         .game-card::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0;
+            content: ''; position: absolute; bottom: 0; left: 0;
             width: 100%; height: 3px;
             background: linear-gradient(90deg, var(--accent), var(--accent-warm));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.4s ease;
+            transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease;
         }
 
         .game-card:hover::after { transform: scaleX(1); }
-
         .game-card:hover {
             transform: translateY(-7px);
             box-shadow: 0 28px 56px rgba(0,0,0,0.09);
@@ -202,395 +151,104 @@
 
         /* ─── BANNERS ─── */
         .game-banner {
-            height: 180px;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
+            height: 180px; position: relative;
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
         }
 
         /* Maze */
         .banner-maze { background: #1a1a1a; }
-
-        .maze-grid {
-            display: grid;
-            grid-template-columns: repeat(9, 18px);
-            grid-template-rows: repeat(5, 18px);
-            gap: 2px;
-            opacity: 0.85;
-            transition: opacity 0.3s;
-        }
-
+        .maze-grid { display: grid; grid-template-columns: repeat(9, 18px); grid-template-rows: repeat(5, 18px); gap: 2px; opacity: 0.85; transition: opacity 0.3s; }
         .game-card:hover .maze-grid { opacity: 1; }
-
-        .maze-cell         { background: #2a2a2a; border-radius: 2px; }
-        .maze-cell.wall    { background: #c0392b; }
-        .maze-cell.path    { background: #3a3a3a; }
-        .maze-cell.start   { background: #2c7a6e; }
-        .maze-cell.end     { background: #e67e22; }
-        .maze-cell.player  { background: #f5f2ed; box-shadow: 0 0 8px rgba(245,242,237,0.6); }
+        .maze-cell { background: #2a2a2a; border-radius: 2px; }
+        .maze-cell.wall   { background: #c0392b; }
+        .maze-cell.path   { background: #3a3a3a; }
+        .maze-cell.start  { background: #2c7a6e; }
+        .maze-cell.end    { background: #e67e22; }
+        .maze-cell.player { background: #f5f2ed; box-shadow: 0 0 8px rgba(245,242,237,0.6); }
 
         /* Tug of War */
         .banner-tug { background: #1a2535; }
-
-        .tug-scene {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            padding: 0 24px;
-        }
-
-        .tug-side-labels {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-        }
-
-        .tug-side-label {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.58rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-        }
-
+        .tug-scene { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; padding: 0 24px; }
+        .tug-side-labels { display: flex; justify-content: space-between; width: 100%; }
+        .tug-side-label { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; }
         .tug-side-label.blue { color: #4a90d9; }
         .tug-side-label.red  { color: #c0392b; }
-
-        .tug-rope-row {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            gap: 6px;
-        }
-
+        .tug-rope-row { display: flex; align-items: center; width: 100%; gap: 6px; }
         .tug-emoji { font-size: 1.6rem; flex-shrink: 0; }
-
-        .tug-rope {
-            flex: 1;
-            height: 7px;
-            background: repeating-linear-gradient(90deg, #b5894f 0px, #d4a96a 6px, #b5894f 12px);
-            border-radius: 4px;
-            position: relative;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-        }
-
-        .tug-knot {
-            position: absolute;
-            top: 50%; left: 55%;
-            transform: translate(-50%,-50%);
-            width: 16px; height: 16px;
-            background: #e67e22;
-            border-radius: 50%;
-            border: 2px solid #c0392b;
-            box-shadow: 0 0 10px rgba(230,126,34,0.5);
-        }
-
-        .tug-bar-wrap {
-            width: 100%; height: 4px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .tug-bar-fill {
-            height: 100%; width: 42%;
-            background: linear-gradient(90deg, #4a90d9, #c0392b);
-            border-radius: 3px;
-        }
+        .tug-rope { flex: 1; height: 7px; background: repeating-linear-gradient(90deg, #b5894f 0px, #d4a96a 6px, #b5894f 12px); border-radius: 4px; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+        .tug-knot { position: absolute; top: 50%; left: 55%; transform: translate(-50%,-50%); width: 16px; height: 16px; background: #e67e22; border-radius: 50%; border: 2px solid #c0392b; box-shadow: 0 0 10px rgba(230,126,34,0.5); }
+        .tug-bar-wrap { width: 100%; height: 4px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+        .tug-bar-fill { height: 100%; width: 42%; background: linear-gradient(90deg, #4a90d9, #c0392b); border-radius: 3px; }
 
         /* Memory */
         .banner-memory { background: var(--paper-warm); }
-
-        .memory-preview {
-            display: grid;
-            grid-template-columns: repeat(4, 38px);
-            grid-template-rows: repeat(3, 38px);
-            gap: 5px;
-            opacity: 0.9;
-            transition: opacity 0.3s;
-        }
-
+        .memory-preview { display: grid; grid-template-columns: repeat(4, 38px); grid-template-rows: repeat(3, 38px); gap: 5px; opacity: 0.9; transition: opacity 0.3s; }
         .game-card:hover .memory-preview { opacity: 1; }
-
-        .mem-card {
-            background: var(--paper-card);
-            border: 1.5px solid var(--rule);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.15rem;
-        }
-
-        .mem-card.hidden {
-            background: var(--paper-warm);
-            border-color: rgba(15,14,13,0.12);
-            font-size: 0;
-        }
-
-        .mem-card.matched {
-            background: rgba(44,122,110,0.1);
-            border-color: rgba(44,122,110,0.35);
-        }
+        .mem-card { background: var(--paper-card); border: 1.5px solid var(--rule); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; }
+        .mem-card.hidden  { background: var(--paper-warm); border-color: rgba(15,14,13,0.12); font-size: 0; }
+        .mem-card.matched { background: rgba(44,122,110,0.1); border-color: rgba(44,122,110,0.35); }
 
         /* Number Guess */
         .banner-guess { background: #0f0e0d; }
-
-        .guess-scene {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
-            width: 100%;
-            padding: 0 28px;
-        }
-
-        .guess-big {
-            font-family: 'DM Serif Display', serif;
-            font-size: 3.2rem;
-            color: rgba(245,242,237,0.08);
-            letter-spacing: -0.04em;
-            line-height: 1;
-            user-select: none;
-        }
-
+        .guess-scene { display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%; padding: 0 28px; }
+        .guess-big { font-family: 'DM Serif Display', serif; font-size: 3.2rem; color: rgba(245,242,237,0.08); letter-spacing: -0.04em; line-height: 1; user-select: none; }
         .guess-track-wrap { width: 100%; }
-
-        .guess-track-label {
-            display: flex;
-            justify-content: space-between;
-            font-family: 'DM Mono', monospace;
-            font-size: 0.58rem;
-            color: rgba(255,255,255,0.3);
-            letter-spacing: 0.1em;
-            margin-bottom: 5px;
-        }
-
-        .guess-track {
-            width: 100%;
-            height: 5px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 3px;
-            position: relative;
-        }
-
-        .guess-fill {
-            position: absolute;
-            top: 0; bottom: 0;
-            left: 25%; right: 35%;
-            background: var(--accent);
-            border-radius: 3px;
-        }
-
-        .guess-dot {
-            position: absolute;
-            top: 50%; left: 65%;
-            transform: translate(-50%,-50%);
-            width: 10px; height: 10px;
-            background: var(--paper);
-            border-radius: 50%;
-            box-shadow: 0 0 6px rgba(245,242,237,0.5);
-        }
-
+        .guess-track-label { display: flex; justify-content: space-between; font-family: 'DM Mono', monospace; font-size: 0.58rem; color: rgba(255,255,255,0.3); letter-spacing: 0.1em; margin-bottom: 5px; }
+        .guess-track { width: 100%; height: 5px; background: rgba(255,255,255,0.08); border-radius: 3px; position: relative; }
+        .guess-fill { position: absolute; top: 0; bottom: 0; left: 25%; right: 35%; background: var(--accent); border-radius: 3px; }
+        .guess-dot { position: absolute; top: 50%; left: 65%; transform: translate(-50%,-50%); width: 10px; height: 10px; background: var(--paper); border-radius: 50%; box-shadow: 0 0 6px rgba(245,242,237,0.5); }
         .guess-pills { display: flex; gap: 5px; }
-
-        .guess-pill {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.62rem;
-            padding: 2px 8px;
-            border-radius: 2px;
-            letter-spacing: 0.04em;
-        }
-
+        .guess-pill { font-family: 'DM Mono', monospace; font-size: 0.62rem; padding: 2px 8px; border-radius: 2px; letter-spacing: 0.04em; }
         .guess-pill.h { background: rgba(192,57,43,0.25); color: #e88; }
         .guess-pill.l { background: rgba(44,122,110,0.25); color: #8cc; }
         .guess-pill.w { background: rgba(44,122,110,0.4);  color: #aee; }
 
-        /* ─── ODD OR EVEN BANNER ─── */
+        /* Odd or Even */
         .banner-odd { background: #f5f2ed; }
-
-        .odd-scene {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            padding: 0 24px;
-        }
-
-        .odd-number {
-            font-family: 'DM Serif Display', serif;
-            font-size: 4rem;
-            letter-spacing: -0.04em;
-            color: var(--ink);
-            line-height: 1;
-        }
-
-        .odd-btn-row {
-            display: flex;
-            gap: 10px;
-            width: 100%;
-        }
-
-        .odd-btn {
-            flex: 1;
-            padding: 8px;
-            border-radius: 3px;
-            font-family: 'DM Mono', monospace;
-            font-size: 0.7rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            text-align: center;
-            font-weight: 600;
-        }
-
+        .odd-scene { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; padding: 0 24px; }
+        .odd-number { font-family: 'DM Serif Display', serif; font-size: 4rem; letter-spacing: -0.04em; color: var(--ink); line-height: 1; }
+        .odd-btn-row { display: flex; gap: 10px; width: 100%; }
+        .odd-btn { flex: 1; padding: 8px; border-radius: 3px; font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; text-align: center; font-weight: 600; }
         .odd-btn.o { background: rgba(44,122,110,0.12); color: var(--accent-cool); border: 1.5px solid rgba(44,122,110,0.25); }
         .odd-btn.e { background: rgba(230,126,34,0.12); color: var(--accent-warm); border: 1.5px solid rgba(230,126,34,0.25); }
+        .odd-timer { width: 100%; height: 4px; background: var(--paper-warm); border-radius: 2px; overflow: hidden; }
+        .odd-timer-fill { height: 100%; width: 60%; background: linear-gradient(90deg, var(--accent-cool), var(--accent-warm), var(--accent)); border-radius: 2px; }
 
-        .odd-timer {
-            width: 100%;
-            height: 4px;
-            background: var(--paper-warm);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .odd-timer-fill {
-            height: 100%;
-            width: 60%;
-            background: linear-gradient(90deg, var(--accent-cool), var(--accent-warm), var(--accent));
-            border-radius: 2px;
-        }
+        /* Reaction Speed */
+        .banner-reaction { background: #1a6b3c; }
+        .reaction-scene { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; padding: 0 24px; }
+        .reaction-circle { width: 64px; height: 64px; border-radius: 50%; background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; }
+        .reaction-circle i { font-size: 1.6rem; color: #fff; }
+        .reaction-time { font-family: 'DM Serif Display', serif; font-size: 2rem; color: #fff; letter-spacing: -0.03em; line-height: 1; }
+        .reaction-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
 
         /* Shared hover overlay */
-        .banner-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(192,57,43,0.08);
-            opacity: 0;
-            transition: opacity 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .banner-overlay span {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.75rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: white;
-            background: var(--accent);
-            padding: 8px 20px;
-            border-radius: 2px;
-            transform: translateY(10px);
-            transition: transform 0.3s ease;
-        }
-
+        .banner-overlay { position: absolute; inset: 0; background: rgba(192,57,43,0.08); opacity: 0; transition: opacity 0.3s; display: flex; align-items: center; justify-content: center; }
+        .banner-overlay span { font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: white; background: var(--accent); padding: 8px 20px; border-radius: 2px; transform: translateY(10px); transition: transform 0.3s ease; }
         .game-card:hover .banner-overlay      { opacity: 1; }
         .game-card:hover .banner-overlay span { transform: translateY(0); }
 
         /* ─── CARD BODY ─── */
-        .game-body {
-            padding: 24px 26px 28px;
-            display: flex;
-            flex-direction: column;
-            gap: 9px;
-            flex: 1;
-        }
-
-        .game-num {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.66rem;
-            color: var(--ink-muted);
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-        }
-
-        .game-body h2 {
-            font-family: 'DM Serif Display', serif;
-            font-size: 1.55rem;
-            letter-spacing: -0.025em;
-            color: var(--ink);
-            line-height: 1.1;
-        }
-
-        .game-body p {
-            font-size: 0.84rem;
-            color: var(--ink-muted);
-            line-height: 1.6;
-        }
-
-        .game-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 2px;
-        }
-
-        .tag {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.64rem;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            background: var(--paper-warm);
-            border: 1px solid var(--rule);
-            padding: 3px 9px;
-            border-radius: 2px;
-            color: var(--ink-soft);
-        }
-
-        .play-link {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.7rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--accent);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 4px;
-        }
-
+        .game-body { padding: 24px 26px 28px; display: flex; flex-direction: column; gap: 9px; flex: 1; }
+        .game-num { font-family: 'DM Mono', monospace; font-size: 0.66rem; color: var(--ink-muted); letter-spacing: 0.15em; text-transform: uppercase; }
+        .game-body h2 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; letter-spacing: -0.025em; color: var(--ink); line-height: 1.1; }
+        .game-body p { font-size: 0.84rem; color: var(--ink-muted); line-height: 1.6; }
+        .game-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+        .tag { font-family: 'DM Mono', monospace; font-size: 0.64rem; letter-spacing: 0.08em; text-transform: uppercase; background: var(--paper-warm); border: 1px solid var(--rule); padding: 3px 9px; border-radius: 2px; color: var(--ink-soft); }
+        .play-link { font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); display: flex; align-items: center; gap: 8px; margin-top: 4px; }
         .play-link i { transition: transform 0.25s ease; }
         .game-card:hover .play-link i { transform: translateX(5px); }
 
         /* ─── FADE IN ─── */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.55s ease, transform 0.55s ease;
-        }
-
+        .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
         .fade-in.visible { opacity: 1; transform: translateY(0); }
 
         /* ─── FOOTER ─── */
-        .footer-bar {
-            border-top: 1px solid var(--rule);
-            padding: 24px 7%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .footer-bar p {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.7rem;
-            color: var(--ink-muted);
-            letter-spacing: 0.08em;
-        }
-
+        .footer-bar { border-top: 1px solid var(--rule); padding: 24px 7%; display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; }
+        .footer-bar p { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--ink-muted); letter-spacing: 0.08em; }
         .footer-bar span { color: var(--accent); }
 
-        @media (max-width: 1100px) {
-            .games-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
+        @media (max-width: 1100px) { .games-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 600px) {
             .games-grid    { grid-template-columns: 1fr; }
             .page-hero     { padding: 50px 7% 36px; }
@@ -617,9 +275,10 @@
         <h1>Inter&shy;active <em>Games</em></h1>
         <div class="page-hero-meta">
             <p>Logic-based browser games. No installs. Play right here.</p>
-            <span class="game-count">05 Games</span>
+            <span class="game-count">06 Games</span>
         </div>
     </div>
+
     <div class="games-section">
         <div class="games-grid">
 
@@ -639,11 +298,7 @@
                     <div class="game-num">01 / Maze</div>
                     <h2>Dark Maze</h2>
                     <p>Navigate an 8×8 maze using arrow keys, WASD, or swipe. Find the exit in as few moves as possible.</p>
-                    <div class="game-tags">
-                        <span class="tag">Keyboard</span>
-                        <span class="tag">Logic</span>
-                        <span class="tag">Single Player</span>
-                    </div>
+                    <div class="game-tags"><span class="tag">Keyboard</span><span class="tag">Logic</span><span class="tag">Single Player</span></div>
                     <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
                 </div>
             </a>
@@ -661,9 +316,7 @@
                             <div class="tug-rope"><div class="tug-knot"></div></div>
                             <span class="tug-emoji">🤖</span>
                         </div>
-                        <div class="tug-bar-wrap">
-                            <div class="tug-bar-fill"></div>
-                        </div>
+                        <div class="tug-bar-wrap"><div class="tug-bar-fill"></div></div>
                         <div class="tug-side-labels">
                             <span class="tug-side-label blue">← Winning</span>
                             <span class="tug-side-label red">Losing →</span>
@@ -675,11 +328,7 @@
                     <div class="game-num">02 / Tug of War</div>
                     <h2>Math Tug<br>of War</h2>
                     <p>Answer addition and subtraction questions faster than the CPU. First to win 4 rounds wins the match.</p>
-                    <div class="game-tags">
-                        <span class="tag">Math</span>
-                        <span class="tag">vs CPU</span>
-                        <span class="tag">Single Player</span>
-                    </div>
+                    <div class="game-tags"><span class="tag">Math</span><span class="tag">vs CPU</span><span class="tag">Single Player</span></div>
                     <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
                 </div>
             </a>
@@ -688,18 +337,12 @@
             <a href="memory-cards/index.html" class="game-card fade-in" style="transition-delay:0.14s;">
                 <div class="game-banner banner-memory">
                     <div class="memory-preview">
-                        <div class="mem-card matched">🐶</div>
-                        <div class="mem-card hidden"></div>
-                        <div class="mem-card hidden"></div>
-                        <div class="mem-card matched">🐶</div>
-                        <div class="mem-card hidden"></div>
-                        <div class="mem-card matched">🦊</div>
-                        <div class="mem-card matched">🦊</div>
-                        <div class="mem-card hidden"></div>
-                        <div class="mem-card hidden"></div>
-                        <div class="mem-card hidden"></div>
-                        <div class="mem-card hidden"></div>
-                        <div class="mem-card hidden"></div>
+                        <div class="mem-card matched">🐶</div><div class="mem-card hidden"></div>
+                        <div class="mem-card hidden"></div><div class="mem-card matched">🐶</div>
+                        <div class="mem-card hidden"></div><div class="mem-card matched">🦊</div>
+                        <div class="mem-card matched">🦊</div><div class="mem-card hidden"></div>
+                        <div class="mem-card hidden"></div><div class="mem-card hidden"></div>
+                        <div class="mem-card hidden"></div><div class="mem-card hidden"></div>
                     </div>
                     <div class="banner-overlay"><span>Play Now</span></div>
                 </div>
@@ -707,11 +350,7 @@
                     <div class="game-num">03 / Memory</div>
                     <h2>Memory<br>Cards</h2>
                     <p>Flip cards to find all 6 emoji pairs on a 4×3 grid. Match everything in as few moves as you can.</p>
-                    <div class="game-tags">
-                        <span class="tag">Memory</span>
-                        <span class="tag">Emojis</span>
-                        <span class="tag">Single Player</span>
-                    </div>
+                    <div class="game-tags"><span class="tag">Memory</span><span class="tag">Emojis</span><span class="tag">Single Player</span></div>
                     <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
                 </div>
             </a>
@@ -722,10 +361,7 @@
                     <div class="guess-scene">
                         <div class="guess-big">?</div>
                         <div class="guess-track-wrap">
-                            <div class="guess-track-label">
-                                <span>1</span>
-                                <span>100</span>
-                            </div>
+                            <div class="guess-track-label"><span>1</span><span>100</span></div>
                             <div class="guess-track">
                                 <div class="guess-fill"></div>
                                 <div class="guess-dot"></div>
@@ -744,11 +380,7 @@
                     <div class="game-num">04 / Guessing</div>
                     <h2>Number<br>Guess</h2>
                     <p>I'm thinking of a number between 1 and 100. Use the hot and cold hints to find it in as few guesses as you can.</p>
-                    <div class="game-tags">
-                        <span class="tag">Logic</span>
-                        <span class="tag">Numbers</span>
-                        <span class="tag">Single Player</span>
-                    </div>
+                    <div class="game-tags"><span class="tag">Logic</span><span class="tag">Numbers</span><span class="tag">Single Player</span></div>
                     <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
                 </div>
             </a>
@@ -772,11 +404,28 @@
                     <div class="game-num">05 / Reflex</div>
                     <h2>Odd or<br>Even?</h2>
                     <p>A number appears — is it odd or even? You have 4 seconds. The background turns red as time runs out. How far can you streak?</p>
-                    <div class="game-tags">
-                        <span class="tag">Reflex</span>
-                        <span class="tag">Timer</span>
-                        <span class="tag">Single Player</span>
+                    <div class="game-tags"><span class="tag">Reflex</span><span class="tag">Timer</span><span class="tag">Single Player</span></div>
+                    <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- 06 Reaction Speed -->
+            <a href="reaction-speed/index.html" class="game-card fade-in" style="transition-delay:0.35s;">
+                <div class="game-banner banner-reaction">
+                    <div class="reaction-scene">
+                        <div class="reaction-circle">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="reaction-time">187ms</div>
+                        <div class="reaction-label">🔥 Excellent!</div>
                     </div>
+                    <div class="banner-overlay"><span>Play Now</span></div>
+                </div>
+                <div class="game-body">
+                    <div class="game-num">06 / Reflex</div>
+                    <h2>Reaction<br>Speed</h2>
+                    <p>Wait for green — click as fast as you can. Measures your reaction time in milliseconds. Can you beat 200ms?</p>
+                    <div class="game-tags"><span class="tag">Reflex</span><span class="tag">Speed</span><span class="tag">Single Player</span></div>
                     <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
                 </div>
             </a>
