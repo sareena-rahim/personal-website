@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reaction Speed Test · Sareena Rahim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f0e0d;
+            --ink-soft: #3a3835;
+            --ink-muted: #7a7672;
+            --paper: #f5f2ed;
+            --paper-warm: #ede9e2;
+            --paper-card: #f9f7f4;
+            --accent: #c0392b;
+            --accent-warm: #e67e22;
+            --accent-cool: #2c7a6e;
+            --rule: rgba(15,14,13,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--paper);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999; opacity: 0.4;
+        }
+
+        /* ─── HEADER ─── */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(245,242,237,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+            transition: background 0.5s ease;
+        }
+
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 7%; max-width: 1200px; margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem; color: var(--ink);
+            text-decoration: none; letter-spacing: -0.02em;
+        }
+
+        .logo sup {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.48rem; color: var(--accent);
+            vertical-align: super; letter-spacing: 0.1em; text-transform: uppercase;
+        }
+
+        .back-btn {
+            font-family: 'DM Mono', monospace; font-size: 0.75rem;
+            border: 1.5px solid var(--ink); padding: 8px 18px; border-radius: 3px;
+            text-decoration: none; color: var(--ink); letter-spacing: 0.05em;
+            display: flex; align-items: center; gap: 8px; transition: all 0.25s;
+        }
+
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+        /* ─── MAIN ─── */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 7% 60px;
+            gap: 28px;
+        }
+
+        /* ─── PAGE HEADER ─── */
+        .game-header { text-align: center; }
+
+        .eyebrow {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem; color: var(--accent);
+            letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 6px;
+        }
+
+        .game-header h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(1.9rem, 4vw, 2.6rem);
+            letter-spacing: -0.03em; color: var(--ink); line-height: 1;
+        }
+
+        .game-header h1 em { font-style: italic; color: var(--accent); }
+
+        .game-header p {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.73rem; color: var(--ink-muted);
+            letter-spacing: 0.08em; margin-top: 8px;
+        }
+
+        /* ─── STATS ─── */
+        .stats-bar {
+            display: flex;
+            border: 1px solid var(--rule);
+            border-radius: 4px; overflow: hidden;
+            background: var(--paper-card);
+        }
+
+        .stat {
+            padding: 10px 32px; text-align: center;
+            border-right: 1px solid var(--rule);
+        }
+
+        .stat:last-child { border-right: none; }
+
+        .stat .val {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem; color: var(--ink);
+            display: block; line-height: 1;
+        }
+
+        .stat .lbl {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem; letter-spacing: 0.12em;
+            text-transform: uppercase; color: var(--ink-muted);
+            margin-top: 3px; display: block;
+        }
+
+        /* ─── GAME BOX ─── */
+        .game-box {
+            width: 100%; max-width: 420px;
+            height: 280px;
+            border-radius: 6px;
+            border: 1px solid var(--rule);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+            background: var(--paper-card);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ── State: idle ── */
+        .game-box.idle {
+            background: var(--paper-card);
+            border-color: var(--rule);
+        }
+
+        /* ── State: waiting ── */
+        .game-box.waiting {
+            background: #1a1a2e;
+            border-color: #1a1a2e;
+            cursor: not-allowed;
+        }
+
+        /* ── State: go ── */
+        .game-box.go {
+            background: #1a6b3c;
+            border-color: #1a6b3c;
+            box-shadow: 0 0 60px rgba(26,107,60,0.35);
+            cursor: pointer;
+        }
+
+        /* ── State: result ── */
+        .game-box.result {
+            background: var(--paper-card);
+            border-color: var(--rule);
+        }
+
+        /* ── State: too-early ── */
+        .game-box.too-early {
+            background: #6b1a1a;
+            border-color: #6b1a1a;
+            box-shadow: 0 0 60px rgba(107,26,26,0.3);
+        }
+
+        /* ─── BOX TEXT ─── */
+        .box-emoji {
+            font-size: 2.8rem; line-height: 1;
+            transition: opacity 0.2s;
+        }
+
+        .box-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem; letter-spacing: -0.03em;
+            line-height: 1; text-align: center;
+            transition: color 0.3s;
+        }
+
+        .box-sub {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem; letter-spacing: 0.12em;
+            text-transform: uppercase; text-align: center;
+            line-height: 1.7;
+        }
+
+        /* colour per state */
+        .idle     .box-title,
+        .result   .box-title  { color: var(--ink); }
+        .waiting  .box-title  { color: rgba(255,255,255,0.7); }
+        .go       .box-title  { color: #fff; font-size: 3rem; }
+        .too-early .box-title { color: #fff; }
+
+        .idle     .box-sub    { color: var(--ink-muted); }
+        .waiting  .box-sub    { color: rgba(255,255,255,0.4); }
+        .go       .box-sub    { color: rgba(255,255,255,0.8); }
+        .too-early .box-sub   { color: rgba(255,255,255,0.6); }
+        .result   .box-sub    { color: var(--ink-muted); }
+
+        /* ─── RESULT TIME ─── */
+        .result-time {
+            font-family: 'DM Serif Display', serif;
+            font-size: 3.6rem; letter-spacing: -0.04em;
+            color: var(--ink); line-height: 1;
+        }
+
+        .result-rating {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem; letter-spacing: 0.12em;
+            text-transform: uppercase; color: var(--accent);
+            margin-top: 2px;
+        }
+
+        /* ─── HINT ─── */
+        .hint {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem; color: var(--ink-muted);
+            letter-spacing: 0.1em; text-transform: uppercase;
+            text-align: center;
+            min-height: 1rem;
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            border-top: 1px solid var(--rule);
+            padding: 22px 7%;
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 1200px; margin: 0 auto; width: 100%;
+        }
+
+        footer p {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem; color: var(--ink-muted); letter-spacing: 0.08em;
+        }
+
+        footer span { color: var(--accent); }
+
+        @media (max-width: 480px) {
+            .game-box  { height: 240px; }
+            .stats-bar .stat { padding: 10px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Games</a>
+        </nav>
+    </header>
+
+    <main>
+
+        <div class="game-header">
+            <div class="eyebrow">Game 06</div>
+            <h1>Reaction <em>Speed</em></h1>
+            <p>Wait for green — click as fast as you can.</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-bar">
+            <div class="stat">
+                <span class="val" id="lastVal">—</span>
+                <span class="lbl">Last (ms)</span>
+            </div>
+            <div class="stat">
+                <span class="val" id="bestVal">—</span>
+                <span class="lbl">Best (ms)</span>
+            </div>
+        </div>
+
+        <!-- Game Box — the whole thing is clickable -->
+        <div class="game-box idle" id="gameBox" onclick="handleClick()">
+
+            <!-- IDLE -->
+            <div id="stateIdle">
+                <div class="box-emoji">👆</div>
+                <div class="box-title">Click to Start</div>
+                <div class="box-sub">Tap anywhere to begin</div>
+            </div>
+
+            <!-- WAITING (hidden initially) -->
+            <div id="stateWaiting" style="display:none; text-align:center;">
+                <div class="box-title">Get Ready…</div>
+                <div class="box-sub">Wait for green<br>Don't click yet!</div>
+            </div>
+
+            <!-- GO (hidden initially) -->
+            <div id="stateGo" style="display:none; text-align:center;">
+                <div class="box-title">CLICK!</div>
+                <div class="box-sub">Now!</div>
+            </div>
+
+            <!-- RESULT (hidden initially) -->
+            <div id="stateResult" style="display:none; text-align:center;">
+                <div class="result-time" id="resultTime">—</div>
+                <div class="result-rating" id="resultRating"></div>
+                <div class="box-sub" style="margin-top:10px;">Click to try again</div>
+            </div>
+
+            <!-- TOO EARLY (hidden initially) -->
+            <div id="stateTooEarly" style="display:none; text-align:center;">
+                <div class="box-emoji">😅</div>
+                <div class="box-title">Too Soon!</div>
+                <div class="box-sub">Wait for green<br>Click to try again</div>
+            </div>
+
+        </div>
+
+        <div class="hint" id="hint">Average human reaction time is ~200–250ms</div>
+
+    </main>
+
+    <footer>
+        <p>© 2026 Sareena Rahim</p>
+        <p>Part of <span>·</span>
+            <a href="../../index.html" style="color:var(--ink-muted); text-decoration:none; transition:color 0.2s;"
+               onmouseover="this.style.color='var(--accent)'"
+               onmouseout="this.style.color='var(--ink-muted)'">sareenarahim.dev</a>
+        </p>
+    </footer>
+
+    <script>
+        // ─── STATE ────────────────────────────────────────────────────────
+        // idle → waiting → go → result  (or too-early if clicked during waiting)
+        let state     = 'idle';
+        let startTime = 0;
+        let best      = null;
+        let timer     = null;
+
+        const box = document.getElementById('gameBox');
+
+        // ─── HANDLE CLICK ─────────────────────────────────────────────────
+        function handleClick() {
+            if (state === 'idle' || state === 'result' || state === 'too-early') {
+                startWaiting();
+            } else if (state === 'waiting') {
+                tooEarly();
+            } else if (state === 'go') {
+                showResult();
+            }
+        }
+
+        // ─── STATE 2: WAITING ─────────────────────────────────────────────
+        function startWaiting() {
+            setState('waiting');
+            document.getElementById('hint').textContent = "Don't click yet…";
+
+            // Random delay 2–5 seconds
+            const delay = 2000 + Math.random() * 3000;
+            timer = setTimeout(goGreen, delay);
+        }
+
+        // ─── STATE 3: GO (screen turns green) ────────────────────────────
+        function goGreen() {
+            setState('go');
+            startTime = Date.now();   // start the clock
+            document.getElementById('hint').textContent = 'Click NOW!';
+        }
+
+        // ─── TOO EARLY ────────────────────────────────────────────────────
+        function tooEarly() {
+            clearTimeout(timer);
+            setState('too-early');
+            document.getElementById('hint').textContent = 'You clicked too early!';
+        }
+
+        // ─── STATE 4: RESULT ──────────────────────────────────────────────
+        function showResult() {
+            const elapsed = Date.now() - startTime;   // reaction time in ms
+
+            // Update last & best
+            document.getElementById('lastVal').textContent = elapsed;
+            if (best === null || elapsed < best) {
+                best = elapsed;
+                document.getElementById('bestVal').textContent = best;
+            }
+
+            // Rating
+            let rating;
+            if      (elapsed < 150) rating = '⚡ Superhuman!';
+            else if (elapsed < 200) rating = '🔥 Excellent!';
+            else if (elapsed < 250) rating = '👍 Good';
+            else if (elapsed < 300) rating = '😐 Average';
+            else                    rating = '🐢 Keep practising';
+
+            document.getElementById('resultTime').textContent  = elapsed + 'ms';
+            document.getElementById('resultRating').textContent = rating;
+            document.getElementById('hint').textContent = 'Click the box to try again';
+
+            setState('result');
+        }
+
+        // ─── SET STATE (swap visible panel + box class) ───────────────────
+        function setState(s) {
+            state = s;
+
+            // Update box class
+            box.className = 'game-box ' + s;
+
+            // Hide all panels
+            ['Idle','Waiting','Go','Result','TooEarly'].forEach(id => {
+                document.getElementById('state' + id).style.display = 'none';
+            });
+
+            // Show correct panel
+            const map = {
+                idle:      'stateIdle',
+                waiting:   'stateWaiting',
+                go:        'stateGo',
+                result:    'stateResult',
+                'too-early': 'stateTooEarly'
+            };
+            document.getElementById(map[s]).style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>
