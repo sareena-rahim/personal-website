@@ -1,0 +1,338 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Word Scramble · Sareena Rahim</title>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400&family=Syne:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
+<style>
+
+:root{
+--ink:#0f0e0d;
+--paper:#f5f2ed;
+--paper-card:#f9f7f4;
+--accent:#c0392b;
+--accent-cool:#2c7a6e;
+--rule:rgba(0,0,0,0.08);
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:'Syne',sans-serif;
+background:var(--paper);
+display:flex;
+flex-direction:column;
+min-height:100vh;
+}
+
+body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.4;
+        }
+header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(245,242,237,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+            transition: background 0.4s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 7%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem;
+            color: var(--ink);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .logo sup {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.48rem;
+            color: var(--accent);
+            vertical-align: super;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .back-btn {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            border: 1.5px solid var(--ink);
+            padding: 8px 18px;
+            border-radius: 3px;
+            text-decoration: none;
+            color: var(--ink);
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s;
+        }
+
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
+		
+		main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 7% 60px;
+            gap: 24px;
+        }
+		.game-header { text-align: center; }
+		
+		.eyebrow {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+		h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.4rem;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        h1 em { font-style: italic; color: var(--accent); }
+
+       .subtitle {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.73rem;
+            color: var(--ink-muted);
+            letter-spacing: 0.08em;
+            margin-top: 8px;
+        }
+
+
+
+		.game-card{
+		background:var(--paper-card);
+		border:1px solid var(--rule);
+		border-radius:6px;
+		padding:40px;
+		width:350px;
+		text-align:center;
+		}
+
+		.scrambled{
+		font-family:'DM Serif Display',serif;
+		font-size:3rem;
+		letter-spacing:8px;
+		color:var(--accent);
+		margin-bottom:25px;
+		}
+
+		input{
+		width:100%;
+		padding:12px;
+		font-size:1.1rem;
+		border:1px solid var(--rule);
+		border-radius:4px;
+		text-align:center;
+		margin-bottom:15px;
+		}
+
+		button{
+		padding:10px 20px;
+		border:none;
+		background:var(--ink);
+		color:white;
+		border-radius:4px;
+		cursor:pointer;
+		font-weight:600;
+		}
+
+		button:hover{
+		background:var(--accent);
+		}
+
+		.feedback{
+		margin-top:15px;
+		font-family:'DM Mono',monospace;
+		font-size:0.9rem;
+		}
+
+		.score{
+		margin-bottom:20px;
+		font-family:'DM Mono',monospace;
+		}
+
+</style>
+</head>
+
+
+<body>
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Games</a>
+        </nav>
+    </header>
+	<main>
+	    <div class="game-header">
+			<div class="eyebrow">Game 06</div>
+			<h1>Word <em>Scramble</em></h1>
+			<p class="subtitle">Unscramble the word - how many can you solve?</p>
+		</div>
+
+
+
+		<div class="game-card">
+
+			<div class="score">
+			Score: <span id="score">0</span>
+			</div>
+
+			<div class="scrambled" id="scrambled">
+			WORD
+			</div>
+
+			<input
+			type="text"
+			id="answer"
+			placeholder="Type the correct word"
+			>
+
+			<button onclick="checkAnswer()">
+			Check
+			</button>
+
+			<div class="feedback" id="feedback"></div>
+
+	    </div>
+	</main>
+
+
+	<script>
+
+		const words=[
+		"apple",
+		"chair",
+		"table",
+		"plant",
+		"light",
+		"water",
+		"bread",
+		"clock",
+		"stone",
+		"mouse"
+		];
+
+		let currentWord="";
+		let score=0;
+
+		function scramble(word){
+
+		let letters=word.split("");
+
+		for(let i=letters.length-1;i>0;i--){
+
+		let j=Math.floor(Math.random()*(i+1));
+
+		[letters[i],letters[j]]=[letters[j],letters[i]];
+
+		}
+
+		let result = letters.join("");
+
+        if(result === word){
+			return scramble(word);   // scramble again
+			}
+
+		return result;
+
+		}
+
+		function newWord(){
+
+		currentWord=words[Math.floor(Math.random()*words.length)];
+
+		let scrambled=scramble(currentWord);
+
+		document.getElementById("scrambled").textContent=scrambled;
+
+		document.getElementById("answer").value="";
+
+		document.getElementById("feedback").textContent="";
+
+		}
+
+		function checkAnswer(){
+
+		let guess=document.getElementById("answer").value.toLowerCase().trim();
+
+		if(guess===""){
+
+		document.getElementById("feedback").textContent="Type a word";
+
+		return;
+
+		}
+
+		if(guess===currentWord){
+
+		score++;
+
+		document.getElementById("score").textContent=score;
+
+		document.getElementById("feedback").textContent="Correct!";
+
+		setTimeout(newWord,800);
+
+		}
+
+		else{
+
+		document.getElementById("feedback").textContent="Try again";
+
+		}
+
+		}
+
+		document.getElementById("answer").addEventListener("keydown",function(e){
+
+		if(e.key==="Enter"){
+		checkAnswer();
+		}
+
+		});
+
+		newWord();
+
+	</script>
+
+</body>
+</html>
+
