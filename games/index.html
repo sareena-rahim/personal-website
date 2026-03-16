@@ -222,6 +222,39 @@
         .reaction-time { font-family: 'DM Serif Display', serif; font-size: 2rem; color: #fff; letter-spacing: -0.03em; line-height: 1; }
         .reaction-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
 
+        /* Word Scramble */
+        .banner-scramble {
+            background: #f5f2ed;
+        }
+
+        .scramble-scene{
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:10px;
+        }
+
+        .scramble-word{
+            font-family:'DM Serif Display',serif;
+            font-size:3rem;
+            letter-spacing:8px;
+            color:var(--ink);
+        }
+
+        .scramble-hint{
+            font-family:'DM Mono',monospace;
+            font-size:0.65rem;
+            letter-spacing:0.1em;
+            color:var(--ink-muted);
+        }
+
+        .scramble-input{
+            font-family:'DM Mono',monospace;
+            font-size:0.9rem;
+            letter-spacing:6px;
+            color:var(--accent);
+        }
+
         /* Shared hover overlay */
         .banner-overlay { position: absolute; inset: 0; background: rgba(192,57,43,0.08); opacity: 0; transition: opacity 0.3s; display: flex; align-items: center; justify-content: center; }
         .banner-overlay span { font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: white; background: var(--accent); padding: 8px 20px; border-radius: 2px; transform: translateY(10px); transition: transform 0.3s ease; }
@@ -275,7 +308,7 @@
         <h1>Inter&shy;active <em>Games</em></h1>
         <div class="page-hero-meta">
             <p>Logic-based browser games. No installs. Play right here.</p>
-            <span class="game-count">06 Games</span>
+            <span class="game-count">07 Games</span>
         </div>
     </div>
 
@@ -426,6 +459,32 @@
                     <h2>Reaction<br>Speed</h2>
                     <p>Wait for green — click as fast as you can. Measures your reaction time in milliseconds. Can you beat 200ms?</p>
                     <div class="game-tags"><span class="tag">Reflex</span><span class="tag">Speed</span><span class="tag">Single Player</span></div>
+                    <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- 07 Word Scramble -->
+            <a href="word-scramble/index.html" class="game-card fade-in" style="transition-delay:0.42s;">
+                <div class="game-banner banner-scramble">
+                    <div class="scramble-scene">
+                        <div class="scramble-word">TCA</div>
+                        <div class="scramble-hint">Hint: Animal</div>
+                        <div class="scramble-input">_ _ _</div>
+                    </div>
+                    <div class="banner-overlay"><span>Play Now</span></div>
+                </div>
+
+                <div class="game-body">
+                    <div class="game-num">07 / Word</div>
+                    <h2>Word<br>Scramble</h2>
+                    <p>Unscramble the letters to form the correct word. Use the hint if you're stuck and test your vocabulary skills.</p>
+
+                    <div class="game-tags">
+                        <span class="tag">Words</span>
+                        <span class="tag">Puzzle</span>
+                        <span class="tag">Single Player</span>
+                    </div>
+
                     <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
                 </div>
             </a>
