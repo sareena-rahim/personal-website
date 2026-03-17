@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Year Countdown · Sareena Rahim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f0e0d;
+            --ink-soft: #3a3835;
+            --ink-muted: #7a7672;
+            --paper: #f5f2ed;
+            --paper-warm: #ede9e2;
+            --paper-card: #f9f7f4;
+            --accent: #c0392b;
+            --accent-warm: #e67e22;
+            --accent-cool: #2c7a6e;
+            --rule: rgba(15,14,13,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        
+        body {
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+         body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.4;
+        }
+
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(245,242,237,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+        }
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 7%; max-width: 1200px; margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem; color: var(--ink);
+            text-decoration: none; letter-spacing: -0.02em;
+        }
+
+        .logo sup {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.48rem; color: var(--accent);
+            vertical-align: super; letter-spacing: 0.1em; text-transform: uppercase;
+        }
+
+        .back-btn {
+            font-family: 'DM Mono', monospace; font-size: 0.75rem;
+            border: 1.5px solid var(--ink); padding: 8px 18px; border-radius: 3px;
+            text-decoration: none; color: var(--ink); letter-spacing: 0.05em;
+            display: flex; align-items: center; gap: 8px; transition: all 0.25s;
+        }
+
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px 7% 80px;
+            gap: 28px;
+            margin-top: 30px;
+        }
+        .page-header { text-align: center; }
+        .eyebrow {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem; color: var(--accent);
+            letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 8px;
+        }
+        .page-header h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            letter-spacing: -0.03em; color: var(--ink); line-height: 1;
+        }
+
+        .page-header h1 em { font-style: italic; color: var(--accent); }
+        .page-header p {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem; color: var(--ink-muted);
+            letter-spacing: 0.08em; margin-top: 10px;
+        }
+        
+        .card {
+            margin-top: 10px;
+            width: 100%;
+            max-width: 440px;
+            background: var(--paper-card);
+            border: 1px solid var(--rule);
+            border-radius: 6px;
+            padding: 36px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .countdown-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+        .time-box {
+            background: var(--paper);
+            border: 1.5px solid var(--rule);
+            border-radius: 4px;
+            padding: 16px 10px;
+            transition: all 0.2s ease;
+        }
+        .time-box:hover {
+            border-color: var(--ink);
+            transform: translateY(-2px);
+        }
+        .time-val {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.2rem;
+            color: var(--ink);
+            letter-spacing: -0.02em;
+        }
+        .time-lbl {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--ink-muted);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+        .per-person-box {
+            background: var(--ink);
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .per-person-amt {
+            color: #fff;
+            font-size: 2rem;
+            font-family: 'DM Serif Display';
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            border-top: 1px solid var(--rule);
+            padding: 22px 7%;
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 1200px; margin: 0 auto; width: 100%;
+        }
+        footer p {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem; color: var(--ink-muted); letter-spacing: 0.08em;
+        }
+
+        footer span { color: var(--accent); }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Tools</a>
+        </nav>
+    </header>
+    <main>  
+        <div class="page-header">   
+            <div class="eyebrow">Tool 07</div>
+            <h1>New Year <em>Countdown</em></h1>
+            <p>Watching the final moments of the year tick away.</p>
+        </div>
+
+        <div class="card">
+
+            <div class="countdown-grid">
+
+                <div class="time-box">
+                    <div class="time-val" id="days">00</div>
+                    <div class="time-lbl">Days</div>
+                </div>
+
+                <div class="time-box">
+                    <div class="time-val" id="hours">00</div>
+                    <div class="time-lbl">Hours</div>
+                </div>
+
+                <div class="time-box">
+                    <div class="time-val" id="minutes">00</div>
+                    <div class="time-lbl">Minutes</div>
+                </div>
+
+                <div class="time-box">
+                    <div class="time-val" id="seconds">00</div>
+                    <div class="time-lbl">Seconds</div>
+                </div>
+            </div>
+
+
+
+            <div class="per-person-box">
+                <div class="per-person-amt" id="status">Loading...</div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>© 2026 Sareena Rahim</p>
+        <p>Part of <span>·</span>
+            <a href="../../index.html" style="color:var(--ink-muted); text-decoration:none; transition:color 0.2s;"
+               onmouseover="this.style.color='var(--accent)'"
+               onmouseout="this.style.color='var(--ink-muted)'">sareenarahim.dev</a>
+        </p>
+    </footer>
+
+    <script>
+    function update(id, val) {
+        const el = document.getElementById(id);
+        const formatted = String(val).padStart(2, "0");
+
+        // Prevent unnecessary animation
+        if (el.textContent === formatted) return;
+
+        el.style.opacity = "0.3";
+        el.style.transform = "translateY(4px)";
+        
+        setTimeout(() => {
+            el.textContent = formatted;
+            el.style.opacity = "1";
+            el.style.transform = "translateY(0)";
+        }, 80);
+    }
+
+    function startCountdown() {
+        const year = new Date().getFullYear() + 1;
+        const target = new Date(`Jan 1, ${year} 00:00:00`).getTime();
+
+        const statusEl = document.getElementById("status");
+
+        const timer = setInterval(() => {
+            const now = new Date().getTime();
+            const diff = target - now;
+
+            if (diff <= 0) {
+                statusEl.textContent = "🎉 Happy New Year!";
+                clearInterval(timer); // stop timer properly
+                return;
+            }
+
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const m = Math.floor((diff / (1000 * 60)) % 60);
+            const s = Math.floor((diff / 1000) % 60);
+
+            update("days", d);
+            update("hours", h);
+            update("minutes", m);
+            update("seconds", s);
+
+            statusEl.textContent = year;
+
+        }, 1000);
+    }
+
+    startCountdown();
+</script>
+
+</body>
+</html>
