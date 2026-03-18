@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>True or False · Sareena Rahim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f0e0d;
+            --ink-soft: #3a3835;
+            --ink-muted: #7a7672;
+            --paper: #f5f2ed;
+            --paper-warm: #ede9e2;
+            --paper-card: #f9f7f4;
+            --accent: #c0392b;
+            --accent-warm: #e67e22;
+            --accent-cool: #2c7a6e;
+            --rule: rgba(15,14,13,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--paper);
+            color: var(--ink);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            transition: background-color 0.4s ease;
+        }
+
+        /* Background colour shift — same as Odd or Even */
+        body.warning { background-color: #f5e6d0; }
+        body.danger  { background-color: #f5d0ce; }
+        body.correct { background-color: #d0f0e8; }
+        body.wrong   { background-color: #f5d0ce; }
+
+        /* Noise texture overlay */
+        body::before {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 9999; opacity: 0.4;
+        }
+
+        /* ── HEADER ── */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(245,242,237,0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+        }
+
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 18px 7%; max-width: 1400px; margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem; color: var(--ink);
+            text-decoration: none; letter-spacing: -0.02em;
+        }
+
+        .logo sup {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.5rem; color: var(--accent);
+            vertical-align: super; letter-spacing: 0.1em; text-transform: uppercase;
+        }
+
+        .back-btn {
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            border: 1.5px solid var(--ink); padding: 9px 22px; border-radius: 3px;
+            text-decoration: none; color: var(--ink); letter-spacing: 0.05em;
+            display: flex; align-items: center; gap: 8px; transition: all 0.25s ease;
+        }
+
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+        /* ── PAGE WRAPPER ── */
+        .wrapper {
+            max-width: 680px; margin: 0 auto;
+            padding: 60px 7% 100px;
+            display: flex; flex-direction: column; align-items: center; gap: 32px;
+        }
+
+        /* ── SCREENS ── */
+        .screen { display: none; width: 100%; flex-direction: column; align-items: center; gap: 32px; }
+        .screen.active { display: flex; }
+
+        /* ── START SCREEN ── */
+        .start-eyebrow {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-muted); letter-spacing: 0.15em; text-transform: uppercase;
+        }
+
+        .start-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(3rem, 8vw, 5rem);
+            letter-spacing: -0.03em; line-height: 1.0; text-align: center;
+        }
+
+        .start-title em { font-style: italic; color: var(--accent); }
+
+        .start-desc {
+            font-family: 'DM Mono', monospace; font-size: 0.82rem;
+            color: var(--ink-muted); line-height: 1.7; text-align: center;
+            max-width: 380px; letter-spacing: 0.03em;
+        }
+
+        /* ── BUTTONS ── */
+        .btn-primary {
+            font-family: 'DM Mono', monospace; font-size: 0.85rem;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            background: var(--ink); color: var(--paper);
+            border: none; padding: 18px 52px; border-radius: 3px;
+            cursor: pointer; transition: all 0.25s ease;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .btn-primary:hover { background: var(--accent); transform: translateY(-2px); }
+
+        .btn-secondary {
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            background: transparent; color: var(--ink);
+            border: 1.5px solid var(--ink); padding: 14px 32px; border-radius: 3px;
+            cursor: pointer; transition: all 0.25s ease;
+            text-decoration: none; display: flex; align-items: center; gap: 8px;
+        }
+
+        .btn-secondary:hover { background: var(--ink); color: var(--paper); }
+
+        /* ── LOADING SCREEN ── */
+        .spinner {
+            width: 44px; height: 44px;
+            border: 2px solid var(--rule);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading-text {
+            font-family: 'DM Mono', monospace; font-size: 0.8rem;
+            color: var(--ink-muted); letter-spacing: 0.1em;
+        }
+
+        /* ── GAME SCREEN ── */
+
+        /* Score row */
+        .score-row {
+            display: flex; justify-content: space-between;
+            align-items: center; width: 100%;
+            padding-bottom: 20px; border-bottom: 1px solid var(--rule);
+        }
+
+        .score-label {
+            font-family: 'DM Mono', monospace; font-size: 0.68rem;
+            color: var(--ink-muted); letter-spacing: 0.12em; text-transform: uppercase;
+            display: block; margin-bottom: 4px;
+        }
+
+        .score-num {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem; letter-spacing: -0.03em; line-height: 1;
+        }
+
+        .q-label {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-muted); letter-spacing: 0.1em;
+        }
+
+        /* Timer bar */
+        .timer-track {
+            width: 100%; height: 5px;
+            background: var(--paper-warm); border-radius: 99px; overflow: hidden;
+        }
+
+        .timer-fill {
+            height: 100%; border-radius: 99px; width: 100%;
+            background: var(--accent-cool);
+            transition: width 0.1s linear, background 0.4s ease;
+        }
+
+        /* Question card */
+        .question-card {
+            background: var(--paper-card); border: 1px solid var(--rule);
+            border-radius: 6px; padding: 44px 40px; width: 100%;
+            position: relative; overflow: hidden;
+        }
+
+        .question-card.shake { animation: shake 0.4s ease; }
+
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            25%  { transform: translateX(-8px); }
+            75%  { transform: translateX(8px); }
+        }
+
+        .q-topic {
+            font-family: 'DM Mono', monospace; font-size: 0.68rem;
+            color: var(--ink-muted); letter-spacing: 0.12em; text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .q-text {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(1.25rem, 3vw, 1.7rem);
+            letter-spacing: -0.02em; line-height: 1.35;
+        }
+
+        /* Feedback overlay on card */
+        .q-feedback {
+            position: absolute; inset: 0; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'DM Serif Display', serif; font-size: 1.8rem;
+            opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+        }
+
+        .q-feedback.correct { background: rgba(44,122,110,0.12); color: var(--accent-cool); opacity: 1; }
+        .q-feedback.wrong   { background: rgba(192,57,43,0.10);  color: var(--accent);      opacity: 1; }
+
+        /* True / False buttons */
+        .answer-row {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 14px; width: 100%;
+        }
+
+        .ans-btn {
+            font-family: 'DM Mono', monospace; font-size: 0.88rem;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            padding: 20px; border-radius: 4px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            transition: all 0.25s ease; border: 1.5px solid;
+        }
+
+        .ans-true  { background: var(--paper-card); color: var(--accent-cool); border-color: var(--accent-cool); }
+        .ans-false { background: var(--paper-card); color: var(--accent);      border-color: var(--accent); }
+
+        .ans-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,0.08); }
+        .ans-true:hover:not(:disabled)  { background: var(--accent-cool); color: white; }
+        .ans-false:hover:not(:disabled) { background: var(--accent);      color: white; }
+
+        .ans-btn:disabled { cursor: not-allowed; opacity: 0.5; }
+        .ans-btn.show-correct { background: var(--accent-cool) !important; color: white !important; border-color: var(--accent-cool) !important; opacity: 1 !important; }
+        .ans-btn.show-wrong   { background: var(--accent) !important;      color: white !important; border-color: var(--accent) !important;      opacity: 0.5 !important; }
+
+        /* ── RESULT SCREEN ── */
+        .result-eyebrow {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-muted); letter-spacing: 0.15em; text-transform: uppercase;
+        }
+
+        .result-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            letter-spacing: -0.03em; line-height: 1.05; text-align: center;
+        }
+
+        .result-title em { font-style: italic; color: var(--accent); }
+
+        .result-stats {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 14px; width: 100%;
+        }
+
+        .stat-box {
+            background: var(--paper-card); border: 1px solid var(--rule);
+            border-radius: 6px; padding: 28px 20px;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+        }
+
+        .stat-num {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.6rem; letter-spacing: -0.03em; line-height: 1;
+        }
+
+        .stat-num.green { color: var(--accent-cool); }
+        .stat-num.red   { color: var(--accent); }
+
+        .stat-lbl {
+            font-family: 'DM Mono', monospace; font-size: 0.65rem;
+            color: var(--ink-muted); letter-spacing: 0.12em; text-transform: uppercase;
+        }
+
+        .result-verdict {
+            font-family: 'DM Mono', monospace; font-size: 0.82rem;
+            color: var(--ink-soft); line-height: 1.7; text-align: center;
+            max-width: 380px; letter-spacing: 0.03em;
+        }
+
+        .result-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--rule); padding: 24px 7%;
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 1400px; margin: 0 auto;
+        }
+
+        footer p { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--ink-muted); letter-spacing: 0.08em; }
+        footer span { color: var(--accent); }
+        footer a { color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
+        footer a:hover { color: var(--accent); }
+
+        @media (max-width: 600px) {
+            .wrapper { padding: 40px 6% 80px; }
+            .question-card { padding: 30px 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Games</a>
+        </nav>
+    </header>
+
+    <div class="wrapper">
+
+        <!-- ── START ── -->
+        <div class="screen active" id="startScreen">
+            <p class="start-eyebrow">08 / Trivia</p>
+            <h1 class="start-title">True or<br><em>False?</em></h1>
+            <p class="start-desc">AI generates 5 fresh facts every round. Mixed topics. 6 seconds each. How many can you get right?</p>
+            <button class="btn-primary" onclick="startGame()">
+                Start Game <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- ── LOADING ── -->
+        <div class="screen" id="loadingScreen">
+            <div class="spinner"></div>
+            <p class="loading-text">Generating facts...</p>
+        </div>
+
+        <!-- ── GAME ── -->
+        <div class="screen" id="gameScreen">
+
+            <div class="score-row">
+                <div>
+                    <span class="score-label">Score</span>
+                    <span class="score-num" id="scoreVal">0</span>
+                </div>
+                <span class="q-label" id="qLabel">1 / 10</span>
+            </div>
+
+            <div class="timer-track">
+                <div class="timer-fill" id="timerFill"></div>
+            </div>
+
+            <div class="question-card" id="questionCard">
+                <div class="q-topic" id="qTopic"></div>
+                <div class="q-text"  id="qText"></div>
+                <div class="q-feedback" id="qFeedback"></div>
+            </div>
+
+            <div class="answer-row">
+                <button class="ans-btn ans-true"  id="trueBtn"  onclick="answer(true)">
+                    <i class="fas fa-check"></i> True
+                </button>
+                <button class="ans-btn ans-false" id="falseBtn" onclick="answer(false)">
+                    <i class="fas fa-times"></i> False
+                </button>
+            </div>
+
+        </div>
+
+        <!-- ── RESULT ── -->
+        <div class="screen" id="resultScreen">
+            <p class="result-eyebrow" id="resultEyebrow"></p>
+            <h2 class="result-title"  id="resultTitle"></h2>
+            <div class="result-stats">
+                <div class="stat-box">
+                    <span class="stat-num green" id="statCorrect">0</span>
+                    <span class="stat-lbl">Correct</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-num red" id="statWrong">0</span>
+                    <span class="stat-lbl">Wrong</span>
+                </div>
+            </div>
+            <p class="result-verdict" id="resultVerdict"></p>
+            <div class="result-actions">
+                <button class="btn-primary" onclick="startGame()">
+                    Play Again <i class="fas fa-arrow-right"></i>
+                </button>
+                <a href="../index.html" class="btn-secondary">
+                    <i class="fas fa-gamepad"></i> All Games
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>© 2026 Sareena Rahim</p>
+        <p>Part of <span>·</span> <a href="../../index.html">sareenarahim.dev</a></p>
+    </footer>
+
+    <script>
+        // ── SETTINGS ──────────────────────────────────
+        const TOTAL     = 5;   // questions per round
+        const TIME_SECS = 6;   // seconds per question
+        // ──────────────────────────────────────────────
+
+        // Game state variables
+        let questions = [];  // array of question objects from API
+        let index     = 0;   // current question number
+        let score     = 0;   // correct answers
+        let wrong     = 0;   // wrong answers
+        let answered  = false; // did the player already answer this question?
+        let timer     = null;  // holds the setInterval reference
+        let timeLeft  = TIME_SECS;
+
+        // ── SHOW A SCREEN ──────────────────────────────
+        // Hides all screens, then shows the one we want
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // ── CLEAR BACKGROUND COLOUR ────────────────────
+        function clearBg() {
+            document.body.classList.remove('warning', 'danger', 'correct', 'wrong');
+        }
+
+        // ── START GAME ─────────────────────────────────
+        async function startGame() {
+            // Reset all state
+            index = 0; score = 0; wrong = 0;
+            clearBg();
+            showScreen('loadingScreen');
+
+            // Get questions — use fallback if API fails
+            try {
+                questions = await fetchQuestions();
+            } catch (e) {
+                questions = fallback();
+            }
+
+            showScreen('gameScreen');
+            showQuestion();
+        }
+
+        // ── FETCH QUESTIONS FROM CLAUDE API ────────────
+        async function fetchQuestions() {
+            const response = await fetch("https://api.anthropic.com/v1/messages", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    model: "claude-sonnet-4-20250514",
+                    max_tokens: 1000,
+                    messages: [{
+                        role: "user",
+                        content: `Generate 5 true/false trivia facts. Mixed topics (science, history, geography, nature, food, technology).
+Return ONLY a JSON array. Each item: { "topic": "Science", "fact": "...", "answer": true/false }
+No markdown. No explanation. Just the array.`
+                    }]
+                })
+            });
+
+            const data  = await response.json();
+            const text  = data.content.map(b => b.text || "").join("");
+            const clean = text.replace(/```json|```/g, "").trim();
+            return JSON.parse(clean);
+        }
+
+        // ── SHOW CURRENT QUESTION ──────────────────────
+        function showQuestion() {
+            answered = false;
+            clearBg();
+
+            const q = questions[index];
+
+            // Fill in the card
+            document.getElementById('qTopic').textContent   = q.topic;
+            document.getElementById('qText').textContent    = q.fact;
+            document.getElementById('qLabel').textContent   = `${index + 1} / ${TOTAL}`;
+            document.getElementById('scoreVal').textContent = score;
+
+            // Reset buttons to their default state
+            document.getElementById('trueBtn').disabled   = false;
+            document.getElementById('falseBtn').disabled  = false;
+            document.getElementById('trueBtn').className  = 'ans-btn ans-true';
+            document.getElementById('falseBtn').className = 'ans-btn ans-false';
+
+            // Reset feedback overlay and card shake
+            document.getElementById('qFeedback').className   = 'q-feedback';
+            document.getElementById('qFeedback').textContent = '';
+            document.getElementById('questionCard').classList.remove('shake');
+
+            startTimer();
+        }
+
+        // ── TIMER ──────────────────────────────────────
+        function startTimer() {
+            clearInterval(timer);
+            timeLeft = TIME_SECS;
+            updateTimerBar();
+
+            timer = setInterval(() => {
+                timeLeft -= 0.1;
+                updateTimerBar();
+
+                // Change background colour as time runs out
+                const ratio = timeLeft / TIME_SECS;
+                clearBg();
+                if      (ratio < 0.25) document.body.classList.add('danger');
+                else if (ratio < 0.5)  document.body.classList.add('warning');
+
+                // Time's up!
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    onTimeUp();
+                }
+            }, 100);
+        }
+
+        function updateTimerBar() {
+            const pct = Math.max(0, (timeLeft / TIME_SECS) * 100);
+            const bar = document.getElementById('timerFill');
+            bar.style.width = pct + '%';
+
+            // Bar colour matches the background mood
+            const ratio = timeLeft / TIME_SECS;
+            if      (ratio < 0.25) bar.style.background = 'var(--accent)';
+            else if (ratio < 0.5)  bar.style.background = 'var(--accent-warm)';
+            else                   bar.style.background = 'var(--accent-cool)';
+        }
+
+        // ── TIME EXPIRED ───────────────────────────────
+        function onTimeUp() {
+            if (answered) return;
+            answered = true;
+            wrong++;
+
+            lockButtons();
+            document.getElementById('qFeedback').className   = 'q-feedback wrong';
+            document.getElementById('qFeedback').textContent = "⏱ Time's up!";
+            document.getElementById('questionCard').classList.add('shake');
+            document.body.classList.add('wrong');
+
+            setTimeout(nextQuestion, 1500);
+        }
+
+        // ── PLAYER ANSWERS ─────────────────────────────
+        function answer(userPick) {
+            if (answered) return;
+            answered = true;
+            clearInterval(timer);
+
+            const correct = questions[index].answer;
+            lockButtons();
+
+            // Always show the correct answer in green
+            if (correct === true)  document.getElementById('trueBtn').classList.add('show-correct');
+            if (correct === false) document.getElementById('falseBtn').classList.add('show-correct');
+
+            // If they picked wrong, highlight their pick in red
+            if (userPick !== correct) {
+                const wrongBtn = userPick ? 'trueBtn' : 'falseBtn';
+                document.getElementById(wrongBtn).classList.add('show-wrong');
+            }
+
+            if (userPick === correct) {
+                score++;
+                document.getElementById('qFeedback').className   = 'q-feedback correct';
+                document.getElementById('qFeedback').textContent = '✓ Correct!';
+                document.body.classList.add('correct');
+            } else {
+                wrong++;
+                document.getElementById('qFeedback').className   = 'q-feedback wrong';
+                document.getElementById('qFeedback').textContent = `✗ It's ${correct ? 'True' : 'False'}`;
+                document.getElementById('questionCard').classList.add('shake');
+                document.body.classList.add('wrong');
+            }
+
+            setTimeout(nextQuestion, 1500);
+        }
+
+        // ── DISABLE BOTH BUTTONS ───────────────────────
+        function lockButtons() {
+            document.getElementById('trueBtn').disabled  = true;
+            document.getElementById('falseBtn').disabled = true;
+        }
+
+        // ── MOVE TO NEXT QUESTION OR END ───────────────
+        function nextQuestion() {
+            index++;
+            clearBg();
+            if (index >= TOTAL) showResult();
+            else showQuestion();
+        }
+
+        // ── SHOW FINAL RESULT ──────────────────────────
+        function showResult() {
+            showScreen('resultScreen');
+
+            document.getElementById('statCorrect').textContent = score;
+            document.getElementById('statWrong').textContent   = wrong;
+
+            // Pick message based on score
+            const pct = (score / TOTAL) * 100;
+            let eyebrow, title, verdict;
+
+            if (pct === 100) {
+                eyebrow = 'Perfect Round!';
+                title   = 'Genius<br><em>Level!</em>';
+                verdict = 'A flawless 10 out of 10. You really know your facts.';
+            } else if (pct >= 70) {
+                eyebrow = 'Round Complete';
+                title   = 'Well<br><em>Done!</em>';
+                verdict = `${score} out of 10 — great stuff. A few sneaky ones got through.`;
+            } else if (pct >= 50) {
+                eyebrow = 'Round Complete';
+                title   = 'Not<br><em>Bad!</em>';
+                verdict = `${score} out of 10 — solid effort. One more round?`;
+            } else {
+                eyebrow = 'Round Complete';
+                title   = 'Keep<br><em>Trying!</em>';
+                verdict = `${score} out of 10 this time. The facts get easier with practice.`;
+            }
+
+            document.getElementById('resultEyebrow').textContent = eyebrow;
+            document.getElementById('resultTitle').innerHTML      = title;
+            document.getElementById('resultVerdict').textContent  = verdict;
+        }
+
+        // ── FALLBACK QUESTIONS (if API fails) ──────────
+        function fallback() {
+            return [
+                { topic: "Science",    fact: "The human body has 206 bones in adulthood.",                   answer: true  },
+                { topic: "Geography",  fact: "Australia is both a country and a continent.",                  answer: true  },
+                { topic: "History",    fact: "The Great Wall of China is visible from space with naked eye.", answer: false },
+                { topic: "Nature",     fact: "Bats are the only mammals capable of sustained flight.",        answer: true  },
+                { topic: "Technology", fact: "The first iPhone was released in 2005.",                        answer: false },
+                { topic: "Food",       fact: "Peanuts are technically a type of legume, not a nut.",          answer: true  },
+                { topic: "Science",    fact: "Lightning never strikes the same place twice.",                 answer: false },
+                { topic: "History",    fact: "The Eiffel Tower was originally intended to be dismantled.",    answer: true  },
+                { topic: "Nature",     fact: "Goldfish have a memory of only three seconds.",                 answer: false },
+                { topic: "Geography",  fact: "Russia is the largest country in the world by land area.",      answer: true  },
+            ];
+        }
+    </script>
+
+</body>
+</html>
