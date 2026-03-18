@@ -223,37 +223,22 @@
         .reaction-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
 
         /* Word Scramble */
-        .banner-scramble {
-            background: #f5f2ed;
-        }
+        .banner-scramble { background: #f5f2ed; }
+        .scramble-scene { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .scramble-word { font-family: 'DM Serif Display', serif; font-size: 3rem; letter-spacing: 8px; color: var(--ink); }
+        .scramble-hint { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; color: var(--ink-muted); }
+        .scramble-input { font-family: 'DM Mono', monospace; font-size: 0.9rem; letter-spacing: 6px; color: var(--accent); }
 
-        .scramble-scene{
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            gap:10px;
-        }
-
-        .scramble-word{
-            font-family:'DM Serif Display',serif;
-            font-size:3rem;
-            letter-spacing:8px;
-            color:var(--ink);
-        }
-
-        .scramble-hint{
-            font-family:'DM Mono',monospace;
-            font-size:0.65rem;
-            letter-spacing:0.1em;
-            color:var(--ink-muted);
-        }
-
-        .scramble-input{
-            font-family:'DM Mono',monospace;
-            font-size:0.9rem;
-            letter-spacing:6px;
-            color:var(--accent);
-        }
+        /* True or False */
+        .banner-trivia { background: var(--paper-warm); }
+        .trivia-scene { display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%; padding: 0 24px; }
+        .trivia-statement { font-family: 'DM Serif Display', serif; font-size: 0.92rem; color: var(--ink-soft); text-align: center; line-height: 1.4; letter-spacing: -0.01em; }
+        .trivia-btn-row { display: flex; gap: 10px; width: 100%; }
+        .trivia-btn { flex: 1; padding: 8px; border-radius: 3px; font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; text-align: center; font-weight: 600; }
+        .trivia-btn.t { background: rgba(44,122,110,0.12); color: var(--accent-cool); border: 1.5px solid rgba(44,122,110,0.25); }
+        .trivia-btn.f { background: rgba(192,57,43,0.10); color: var(--accent); border: 1.5px solid rgba(192,57,43,0.2); }
+        .trivia-timer { width: 100%; height: 4px; background: rgba(15,14,13,0.08); border-radius: 2px; overflow: hidden; }
+        .trivia-timer-fill { height: 100%; width: 75%; background: linear-gradient(90deg, var(--accent-cool), var(--accent-warm)); border-radius: 2px; }
 
         /* Shared hover overlay */
         .banner-overlay { position: absolute; inset: 0; background: rgba(192,57,43,0.08); opacity: 0; transition: opacity 0.3s; display: flex; align-items: center; justify-content: center; }
@@ -308,7 +293,7 @@
         <h1>Inter&shy;active <em>Games</em></h1>
         <div class="page-hero-meta">
             <p>Logic-based browser games. No installs. Play right here.</p>
-            <span class="game-count">07 Games</span>
+            <span class="game-count">08 Games</span>
         </div>
     </div>
 
@@ -473,18 +458,35 @@
                     </div>
                     <div class="banner-overlay"><span>Play Now</span></div>
                 </div>
-
                 <div class="game-body">
                     <div class="game-num">07 / Word</div>
                     <h2>Word<br>Scramble</h2>
                     <p>Unscramble the letters to form the correct word. Use the hint if you're stuck and test your vocabulary skills.</p>
+                    <div class="game-tags"><span class="tag">Words</span><span class="tag">Puzzle</span><span class="tag">Single Player</span></div>
+                    <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
 
-                    <div class="game-tags">
-                        <span class="tag">Words</span>
-                        <span class="tag">Puzzle</span>
-                        <span class="tag">Single Player</span>
+            <!-- 08 True or False -->
+            <a href="true-or-false/index.html" class="game-card fade-in" style="transition-delay:0.49s;">
+                <div class="game-banner banner-trivia">
+                    <div class="trivia-scene">
+                        <div class="trivia-statement">The Eiffel Tower was originally intended to be dismantled.</div>
+                        <div class="trivia-btn-row">
+                            <div class="trivia-btn t"><i class="fas fa-check"></i> True</div>
+                            <div class="trivia-btn f"><i class="fas fa-times"></i> False</div>
+                        </div>
+                        <div class="trivia-timer">
+                            <div class="trivia-timer-fill"></div>
+                        </div>
                     </div>
-
+                    <div class="banner-overlay"><span>Play Now</span></div>
+                </div>
+                <div class="game-body">
+                    <div class="game-num">08 / Trivia</div>
+                    <h2>True or<br>False?</h2>
+                    <p>AI generates 5 fresh facts every round. Mixed topics. 6 seconds to answer. How many can you get right?</p>
+                    <div class="game-tags"><span class="tag">Trivia</span><span class="tag">AI</span><span class="tag">Single Player</span></div>
                     <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
                 </div>
             </a>
