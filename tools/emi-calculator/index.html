@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMI Calculator · Sareena Rahim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f0e0d;
+            --ink-soft: #3a3835;
+            --ink-muted: #7a7672;
+            --paper: #f5f2ed;
+            --paper-warm: #ede9e2;
+            --paper-card: #f9f7f4;
+            --accent: #c0392b;
+            --accent-warm: #e67e22;
+            --accent-cool: #2c7a6e;
+            --rule: rgba(15,14,13,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--paper);
+            color: var(--ink);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 9999; opacity: 0.4;
+        }
+
+        /* ── HEADER ── */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(245,242,237,0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+        }
+
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 18px 7%; max-width: 1400px; margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem; color: var(--ink);
+            text-decoration: none; letter-spacing: -0.02em;
+        }
+
+        .logo sup {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.5rem; color: var(--accent);
+            vertical-align: super; letter-spacing: 0.1em; text-transform: uppercase;
+        }
+
+        .back-btn {
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            border: 1.5px solid var(--ink); padding: 9px 22px; border-radius: 3px;
+            text-decoration: none; color: var(--ink); letter-spacing: 0.05em;
+            display: flex; align-items: center; gap: 8px; transition: all 0.25s ease;
+        }
+
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+        /* ── PAGE HERO ── */
+        .page-hero {
+            padding: 60px 7% 44px; max-width: 1400px;
+            margin: 0 auto; border-bottom: 1px solid var(--rule);
+        }
+
+        .breadcrumb {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-muted); letter-spacing: 0.12em; text-transform: uppercase;
+            margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+        }
+
+        .breadcrumb a { color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
+        .breadcrumb a:hover { color: var(--accent); }
+        .breadcrumb span { color: var(--accent); }
+
+        .page-hero h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.2rem, 5vw, 3.6rem);
+            letter-spacing: -0.03em; line-height: 1.08;
+        }
+
+        .page-hero h1 em { font-style: italic; color: var(--accent); }
+
+        .page-hero p {
+            font-family: 'DM Mono', monospace; font-size: 0.8rem;
+            color: var(--ink-muted); letter-spacing: 0.08em; margin-top: 14px;
+        }
+
+        /* ── MAIN LAYOUT ── */
+        .tool-section {
+            padding: 52px 7% 100px; max-width: 1400px; margin: 0 auto;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        /* ── CARD ── */
+        .card {
+            background: var(--paper-card); border: 1px solid var(--rule);
+            border-radius: 6px; padding: 40px 36px;
+        }
+
+        .card-title {
+            font-family: 'DM Mono', monospace; font-size: 0.7rem;
+            color: var(--ink-muted); letter-spacing: 0.15em; text-transform: uppercase;
+            margin-bottom: 28px; padding-bottom: 16px;
+            border-bottom: 1px solid var(--rule);
+        }
+
+        /* ── FORM FIELDS ── */
+        .field { margin-bottom: 24px; }
+        .field:last-child { margin-bottom: 0; }
+
+        .field label {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-soft); letter-spacing: 0.08em; text-transform: uppercase;
+            display: block; margin-bottom: 10px;
+        }
+
+        .input-wrap {
+            position: relative; display: flex; align-items: center;
+        }
+
+        .input-prefix {
+            position: absolute; left: 14px;
+            font-family: 'DM Mono', monospace; font-size: 0.85rem;
+            color: var(--ink-muted); pointer-events: none;
+        }
+
+        .input-suffix {
+            position: absolute; right: 14px;
+            font-family: 'DM Mono', monospace; font-size: 0.85rem;
+            color: var(--ink-muted); pointer-events: none;
+        }
+
+        .field input {
+            width: 100%;
+            font-family: 'DM Mono', monospace; font-size: 1rem;
+            color: var(--ink); background: var(--paper-warm);
+            border: 1.5px solid var(--rule); border-radius: 4px;
+            padding: 14px 44px 14px 36px;
+            outline: none; transition: border-color 0.2s ease;
+            -moz-appearance: textfield;
+        }
+
+        .field input::-webkit-outer-spin-button,
+        .field input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+        .field input:focus { border-color: var(--accent); }
+        .field input::placeholder { color: var(--ink-muted); }
+
+        /* Duration toggle */
+        .duration-row { display: flex; gap: 10px; align-items: center; }
+
+        .duration-row input {
+            flex: 1; padding: 14px 44px 14px 14px;
+        }
+
+        .toggle-wrap {
+            display: flex; border: 1.5px solid var(--rule);
+            border-radius: 4px; overflow: hidden; flex-shrink: 0;
+        }
+
+        .toggle-btn {
+            font-family: 'DM Mono', monospace; font-size: 0.7rem;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            padding: 10px 16px; cursor: pointer; background: var(--paper-warm);
+            color: var(--ink-muted); border: none; transition: all 0.2s ease;
+        }
+
+        .toggle-btn.active { background: var(--ink); color: var(--paper); }
+
+        /* ── RESULTS ── */
+        .result-block {
+            display: flex; flex-direction: column; gap: 16px;
+        }
+
+        .result-main {
+            background: var(--ink); border-radius: 6px;
+            padding: 32px 30px; text-align: center;
+        }
+
+        .result-main-label {
+            font-family: 'DM Mono', monospace; font-size: 0.68rem;
+            color: rgba(245,242,237,0.5); letter-spacing: 0.15em; text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .result-main-value {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            letter-spacing: -0.03em; color: var(--paper); line-height: 1;
+        }
+
+        .result-main-sub {
+            font-family: 'DM Mono', monospace; font-size: 0.68rem;
+            color: rgba(245,242,237,0.4); letter-spacing: 0.1em;
+            margin-top: 8px;
+        }
+
+        .result-row {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+        }
+
+        .result-box {
+            background: var(--paper-warm); border: 1px solid var(--rule);
+            border-radius: 6px; padding: 22px 20px;
+        }
+
+        .result-box-label {
+            font-family: 'DM Mono', monospace; font-size: 0.64rem;
+            color: var(--ink-muted); letter-spacing: 0.12em; text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .result-box-value {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem; letter-spacing: -0.025em; line-height: 1;
+        }
+
+        .result-box-value.red   { color: var(--accent); }
+        .result-box-value.green { color: var(--accent-cool); }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center; padding: 40px 20px;
+        }
+
+        .empty-state i {
+            font-size: 2rem; color: var(--rule); margin-bottom: 16px; display: block;
+        }
+
+        .empty-state p {
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            color: var(--ink-muted); letter-spacing: 0.06em; line-height: 1.6;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--rule); padding: 24px 7%;
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 1400px; margin: 0 auto;
+        }
+
+        footer p { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--ink-muted); letter-spacing: 0.08em; }
+        footer span { color: var(--accent); }
+        footer a { color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
+        footer a:hover { color: var(--accent); }
+
+        @media (max-width: 900px) {
+            .tool-grid { grid-template-columns: 1fr; }
+            .info-strip { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 560px) {
+            .card { padding: 28px 22px; }
+            .info-strip { grid-template-columns: 1fr; padding: 22px; gap: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Tools</a>
+        </nav>
+    </header>
+
+    <div class="page-hero">
+        <div class="breadcrumb">
+            <a href="../../index.html">Home</a>
+            <i class="fas fa-chevron-right" style="font-size:0.55rem;"></i>
+            <a href="../index.html">Web Tools</a>
+            <i class="fas fa-chevron-right" style="font-size:0.55rem;"></i>
+            <span>EMI Calculator</span>
+        </div>
+        <h1>EMI <em>Calculator</em></h1>
+        <p>Enter your loan details and instantly see your monthly payment, interest, and total cost.</p>
+    </div>
+
+    <div class="tool-section">
+        <div class="tool-grid">
+
+            <!-- INPUT CARD -->
+            <div class="card">
+                <div class="card-title">09 / Loan Details</div>
+
+                <div class="field">
+                    <label>Loan Amount</label>
+                    <div class="input-wrap">
+                        <span class="input-prefix">₹</span>
+                        <input type="number" id="loanAmount" placeholder="e.g. 500000" oninput="calculate()">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Annual Interest Rate</label>
+                    <div class="input-wrap">
+                        <input type="number" id="interestRate" placeholder="e.g. 8.5" step="0.1" oninput="calculate()" style="padding-left:14px;">
+                        <span class="input-suffix">%</span>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Loan Duration</label>
+                    <div class="duration-row">
+                        <div class="input-wrap" style="flex:1;">
+                            <input type="number" id="duration" placeholder="e.g. 5" oninput="calculate()" style="padding-left:14px;">
+                            <span class="input-suffix" id="durationSuffix">yrs</span>
+                        </div>
+                        <div class="toggle-wrap">
+                            <button class="toggle-btn active" id="btnYears" onclick="setUnit('years')">Years</button>
+                            <button class="toggle-btn"        id="btnMonths" onclick="setUnit('months')">Months</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESULT CARD -->
+            <div class="card">
+                <div class="card-title">Your Results</div>
+
+                <div id="emptyState" class="empty-state">
+                    <i class="fas fa-calculator"></i>
+                    <p>Fill in your loan details<br>on the left to see results.</p>
+                </div>
+
+                <div id="results" class="result-block" style="display:none;">
+                    <div class="result-main">
+                        <div class="result-main-label">Monthly EMI</div>
+                        <div class="result-main-value" id="emiValue">₹0</div>
+                        <div class="result-main-sub" id="emiSub">per month</div>
+                    </div>
+                    <div class="result-row">
+                        <div class="result-box">
+                            <div class="result-box-label">Total Interest</div>
+                            <div class="result-box-value red" id="interestValue">₹0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-box-label">Total Paid</div>
+                            <div class="result-box-value green" id="totalValue">₹0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <footer>
+        <p>© 2026 Sareena Rahim</p>
+        <p>Part of <span>·</span> <a href="../../index.html">sareenarahim.dev</a></p>
+    </footer>
+
+    <script>
+        // ── UNIT STATE ─────────────────────────────────
+        let unit = 'years'; // 'years' or 'months'
+
+        function setUnit(u) {
+            unit = u;
+            document.getElementById('btnYears').classList.toggle('active', u === 'years');
+            document.getElementById('btnMonths').classList.toggle('active', u === 'months');
+            document.getElementById('durationSuffix').textContent = u === 'years' ? 'yrs' : 'mo';
+            calculate();
+        }
+
+        // ── FORMAT NUMBER AS ₹ ─────────────────────────
+        // Converts a number like 500000 → ₹5,00,000 (Indian format)
+        function formatINR(num) {
+            return '₹' + num.toLocaleString('en-IN', { maximumFractionDigits: 0 });
+        }
+
+        // ── EMI FORMULA ────────────────────────────────
+        // EMI = P × r × (1 + r)^n / ((1 + r)^n - 1)
+        // P = principal, r = monthly interest rate, n = number of months
+        function calculateEMI(principal, annualRate, months) {
+            if (annualRate === 0) return principal / months; // 0% interest edge case
+            const r = annualRate / 12 / 100;                // monthly rate
+            const n = months;
+            const emi = principal * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+            return emi;
+        }
+
+        // ── MAIN CALCULATE FUNCTION ────────────────────
+        function calculate() {
+            const principal    = parseFloat(document.getElementById('loanAmount').value);
+            const annualRate   = parseFloat(document.getElementById('interestRate').value);
+            const durationVal  = parseFloat(document.getElementById('duration').value);
+
+            // If any field is empty or invalid, show empty state
+            if (!principal || !annualRate || !durationVal || principal <= 0 || annualRate < 0 || durationVal <= 0) {
+                document.getElementById('emptyState').style.display = 'block';
+                document.getElementById('results').style.display    = 'none';
+                return;
+            }
+
+            // Convert duration to months
+            const months = unit === 'years' ? durationVal * 12 : durationVal;
+
+            // Calculate
+            const emi           = calculateEMI(principal, annualRate, months);
+            const totalPaid     = emi * months;
+            const totalInterest = totalPaid - principal;
+
+            // Show results
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('results').style.display    = 'flex';
+
+            // Fill result values
+            document.getElementById('emiValue').textContent      = formatINR(emi);
+            document.getElementById('emiSub').textContent        = `for ${months} months`;
+            document.getElementById('interestValue').textContent = formatINR(totalInterest);
+            document.getElementById('totalValue').textContent    = formatINR(totalPaid);
+
+        }
+    </script>
+
+</body>
+</html>
