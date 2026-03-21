@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe · Sareena Rahim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f0e0d;
+            --ink-soft: #3a3835;
+            --ink-muted: #7a7672;
+            --paper: #f5f2ed;
+            --paper-warm: #ede9e2;
+            --paper-card: #f9f7f4;
+            --accent: #c0392b;
+            --accent-warm: #e67e22;
+            --accent-cool: #2c7a6e;
+            --rule: rgba(15,14,13,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--paper);
+            color: var(--ink);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.4s ease;
+        }
+
+        body.win  { background-color: #d0f0e8; }
+        body.lose { background-color: #f5d0ce; }
+        body.draw { background-color: #f5e6d0; }
+
+        body::before {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 9999; opacity: 0.4;
+        }
+
+        /* ── HEADER ── */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(245,242,237,0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+        }
+
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 18px 7%; max-width: 1400px; margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem; color: var(--ink);
+            text-decoration: none; letter-spacing: -0.02em;
+        }
+
+        .logo sup {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.5rem; color: var(--accent);
+            vertical-align: super; letter-spacing: 0.1em; text-transform: uppercase;
+        }
+
+        .back-btn {
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            border: 1.5px solid var(--ink); padding: 9px 22px; border-radius: 3px;
+            text-decoration: none; color: var(--ink); letter-spacing: 0.05em;
+            display: flex; align-items: center; gap: 8px; transition: all 0.25s ease;
+        }
+
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+        /* ── WRAPPER ── */
+        .wrapper {
+            max-width: 520px; margin: 0 auto;
+            padding: 60px 7% 100px;
+            display: flex; flex-direction: column; align-items: center; gap: 32px;
+        }
+
+        /* ── SCREENS ── */
+        .screen { display: none; width: 100%; flex-direction: column; align-items: center; gap: 28px; }
+        .screen.active { display: flex; }
+
+        /* ── START SCREEN ── */
+        .eyebrow {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-muted); letter-spacing: 0.15em; text-transform: uppercase;
+        }
+
+        .big-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.8rem, 8vw, 4.5rem);
+            letter-spacing: -0.03em; line-height: 1.0; text-align: center;
+        }
+
+        .big-title em { font-style: italic; color: var(--accent); }
+
+        .start-desc {
+            font-family: 'DM Mono', monospace; font-size: 0.82rem;
+            color: var(--ink-muted); line-height: 1.7; text-align: center;
+            max-width: 340px; letter-spacing: 0.03em;
+        }
+
+        /* Symbol picker */
+        .symbol-label {
+            font-family: 'DM Mono', monospace; font-size: 0.7rem;
+            color: var(--ink-muted); letter-spacing: 0.12em; text-transform: uppercase;
+        }
+
+        .symbol-row { display: flex; gap: 14px; }
+
+        .symbol-btn {
+            font-family: 'DM Serif Display', serif; font-size: 1.6rem;
+            width: 72px; height: 72px; border-radius: 6px;
+            border: 1.5px solid var(--rule); background: var(--paper-card);
+            cursor: pointer; transition: all 0.25s ease;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--ink-muted);
+        }
+
+        .symbol-btn.selected.x { border-color: var(--accent); background: rgba(192,57,43,0.08); color: var(--accent); }
+        .symbol-btn.selected.o { border-color: var(--accent-cool); background: rgba(44,122,110,0.08); color: var(--accent-cool); }
+        .symbol-btn:hover:not(.selected) { border-color: var(--ink-muted); }
+
+        /* ── BUTTONS ── */
+        .btn-primary {
+            font-family: 'DM Mono', monospace; font-size: 0.85rem;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            background: var(--ink); color: var(--paper);
+            border: none; padding: 18px 52px; border-radius: 3px;
+            cursor: pointer; transition: all 0.25s ease;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .btn-primary:hover { background: var(--accent); transform: translateY(-2px); }
+
+        .btn-secondary {
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            background: transparent; color: var(--ink);
+            border: 1.5px solid var(--ink); padding: 14px 32px; border-radius: 3px;
+            cursor: pointer; transition: all 0.25s ease;
+            text-decoration: none; display: flex; align-items: center; gap: 8px;
+        }
+
+        .btn-secondary:hover { background: var(--ink); color: var(--paper); }
+
+        /* ── GAME SCREEN ── */
+
+        /* Status bar */
+        .status-bar {
+            width: 100%; display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 20px; border-bottom: 1px solid var(--rule);
+        }
+
+        .player-tag {
+            font-family: 'DM Mono', monospace; font-size: 0.68rem;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+        }
+
+        .player-symbol {
+            font-family: 'DM Serif Display', serif; font-size: 1.6rem;
+            line-height: 1;
+        }
+
+        .player-symbol.x { color: var(--accent); }
+        .player-symbol.o { color: var(--accent-cool); }
+
+        .status-msg {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-muted); letter-spacing: 0.1em; text-align: center;
+        }
+
+        /* Board */
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            width: 100%;
+        }
+
+        .cell {
+            background: var(--paper-card); border: 1.5px solid var(--rule);
+            border-radius: 6px; aspect-ratio: 1;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'DM Serif Display', serif; font-size: clamp(2rem, 8vw, 3rem);
+            cursor: pointer; transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .cell:hover:not(.taken) { background: var(--paper-warm); border-color: rgba(15,14,13,0.2); }
+        .cell.taken { cursor: not-allowed; }
+        .cell.x { color: var(--accent); }
+        .cell.o { color: var(--accent-cool); }
+        .cell.win-cell { background: var(--paper-warm); border-color: var(--accent-cool); }
+
+        /* ── RESULT SCREEN ── */
+        .result-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.5rem, 7vw, 4rem);
+            letter-spacing: -0.03em; line-height: 1.05; text-align: center;
+        }
+
+        .result-title em { font-style: italic; color: var(--accent); }
+
+        .result-verdict {
+            font-family: 'DM Mono', monospace; font-size: 0.82rem;
+            color: var(--ink-soft); line-height: 1.7; text-align: center;
+            max-width: 320px; letter-spacing: 0.03em;
+        }
+
+        .result-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--rule); padding: 24px 7%;
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 1400px; margin: 0 auto;
+        }
+
+        footer p { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--ink-muted); letter-spacing: 0.08em; }
+        footer span { color: var(--accent); }
+        footer a { color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
+        footer a:hover { color: var(--accent); }
+
+        @media (max-width: 480px) {
+            .wrapper { padding: 36px 6% 80px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Games</a>
+        </nav>
+    </header>
+
+    <div class="wrapper">
+
+        <!-- ── START ── -->
+        <div class="screen active" id="startScreen">
+            <p class="eyebrow">09 / Strategy</p>
+            <h1 class="big-title">Tic<br>Tac <em>Toe</em></h1>
+            <p class="start-desc">Play against the CPU. Pick your symbol, then take turns. Three in a row wins!</p>
+
+            <p class="symbol-label">Pick your symbol</p>
+            <div class="symbol-row">
+                <button class="symbol-btn x selected" id="btnX" onclick="pickSymbol('X')">✕</button>
+                <button class="symbol-btn o"           id="btnO" onclick="pickSymbol('O')">○</button>
+            </div>
+
+            <button class="btn-primary" onclick="startGame()">
+                Start Game <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- ── GAME ── -->
+        <div class="screen" id="gameScreen">
+
+            <div class="status-bar">
+                <div class="player-tag">
+                    <span class="player-symbol x" id="playerSymbolDisplay">✕</span>
+                    <span>You</span>
+                </div>
+                <div class="status-msg" id="statusMsg">Your turn</div>
+                <div class="player-tag">
+                    <span class="player-symbol o" id="cpuSymbolDisplay">○</span>
+                    <span>CPU</span>
+                </div>
+            </div>
+
+            <div class="board" id="board">
+                <div class="cell" onclick="playerMove(0)"></div>
+                <div class="cell" onclick="playerMove(1)"></div>
+                <div class="cell" onclick="playerMove(2)"></div>
+                <div class="cell" onclick="playerMove(3)"></div>
+                <div class="cell" onclick="playerMove(4)"></div>
+                <div class="cell" onclick="playerMove(5)"></div>
+                <div class="cell" onclick="playerMove(6)"></div>
+                <div class="cell" onclick="playerMove(7)"></div>
+                <div class="cell" onclick="playerMove(8)"></div>
+            </div>
+
+        </div>
+
+        <!-- ── RESULT ── -->
+        <div class="screen" id="resultScreen">
+            <p class="eyebrow" id="resultEyebrow">Game Over</p>
+            <h2 class="result-title" id="resultTitle"></h2>
+            <p class="result-verdict" id="resultVerdict"></p>
+            <div class="result-actions">
+                <button class="btn-primary" onclick="startGame()">
+                    Play Again <i class="fas fa-arrow-right"></i>
+                </button>
+                <a href="../index.html" class="btn-secondary">
+                    <i class="fas fa-gamepad"></i> All Games
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>© 2026 Sareena Rahim</p>
+        <p>Part of <span>·</span> <a href="../../index.html">sareenarahim.dev</a></p>
+    </footer>
+
+    <script>
+        // ── SETTINGS ──────────────────────────────────
+        // Which symbol did the player pick? X or O
+        let playerSymbol = 'X';
+        let cpuSymbol    = 'O';
+
+        // The board — 9 cells, null means empty
+        let board = [null, null, null, null, null, null, null, null, null];
+
+        // Is it currently the player's turn?
+        let playerTurn = true;
+
+        // All possible winning combinations (indices on the board)
+        const WIN_LINES = [
+            [0,1,2], [3,4,5], [6,7,8], // rows
+            [0,3,6], [1,4,7], [2,5,8], // cols
+            [0,4,8], [2,4,6]            // diagonals
+        ];
+
+        // ── SCREEN SWITCH ──────────────────────────────
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function clearBg() {
+            document.body.classList.remove('win', 'lose', 'draw');
+        }
+
+        // ── SYMBOL PICKER ──────────────────────────────
+        function pickSymbol(sym) {
+            playerSymbol = sym;
+            cpuSymbol    = sym === 'X' ? 'O' : 'X';
+
+            document.getElementById('btnX').classList.toggle('selected', sym === 'X');
+            document.getElementById('btnO').classList.toggle('selected', sym === 'O');
+        }
+
+        // ── START GAME ─────────────────────────────────
+        function startGame() {
+            // Reset board and state
+            board      = [null, null, null, null, null, null, null, null, null];
+            playerTurn = true;
+            clearBg();
+
+            // Update symbol displays in the status bar
+            const pSym = playerSymbol === 'X' ? '✕' : '○';
+            const cSym = cpuSymbol    === 'X' ? '✕' : '○';
+            document.getElementById('playerSymbolDisplay').textContent = pSym;
+            document.getElementById('playerSymbolDisplay').className   = `player-symbol ${playerSymbol.toLowerCase()}`;
+            document.getElementById('cpuSymbolDisplay').textContent    = cSym;
+            document.getElementById('cpuSymbolDisplay').className      = `player-symbol ${cpuSymbol.toLowerCase()}`;
+
+            // Clear all cells on the board
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.textContent = '';
+                cell.className   = 'cell';
+            });
+
+            document.getElementById('statusMsg').textContent = 'Your turn';
+            showScreen('gameScreen');
+
+            // If player chose O, CPU goes first (CPU is always X)
+            if (playerSymbol === 'O') {
+                playerTurn = false;
+                document.getElementById('statusMsg').textContent = 'CPU is thinking...';
+                setTimeout(cpuMove, 600);
+            }
+        }
+
+        // ── PLAYER MAKES A MOVE ────────────────────────
+        function playerMove(index) {
+            // Ignore click if not player's turn or cell is taken
+            if (!playerTurn || board[index] !== null) return;
+
+            makeMove(index, playerSymbol);
+
+            // Check if player won or board is full
+            const winner = checkWinner();
+            if (winner) { endGame(winner); return; }
+            if (isBoardFull()) { endGame(null); return; }
+
+            // CPU's turn
+            playerTurn = false;
+            document.getElementById('statusMsg').textContent = 'CPU is thinking...';
+            setTimeout(cpuMove, 500);
+        }
+
+        // ── CPU MAKES A RANDOM MOVE ────────────────────
+        function cpuMove() {
+            // Find all empty cells
+            const emptyCells = board
+                .map((val, i) => val === null ? i : null)
+                .filter(i => i !== null);
+
+            if (emptyCells.length === 0) return;
+
+            // Pick a random empty cell
+            const randomIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+            makeMove(randomIndex, cpuSymbol);
+
+            // Check if CPU won or board is full
+            const winner = checkWinner();
+            if (winner) { endGame(winner); return; }
+            if (isBoardFull()) { endGame(null); return; }
+
+            // Back to player's turn
+            playerTurn = true;
+            document.getElementById('statusMsg').textContent = 'Your turn';
+        }
+
+        // ── PLACE A SYMBOL ON THE BOARD ────────────────
+        function makeMove(index, symbol) {
+            board[index] = symbol;
+
+            const cell = document.querySelectorAll('.cell')[index];
+            cell.textContent = symbol === 'X' ? '✕' : '○';
+            cell.classList.add('taken', symbol.toLowerCase());
+        }
+
+        // ── CHECK FOR A WINNER ─────────────────────────
+        // Returns the winning symbol ('X' or 'O'), or null if no winner yet
+        function checkWinner() {
+            for (const [a, b, c] of WIN_LINES) {
+                if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                    // Highlight the winning cells
+                    const cells = document.querySelectorAll('.cell');
+                    cells[a].classList.add('win-cell');
+                    cells[b].classList.add('win-cell');
+                    cells[c].classList.add('win-cell');
+                    return board[a];
+                }
+            }
+            return null;
+        }
+
+        // ── CHECK IF BOARD IS FULL (DRAW) ──────────────
+        function isBoardFull() {
+            return board.every(cell => cell !== null);
+        }
+
+        // ── END THE GAME ───────────────────────────────
+        function endGame(winner) {
+            // Disable all cells
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.classList.add('taken');
+            });
+
+            setTimeout(() => {
+                showScreen('resultScreen');
+
+                let eyebrow, title, verdict;
+
+                if (winner === null) {
+                    // Draw
+                    document.body.classList.add('draw');
+                    eyebrow = 'It\'s a Draw!';
+                    title   = 'No<br><em>Winner!</em>';
+                    verdict = 'The board is full and neither side won. That was close!';
+                } else if (winner === playerSymbol) {
+                    // Player won
+                    document.body.classList.add('win');
+                    eyebrow = 'You Won!';
+                    title   = 'Well<br><em>Played!</em>';
+                    verdict = 'You beat the CPU. Three in a row — nice moves!';
+                } else {
+                    // CPU won
+                    document.body.classList.add('lose');
+                    eyebrow = 'CPU Wins!';
+                    title   = 'Better<br><em>Luck!</em>';
+                    verdict = 'The CPU got three in a row this time. Give it another go!';
+                }
+
+                document.getElementById('resultEyebrow').textContent = eyebrow;
+                document.getElementById('resultTitle').innerHTML      = title;
+                document.getElementById('resultVerdict').textContent  = verdict;
+            }, 600);
+        }
+    </script>
+
+</body>
+</html>
