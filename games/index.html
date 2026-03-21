@@ -240,6 +240,15 @@
         .trivia-timer { width: 100%; height: 4px; background: rgba(15,14,13,0.08); border-radius: 2px; overflow: hidden; }
         .trivia-timer-fill { height: 100%; width: 75%; background: linear-gradient(90deg, var(--accent-cool), var(--accent-warm)); border-radius: 2px; }
 
+        /* Tic Tac Toe */
+        .banner-ttt { background: var(--paper); }
+        .ttt-scene { display: flex; align-items: center; justify-content: center; }
+        .ttt-grid { display: grid; grid-template-columns: repeat(3, 48px); grid-template-rows: repeat(3, 48px); gap: 6px; }
+        .ttt-cell { background: var(--paper-card); border: 1.5px solid var(--rule); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; font-size: 1.4rem; line-height: 1; }
+        .ttt-cell.x { color: var(--accent); }
+        .ttt-cell.o { color: var(--accent-cool); }
+        .ttt-cell.win { background: var(--paper-warm); border-color: var(--accent); }
+
         /* Shared hover overlay */
         .banner-overlay { position: absolute; inset: 0; background: rgba(192,57,43,0.08); opacity: 0; transition: opacity 0.3s; display: flex; align-items: center; justify-content: center; }
         .banner-overlay span { font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: white; background: var(--accent); padding: 8px 20px; border-radius: 2px; transform: translateY(10px); transition: transform 0.3s ease; }
@@ -293,7 +302,7 @@
         <h1>Inter&shy;active <em>Games</em></h1>
         <div class="page-hero-meta">
             <p>Logic-based browser games. No installs. Play right here.</p>
-            <span class="game-count">08 Games</span>
+            <span class="game-count">09 Games</span>
         </div>
     </div>
 
@@ -487,6 +496,33 @@
                     <h2>True or<br>False?</h2>
                     <p>AI generates 5 fresh facts every round. Mixed topics. 6 seconds to answer. How many can you get right?</p>
                     <div class="game-tags"><span class="tag">Trivia</span><span class="tag">AI</span><span class="tag">Single Player</span></div>
+                    <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- 09 Tic Tac Toe -->
+            <a href="tic-tac-toe/index.html" class="game-card fade-in" style="transition-delay:0.56s;">
+                <div class="game-banner banner-ttt">
+                    <div class="ttt-scene">
+                        <div class="ttt-grid">
+                            <div class="ttt-cell x">✕</div>
+                            <div class="ttt-cell"></div>
+                            <div class="ttt-cell o">○</div>
+                            <div class="ttt-cell"></div>
+                            <div class="ttt-cell x win">✕</div>
+                            <div class="ttt-cell"></div>
+                            <div class="ttt-cell o">○</div>
+                            <div class="ttt-cell"></div>
+                            <div class="ttt-cell x win">✕</div>
+                        </div>
+                    </div>
+                    <div class="banner-overlay"><span>Play Now</span></div>
+                </div>
+                <div class="game-body">
+                    <div class="game-num">09 / Strategy</div>
+                    <h2>Tic Tac<br>Toe</h2>
+                    <p>Pick X or O and take on the CPU. Three in a row wins. Simple, classic, and surprisingly satisfying.</p>
+                    <div class="game-tags"><span class="tag">Strategy</span><span class="tag">vs CPU</span><span class="tag">Single Player</span></div>
                     <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
                 </div>
             </a>
