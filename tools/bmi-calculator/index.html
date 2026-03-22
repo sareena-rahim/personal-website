@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator · Sareena Rahim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f0e0d;
+            --ink-soft: #3a3835;
+            --ink-muted: #7a7672;
+            --paper: #f5f2ed;
+            --paper-warm: #ede9e2;
+            --paper-card: #f9f7f4;
+            --accent: #c0392b;
+            --accent-warm: #e67e22;
+            --accent-cool: #2c7a6e;
+            --rule: rgba(15,14,13,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--paper);
+            color: var(--ink);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 9999; opacity: 0.4;
+        }
+
+        /* ── HEADER ── */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(245,242,237,0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+        }
+
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 18px 7%; max-width: 1400px; margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem; color: var(--ink);
+            text-decoration: none; letter-spacing: -0.02em;
+        }
+
+        .logo sup {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.5rem; color: var(--accent);
+            vertical-align: super; letter-spacing: 0.1em; text-transform: uppercase;
+        }
+
+        .back-btn {
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            border: 1.5px solid var(--ink); padding: 9px 22px; border-radius: 3px;
+            text-decoration: none; color: var(--ink); letter-spacing: 0.05em;
+            display: flex; align-items: center; gap: 8px; transition: all 0.25s ease;
+        }
+
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+        /* ── PAGE HERO ── */
+        .page-hero {
+            padding: 60px 7% 44px; max-width: 1400px;
+            margin: 0 auto; border-bottom: 1px solid var(--rule);
+        }
+
+        .breadcrumb {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-muted); letter-spacing: 0.12em; text-transform: uppercase;
+            margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+        }
+
+        .breadcrumb a { color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
+        .breadcrumb a:hover { color: var(--accent); }
+        .breadcrumb span { color: var(--accent); }
+
+        .page-hero h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.2rem, 5vw, 3.6rem);
+            letter-spacing: -0.03em; line-height: 1.08;
+        }
+
+        .page-hero h1 em { font-style: italic; color: var(--accent); }
+
+        .page-hero p {
+            font-family: 'DM Mono', monospace; font-size: 0.8rem;
+            color: var(--ink-muted); letter-spacing: 0.08em; margin-top: 14px;
+        }
+
+        /* ── MAIN LAYOUT ── */
+        .tool-section {
+            padding: 52px 7% 100px; max-width: 1400px; margin: 0 auto;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        /* ── CARD ── */
+        .card {
+            background: var(--paper-card); border: 1px solid var(--rule);
+            border-radius: 6px; padding: 40px 36px;
+        }
+
+        .card-title {
+            font-family: 'DM Mono', monospace; font-size: 0.7rem;
+            color: var(--ink-muted); letter-spacing: 0.15em; text-transform: uppercase;
+            margin-bottom: 28px; padding-bottom: 16px;
+            border-bottom: 1px solid var(--rule);
+        }
+
+        /* ── FORM FIELDS ── */
+        .field { margin-bottom: 24px; }
+        .field:last-child { margin-bottom: 0; }
+
+        .field label {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-soft); letter-spacing: 0.08em; text-transform: uppercase;
+            display: block; margin-bottom: 10px;
+        }
+
+        .input-wrap { position: relative; display: flex; align-items: center; }
+
+        .input-suffix {
+            position: absolute; right: 14px;
+            font-family: 'DM Mono', monospace; font-size: 0.85rem;
+            color: var(--ink-muted); pointer-events: none;
+        }
+
+        .field input {
+            width: 100%;
+            font-family: 'DM Mono', monospace; font-size: 1rem;
+            color: var(--ink); background: var(--paper-warm);
+            border: 1.5px solid var(--rule); border-radius: 4px;
+            padding: 14px 44px 14px 14px;
+            outline: none; transition: border-color 0.2s ease;
+            -moz-appearance: textfield;
+        }
+
+        .field input::-webkit-outer-spin-button,
+        .field input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+        .field input:focus { border-color: var(--accent); }
+        .field input::placeholder { color: var(--ink-muted); }
+
+        /* ── RESULTS ── */
+        .empty-state {
+            text-align: center; padding: 40px 20px;
+        }
+
+        .empty-state i {
+            font-size: 2rem; color: var(--rule); margin-bottom: 16px; display: block;
+        }
+
+        .empty-state p {
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            color: var(--ink-muted); letter-spacing: 0.06em; line-height: 1.6;
+        }
+
+        .result-block { display: flex; flex-direction: column; gap: 16px; }
+
+        /* Big BMI number */
+        .result-main {
+            border-radius: 6px; padding: 32px 30px;
+            text-align: center; transition: background 0.4s ease;
+        }
+
+        .result-main-label {
+            font-family: 'DM Mono', monospace; font-size: 0.68rem;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            margin-bottom: 10px; opacity: 0.6;
+        }
+
+        .result-main-value {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(3rem, 6vw, 4rem);
+            letter-spacing: -0.03em; line-height: 1;
+        }
+
+        .result-main-cat {
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            margin-top: 10px; opacity: 0.75;
+        }
+
+        /* Category colours */
+        .cat-underweight { background: rgba(44,122,110,0.10); color: var(--accent-cool); }
+        .cat-normal      { background: rgba(44,122,110,0.15); color: var(--accent-cool); }
+        .cat-overweight  { background: rgba(230,126,34,0.12); color: var(--accent-warm); }
+        .cat-obese       { background: rgba(192,57,43,0.10); color: var(--accent); }
+
+        /* BMI scale bar */
+        .scale-wrap { width: 100%; }
+
+        .scale-label {
+            font-family: 'DM Mono', monospace; font-size: 0.65rem;
+            color: var(--ink-muted); letter-spacing: 0.1em; text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .scale-track {
+            width: 100%; height: 8px; border-radius: 99px; overflow: visible;
+            background: linear-gradient(90deg,
+                #2c7a6e 0%, #2c7a6e 27%,
+                #4caf7d 27%, #4caf7d 50%,
+                #e67e22 50%, #e67e22 72%,
+                #c0392b 72%, #c0392b 100%
+            );
+            position: relative;
+        }
+
+        /* Marker dot on scale */
+        .scale-marker {
+            position: absolute; top: 50%;
+            width: 14px; height: 14px; border-radius: 50%;
+            background: var(--ink); border: 2px solid var(--paper);
+            transform: translate(-50%, -50%);
+            transition: left 0.4s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .scale-labels {
+            display: flex; justify-content: space-between;
+            margin-top: 8px;
+        }
+
+        .scale-labels span {
+            font-family: 'DM Mono', monospace; font-size: 0.6rem;
+            color: var(--ink-muted); letter-spacing: 0.06em;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--rule); padding: 24px 7%;
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 1400px; margin: 0 auto;
+        }
+
+        footer p { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--ink-muted); letter-spacing: 0.08em; }
+        footer span { color: var(--accent); }
+        footer a { color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
+        footer a:hover { color: var(--accent); }
+
+        @media (max-width: 860px) { .tool-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 500px) { .card { padding: 28px 22px; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Tools</a>
+        </nav>
+    </header>
+
+    <div class="page-hero">
+        <div class="breadcrumb">
+            <a href="../../index.html">Home</a>
+            <i class="fas fa-chevron-right" style="font-size:0.55rem;"></i>
+            <a href="../index.html">Web Tools</a>
+            <i class="fas fa-chevron-right" style="font-size:0.55rem;"></i>
+            <span>BMI Calculator</span>
+        </div>
+        <h1>BMI <em>Calculator</em></h1>
+        <p>Enter your height and weight to instantly calculate your Body Mass Index.</p>
+    </div>
+
+    <div class="tool-section">
+        <div class="tool-grid">
+
+            <!-- INPUT CARD -->
+            <div class="card">
+                <div class="card-title">10 / Your Details</div>
+
+                <div class="field">
+                    <label>Height</label>
+                    <div class="input-wrap">
+                        <input type="number" id="height" placeholder="e.g. 170" oninput="calculate()">
+                        <span class="input-suffix">cm</span>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Weight</label>
+                    <div class="input-wrap">
+                        <input type="number" id="weight" placeholder="e.g. 65" oninput="calculate()">
+                        <span class="input-suffix">kg</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESULT CARD -->
+            <div class="card">
+                <div class="card-title">Your Result</div>
+
+                <!-- Empty state — shown when inputs are empty -->
+                <div id="emptyState" class="empty-state">
+                    <i class="fas fa-weight-scale"></i>
+                    <p>Enter your height and weight<br>on the left to see your BMI.</p>
+                </div>
+
+                <!-- Result — shown once both inputs are filled -->
+                <div id="results" class="result-block" style="display:none;">
+
+                    <!-- Big BMI number + category -->
+                    <div class="result-main" id="resultMain">
+                        <div class="result-main-label">Your BMI</div>
+                        <div class="result-main-value" id="bmiValue">—</div>
+                        <div class="result-main-cat"   id="bmiCat">—</div>
+                    </div>
+
+                    <!-- Visual scale bar -->
+                    <div class="scale-wrap">
+                        <div class="scale-label">BMI Scale</div>
+                        <div class="scale-track">
+                            <div class="scale-marker" id="scaleMarker" style="left:50%;"></div>
+                        </div>
+                        <div class="scale-labels">
+                            <span>Underweight<br>&lt;18.5</span>
+                            <span>Normal<br>18.5–25</span>
+                            <span>Overweight<br>25–30</span>
+                            <span>Obese<br>&gt;30</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 Sareena Rahim</p>
+        <p>Part of <span>·</span> <a href="../../index.html">sareenarahim.dev</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const height = parseFloat(document.getElementById('height').value); // in cm
+            const weight = parseFloat(document.getElementById('weight').value); // in kg
+
+            // If either field is empty or invalid, show empty state
+            if (!height || !weight || height <= 0 || weight <= 0) {
+                document.getElementById('emptyState').style.display = 'block';
+                document.getElementById('results').style.display    = 'none';
+                return;
+            }
+
+            // ── BMI FORMULA ──────────────────────────────
+            // Convert height from cm to metres, then: BMI = weight / height²
+            const heightM = height / 100;
+            const bmi     = weight / (heightM * heightM);
+            const bmiRounded = Math.round(bmi * 10) / 10; // 1 decimal place
+
+            // ── DETERMINE CATEGORY ───────────────────────
+            let category, cssClass;
+
+            if (bmi < 18.5) {
+                category = 'Underweight';
+                cssClass = 'cat-underweight';
+            } else if (bmi < 25) {
+                category = 'Normal Weight';
+                cssClass = 'cat-normal';
+            } else if (bmi < 30) {
+                category = 'Overweight';
+                cssClass = 'cat-overweight';
+            } else {
+                category = 'Obese';
+                cssClass = 'cat-obese';
+            }
+
+            // ── UPDATE UI ────────────────────────────────
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('results').style.display    = 'flex';
+
+            document.getElementById('bmiValue').textContent = bmiRounded;
+            document.getElementById('bmiCat').textContent   = category;
+
+            // Apply category colour class to the result box
+            const mainBox = document.getElementById('resultMain');
+            mainBox.className = `result-main ${cssClass}`;
+
+            // ── MOVE SCALE MARKER ────────────────────────
+            // Map BMI to a percentage position on the scale bar:
+            // Scale goes from BMI 10 (left) to BMI 40 (right)
+            const minBMI = 10, maxBMI = 40;
+            const pct    = Math.min(Math.max((bmi - minBMI) / (maxBMI - minBMI) * 100, 2), 98);
+            document.getElementById('scaleMarker').style.left = pct + '%';
+        }
+    </script>
+
+</body>
+</html>
