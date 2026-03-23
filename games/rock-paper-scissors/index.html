@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors · Sareena Rahim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f0e0d;
+            --ink-soft: #3a3835;
+            --ink-muted: #7a7672;
+            --paper: #f5f2ed;
+            --paper-warm: #ede9e2;
+            --paper-card: #f9f7f4;
+            --accent: #c0392b;
+            --accent-warm: #e67e22;
+            --accent-cool: #2c7a6e;
+            --rule: rgba(15,14,13,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--paper);
+            color: var(--ink);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.4s ease;
+        }
+
+        body.win  { background-color: #d0f0e8; }
+        body.lose { background-color: #f5d0ce; }
+        body.draw { background-color: #f5e6d0; }
+
+        body::before {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 9999; opacity: 0.4;
+        }
+
+        /* ── HEADER ── */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(245,242,237,0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+        }
+
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 18px 7%; max-width: 1400px; margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem; color: var(--ink);
+            text-decoration: none; letter-spacing: -0.02em;
+        }
+
+        .logo sup {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.5rem; color: var(--accent);
+            vertical-align: super; letter-spacing: 0.1em; text-transform: uppercase;
+        }
+
+        .back-btn {
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            border: 1.5px solid var(--ink); padding: 9px 22px; border-radius: 3px;
+            text-decoration: none; color: var(--ink); letter-spacing: 0.05em;
+            display: flex; align-items: center; gap: 8px; transition: all 0.25s ease;
+        }
+
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+        /* ── WRAPPER ── */
+        .wrapper {
+            max-width: 560px; margin: 0 auto;
+            padding: 60px 7% 100px;
+            display: flex; flex-direction: column; align-items: center; gap: 32px;
+        }
+
+        /* ── SCREENS ── */
+        .screen { display: none; width: 100%; flex-direction: column; align-items: center; gap: 28px; }
+        .screen.active { display: flex; }
+
+        /* ── START SCREEN ── */
+        .eyebrow {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-muted); letter-spacing: 0.15em; text-transform: uppercase;
+        }
+
+        .big-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.5rem, 8vw, 4.2rem);
+            letter-spacing: -0.03em; line-height: 1.0; text-align: center;
+        }
+
+        .big-title em { font-style: italic; color: var(--accent); }
+
+        .start-desc {
+            font-family: 'DM Mono', monospace; font-size: 0.82rem;
+            color: var(--ink-muted); line-height: 1.7; text-align: center;
+            max-width: 340px; letter-spacing: 0.03em;
+        }
+
+        /* ── BUTTONS ── */
+        .btn-primary {
+            font-family: 'DM Mono', monospace; font-size: 0.85rem;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            background: var(--ink); color: var(--paper);
+            border: none; padding: 18px 52px; border-radius: 3px;
+            cursor: pointer; transition: all 0.25s ease;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .btn-primary:hover { background: var(--accent); transform: translateY(-2px); }
+
+        .btn-secondary {
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            background: transparent; color: var(--ink);
+            border: 1.5px solid var(--ink); padding: 14px 32px; border-radius: 3px;
+            cursor: pointer; transition: all 0.25s ease;
+            text-decoration: none; display: flex; align-items: center; gap: 8px;
+        }
+
+        .btn-secondary:hover { background: var(--ink); color: var(--paper); }
+
+        /* ── SCORE BAR ── */
+        .score-bar {
+            width: 100%; display: flex; justify-content: space-between;
+            align-items: center; padding-bottom: 20px;
+            border-bottom: 1px solid var(--rule);
+        }
+
+        .score-side { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+
+        .score-label {
+            font-family: 'DM Mono', monospace; font-size: 0.65rem;
+            color: var(--ink-muted); letter-spacing: 0.12em; text-transform: uppercase;
+        }
+
+        .score-num {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem; letter-spacing: -0.03em; line-height: 1;
+        }
+
+        .score-num.you { color: var(--accent-cool); }
+        .score-num.cpu { color: var(--accent); }
+
+        .round-label {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-muted); letter-spacing: 0.1em;
+        }
+
+        /* ── ARENA ── */
+        .arena {
+            width: 100%; background: var(--paper-card);
+            border: 1px solid var(--rule); border-radius: 6px;
+            padding: 36px 28px; display: flex; flex-direction: column;
+            align-items: center; gap: 20px;
+        }
+
+        /* The two emoji boxes */
+        .picks-row {
+            display: flex; align-items: center; justify-content: space-between;
+            width: 100%; gap: 12px;
+        }
+
+        .pick-box {
+            flex: 1; background: var(--paper-warm); border: 1.5px solid var(--rule);
+            border-radius: 6px; padding: 20px 10px;
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+        }
+
+        .pick-box.win-box  { border-color: var(--accent-cool); background: rgba(44,122,110,0.08); }
+        .pick-box.lose-box { border-color: var(--accent);      background: rgba(192,57,43,0.06); }
+
+        .pick-emoji { font-size: 3rem; line-height: 1; }
+        .pick-lbl {
+            font-family: 'DM Mono', monospace; font-size: 0.65rem;
+            color: var(--ink-muted); letter-spacing: 0.12em; text-transform: uppercase;
+        }
+
+        .vs-badge {
+            font-family: 'DM Serif Display', serif; font-size: 1.2rem;
+            color: var(--ink-muted); letter-spacing: -0.02em; flex-shrink: 0;
+        }
+
+        /* Round result message */
+        .round-result {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.6rem; letter-spacing: -0.025em; line-height: 1;
+            min-height: 2rem; text-align: center;
+        }
+
+        .round-result.win  { color: var(--accent-cool); }
+        .round-result.lose { color: var(--accent); }
+        .round-result.draw { color: var(--accent-warm); }
+
+        /* ── CHOICE BUTTONS ── */
+        .choice-row {
+            display: flex; gap: 14px; width: 100%; justify-content: center;
+        }
+
+        .choice-btn {
+            flex: 1; max-width: 140px;
+            background: var(--paper-card); border: 1.5px solid var(--rule);
+            border-radius: 6px; padding: 18px 10px;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            cursor: pointer; transition: all 0.25s ease;
+            font-family: 'DM Mono', monospace; font-size: 0.68rem;
+            letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft);
+        }
+
+        .choice-btn span { font-size: 2rem; line-height: 1; }
+
+        .choice-btn:hover:not(:disabled) {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+            border-color: var(--ink-muted);
+        }
+
+        .choice-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        /* ── RESULT SCREEN ── */
+        .result-eyebrow {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-muted); letter-spacing: 0.15em; text-transform: uppercase;
+        }
+
+        .result-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.5rem, 7vw, 4rem);
+            letter-spacing: -0.03em; line-height: 1.05; text-align: center;
+        }
+
+        .result-title em { font-style: italic; color: var(--accent); }
+
+        .result-score {
+            font-family: 'DM Mono', monospace; font-size: 0.85rem;
+            color: var(--ink-muted); letter-spacing: 0.08em;
+        }
+
+        .result-verdict {
+            font-family: 'DM Mono', monospace; font-size: 0.82rem;
+            color: var(--ink-soft); line-height: 1.7; text-align: center;
+            max-width: 320px; letter-spacing: 0.03em;
+        }
+
+        .result-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--rule); padding: 24px 7%;
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 1400px; margin: 0 auto;
+        }
+
+        footer p { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--ink-muted); letter-spacing: 0.08em; }
+        footer span { color: var(--accent); }
+        footer a { color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
+        footer a:hover { color: var(--accent); }
+
+        @media (max-width: 480px) {
+            .wrapper { padding: 36px 6% 80px; }
+            .pick-emoji { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Games</a>
+        </nav>
+    </header>
+
+    <div class="wrapper">
+
+        <!-- ── START ── -->
+        <div class="screen active" id="startScreen">
+            <p class="eyebrow">10 / vs CPU</p>
+            <h1 class="big-title">Rock Paper<br><em>Scissors</em></h1>
+            <p class="start-desc">Pick Rock, Paper, or Scissors. First to win 2 rounds wins the match. Best of 3!</p>
+            <button class="btn-primary" onclick="startGame()">
+                Start Game <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- ── GAME ── -->
+        <div class="screen" id="gameScreen">
+
+            <!-- Score bar -->
+            <div class="score-bar">
+                <div class="score-side">
+                    <span class="score-label">You</span>
+                    <span class="score-num you" id="yourScore">0</span>
+                </div>
+                <span class="round-label" id="roundLabel">Round 1</span>
+                <div class="score-side">
+                    <span class="score-label">CPU</span>
+                    <span class="score-num cpu" id="cpuScore">0</span>
+                </div>
+            </div>
+
+            <!-- Arena — shows picks and round result -->
+            <div class="arena">
+                <div class="picks-row">
+                    <div class="pick-box" id="yourPickBox">
+                        <div class="pick-emoji" id="yourPick">❓</div>
+                        <div class="pick-lbl">You</div>
+                    </div>
+                    <div class="vs-badge">vs</div>
+                    <div class="pick-box" id="cpuPickBox">
+                        <div class="pick-emoji" id="cpuPick">❓</div>
+                        <div class="pick-lbl">CPU</div>
+                    </div>
+                </div>
+                <div class="round-result" id="roundResult">Make your pick!</div>
+            </div>
+
+            <!-- Choice buttons -->
+            <div class="choice-row">
+                <button class="choice-btn" id="btnRock"     onclick="play('rock')">
+                    <span>🪨</span> Rock
+                </button>
+                <button class="choice-btn" id="btnPaper"    onclick="play('paper')">
+                    <span>📄</span> Paper
+                </button>
+                <button class="choice-btn" id="btnScissors" onclick="play('scissors')">
+                    <span>✂️</span> Scissors
+                </button>
+            </div>
+
+        </div>
+
+        <!-- ── RESULT ── -->
+        <div class="screen" id="resultScreen">
+            <p class="result-eyebrow" id="resultEyebrow">Match Over</p>
+            <h2 class="result-title"  id="resultTitle"></h2>
+            <p class="result-score"   id="resultScore"></p>
+            <p class="result-verdict" id="resultVerdict"></p>
+            <div class="result-actions">
+                <button class="btn-primary" onclick="startGame()">
+                    Play Again <i class="fas fa-arrow-right"></i>
+                </button>
+                <a href="../index.html" class="btn-secondary">
+                    <i class="fas fa-gamepad"></i> All Games
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>© 2026 Sareena Rahim</p>
+        <p>Part of <span>·</span> <a href="../../index.html">sareenarahim.dev</a></p>
+    </footer>
+
+    <script>
+        // ── SETTINGS ──────────────────────────────────
+        const WIN_TARGET = 2; // first to this many wins takes the match
+
+        // Emojis for each choice
+        const EMOJI = { rock: '🪨', paper: '📄', scissors: '✂️' };
+
+        // What beats what
+        // beats[x] = the choice that x beats
+        const BEATS = { rock: 'scissors', paper: 'rock', scissors: 'paper' };
+
+        // All possible CPU choices
+        const CHOICES = ['rock', 'paper', 'scissors'];
+
+        // Game state
+        let yourWins = 0;
+        let cpuWins  = 0;
+        let round    = 1;
+
+        // ── SCREEN SWITCH ──────────────────────────────
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function clearBg() {
+            document.body.classList.remove('win', 'lose', 'draw');
+        }
+
+        // ── START GAME ─────────────────────────────────
+        function startGame() {
+            yourWins = 0; cpuWins = 0; round = 1;
+            clearBg();
+
+            // Reset score display
+            document.getElementById('yourScore').textContent = 0;
+            document.getElementById('cpuScore').textContent  = 0;
+            document.getElementById('roundLabel').textContent = 'Round 1';
+
+            // Reset arena
+            document.getElementById('yourPick').textContent = '❓';
+            document.getElementById('cpuPick').textContent  = '❓';
+            document.getElementById('yourPickBox').className = 'pick-box';
+            document.getElementById('cpuPickBox').className  = 'pick-box';
+            document.getElementById('roundResult').textContent = 'Make your pick!';
+            document.getElementById('roundResult').className   = 'round-result';
+
+            enableButtons();
+            showScreen('gameScreen');
+        }
+
+        // ── PLAYER PICKS ───────────────────────────────
+        function play(yourChoice) {
+            // Disable buttons so player can't click again mid-round
+            disableButtons();
+            clearBg();
+
+            // CPU picks randomly
+            const cpuChoice = CHOICES[Math.floor(Math.random() * CHOICES.length)];
+
+            // Show both picks
+            document.getElementById('yourPick').textContent = EMOJI[yourChoice];
+            document.getElementById('cpuPick').textContent  = EMOJI[cpuChoice];
+
+            // ── DECIDE ROUND WINNER ────────────────────
+            let resultText, resultClass;
+
+            if (yourChoice === cpuChoice) {
+                // Draw — no one scores
+                resultText  = "It's a Draw!";
+                resultClass = 'round-result draw';
+                document.body.classList.add('draw');
+            } else if (BEATS[yourChoice] === cpuChoice) {
+                // You win this round
+                yourWins++;
+                document.getElementById('yourScore').textContent = yourWins;
+                document.getElementById('yourPickBox').className = 'pick-box win-box';
+                document.getElementById('cpuPickBox').className  = 'pick-box lose-box';
+                resultText  = 'You Win This Round!';
+                resultClass = 'round-result win';
+                document.body.classList.add('win');
+            } else {
+                // CPU wins this round
+                cpuWins++;
+                document.getElementById('cpuScore').textContent  = cpuWins;
+                document.getElementById('yourPickBox').className = 'pick-box lose-box';
+                document.getElementById('cpuPickBox').className  = 'pick-box win-box';
+                resultText  = 'CPU Wins This Round!';
+                resultClass = 'round-result lose';
+                document.body.classList.add('lose');
+            }
+
+            document.getElementById('roundResult').textContent = resultText;
+            document.getElementById('roundResult').className   = resultClass;
+
+            // ── CHECK IF MATCH IS OVER ─────────────────
+            if (yourWins >= WIN_TARGET || cpuWins >= WIN_TARGET) {
+                // Small delay before showing result screen
+                setTimeout(showMatchResult, 1200);
+            } else {
+                // Move to next round
+                round++;
+                document.getElementById('roundLabel').textContent = `Round ${round}`;
+                // Re-enable buttons after a short pause
+                setTimeout(() => {
+                    enableButtons();
+                    clearBg();
+                    document.getElementById('yourPickBox').className = 'pick-box';
+                    document.getElementById('cpuPickBox').className  = 'pick-box';
+                    document.getElementById('yourPick').textContent  = '❓';
+                    document.getElementById('cpuPick').textContent   = '❓';
+                    document.getElementById('roundResult').textContent = 'Make your pick!';
+                    document.getElementById('roundResult').className   = 'round-result';
+                }, 1200);
+            }
+        }
+
+        // ── ENABLE / DISABLE CHOICE BUTTONS ───────────
+        function enableButtons() {
+            document.getElementById('btnRock').disabled     = false;
+            document.getElementById('btnPaper').disabled    = false;
+            document.getElementById('btnScissors').disabled = false;
+        }
+
+        function disableButtons() {
+            document.getElementById('btnRock').disabled     = true;
+            document.getElementById('btnPaper').disabled    = true;
+            document.getElementById('btnScissors').disabled = true;
+        }
+
+        // ── SHOW FINAL MATCH RESULT ────────────────────
+        function showMatchResult() {
+            showScreen('resultScreen');
+
+            let eyebrow, title, verdict;
+
+            if (yourWins > cpuWins) {
+                document.body.classList.add('win');
+                eyebrow = 'You Won the Match!';
+                title   = 'Well<br><em>Played!</em>';
+                verdict = `You won ${yourWins} — ${cpuWins}. The CPU didn't stand a chance!`;
+            } else {
+                document.body.classList.add('lose');
+                eyebrow = 'CPU Wins the Match!';
+                title   = 'Better<br><em>Luck!</em>';
+                verdict = `CPU won ${cpuWins} — ${yourWins}. Give it another go!`;
+            }
+
+            document.getElementById('resultEyebrow').textContent = eyebrow;
+            document.getElementById('resultTitle').innerHTML      = title;
+            document.getElementById('resultScore').textContent    = `${yourWins} — ${cpuWins}`;
+            document.getElementById('resultVerdict').textContent  = verdict;
+        }
+    </script>
+
+</body>
+</html>
