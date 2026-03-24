@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Journal · Sareena Rahim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f0e0d;
+            --ink-soft: #3a3835;
+            --ink-muted: #7a7672;
+            --paper: #f5f2ed;
+            --paper-warm: #ede9e2;
+            --paper-card: #f9f7f4;
+            --accent: #c0392b;
+            --accent-warm: #e67e22;
+            --accent-cool: #2c7a6e;
+            --rule: rgba(15,14,13,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--paper);
+            color: var(--ink);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 9999; opacity: 0.4;
+        }
+
+        /* ── HEADER ── */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(245,242,237,0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+        }
+
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 18px 7%; max-width: 1400px; margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem; color: var(--ink);
+            text-decoration: none; letter-spacing: -0.02em;
+        }
+
+        .logo sup {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.5rem; color: var(--accent);
+            vertical-align: super; letter-spacing: 0.1em; text-transform: uppercase;
+        }
+
+        .back-btn {
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            border: 1.5px solid var(--ink); padding: 9px 22px; border-radius: 3px;
+            text-decoration: none; color: var(--ink); letter-spacing: 0.05em;
+            display: flex; align-items: center; gap: 8px; transition: all 0.25s ease;
+        }
+
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+        /* ── PAGE HERO ── */
+        .page-hero {
+            padding: 60px 7% 44px; max-width: 1400px;
+            margin: 0 auto; border-bottom: 1px solid var(--rule);
+        }
+
+        .breadcrumb {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-muted); letter-spacing: 0.12em; text-transform: uppercase;
+            margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+        }
+
+        .breadcrumb a { color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
+        .breadcrumb a:hover { color: var(--accent); }
+        .breadcrumb span { color: var(--accent); }
+
+        .page-hero h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.2rem, 5vw, 3.6rem);
+            letter-spacing: -0.03em; line-height: 1.08;
+        }
+
+        .page-hero h1 em { font-style: italic; color: var(--accent); }
+
+        .page-hero p {
+            font-family: 'DM Mono', monospace; font-size: 0.8rem;
+            color: var(--ink-muted); letter-spacing: 0.08em; margin-top: 14px;
+        }
+
+        /* ── MAIN LAYOUT ── */
+        .tool-section {
+            padding: 52px 7% 100px; max-width: 860px; margin: 0 auto;
+            display: flex; flex-direction: column; gap: 28px;
+        }
+
+        /* ── CARD ── */
+        .card {
+            background: var(--paper-card); border: 1px solid var(--rule);
+            border-radius: 6px; padding: 40px 36px;
+        }
+
+        .card-title {
+            font-family: 'DM Mono', monospace; font-size: 0.7rem;
+            color: var(--ink-muted); letter-spacing: 0.15em; text-transform: uppercase;
+            margin-bottom: 28px; padding-bottom: 16px;
+            border-bottom: 1px solid var(--rule);
+        }
+
+        /* ── MOOD PICKER ── */
+        .mood-label {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-soft); letter-spacing: 0.08em; text-transform: uppercase;
+            margin-bottom: 14px; display: block;
+        }
+
+        .mood-row {
+            display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap;
+        }
+
+        .mood-btn {
+            width: 64px; height: 64px; border-radius: 6px;
+            background: var(--paper-warm); border: 1.5px solid var(--rule);
+            font-size: 1.8rem; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 4px; transition: all 0.2s ease;
+        }
+
+        .mood-btn:hover { transform: translateY(-3px); border-color: var(--ink-muted); }
+
+        .mood-btn.selected { border-color: var(--accent); background: rgba(192,57,43,0.08); transform: translateY(-3px); }
+
+        .mood-btn span.mood-lbl {
+            font-family: 'DM Mono', monospace; font-size: 0.5rem;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            color: var(--ink-muted); line-height: 1;
+        }
+
+        /* ── NOTE FIELD ── */
+        .note-label {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-soft); letter-spacing: 0.08em; text-transform: uppercase;
+            margin-bottom: 10px; display: block;
+        }
+
+        textarea {
+            width: 100%; resize: none;
+            font-family: 'DM Mono', monospace; font-size: 0.88rem;
+            color: var(--ink); background: var(--paper-warm);
+            border: 1.5px solid var(--rule); border-radius: 4px;
+            padding: 14px 16px; outline: none;
+            transition: border-color 0.2s ease; line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        textarea:focus { border-color: var(--accent); }
+        textarea::placeholder { color: var(--ink-muted); }
+
+        /* ── SAVE BUTTON ── */
+        .btn-primary {
+            font-family: 'DM Mono', monospace; font-size: 0.85rem;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            background: var(--ink); color: var(--paper);
+            border: none; padding: 16px 40px; border-radius: 3px;
+            cursor: pointer; transition: all 0.25s ease;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .btn-primary:hover { background: var(--accent); transform: translateY(-2px); }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+        /* ── TOAST ── */
+        .toast {
+            font-family: 'DM Mono', monospace; font-size: 0.75rem;
+            letter-spacing: 0.08em; color: var(--accent-cool);
+            height: 20px; margin-top: 12px; transition: opacity 0.3s;
+        }
+
+        /* ── ENTRIES LIST ── */
+        .entries-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 28px; padding-bottom: 16px;
+            border-bottom: 1px solid var(--rule);
+        }
+
+        .entries-title {
+            font-family: 'DM Mono', monospace; font-size: 0.7rem;
+            color: var(--ink-muted); letter-spacing: 0.15em; text-transform: uppercase;
+        }
+
+        .clear-btn {
+            font-family: 'DM Mono', monospace; font-size: 0.65rem;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            color: var(--ink-muted); background: none; border: none;
+            cursor: pointer; transition: color 0.2s;
+        }
+
+        .clear-btn:hover { color: var(--accent); }
+
+        /* Empty state */
+        .empty-entries {
+            text-align: center; padding: 32px 20px;
+        }
+
+        .empty-entries p {
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            color: var(--ink-muted); letter-spacing: 0.06em; line-height: 1.6;
+        }
+
+        /* Entry item */
+        .entries-list { display: flex; flex-direction: column; gap: 14px; }
+
+        .entry-item {
+            background: var(--paper-warm); border: 1px solid var(--rule);
+            border-radius: 6px; padding: 18px 20px;
+            display: flex; align-items: flex-start; gap: 16px;
+            animation: fadeUp 0.3s ease;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .entry-emoji { font-size: 1.8rem; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+
+        .entry-body { flex: 1; }
+
+        .entry-meta {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 6px;
+        }
+
+        .entry-mood-name {
+            font-family: 'DM Mono', monospace; font-size: 0.68rem;
+            letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft);
+        }
+
+        .entry-date {
+            font-family: 'DM Mono', monospace; font-size: 0.62rem;
+            color: var(--ink-muted); letter-spacing: 0.06em;
+        }
+
+        .entry-note {
+            font-family: 'DM Mono', monospace; font-size: 0.8rem;
+            color: var(--ink-soft); line-height: 1.6;
+        }
+
+        .entry-no-note {
+            font-family: 'DM Mono', monospace; font-size: 0.75rem;
+            color: var(--ink-muted); font-style: italic;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--rule); padding: 24px 7%;
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 1400px; margin: 0 auto;
+        }
+
+        footer p { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--ink-muted); letter-spacing: 0.08em; }
+        footer span { color: var(--accent); }
+        footer a { color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
+        footer a:hover { color: var(--accent); }
+
+        @media (max-width: 600px) {
+            .card { padding: 28px 22px; }
+            .mood-btn { width: 56px; height: 56px; font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Tools</a>
+        </nav>
+    </header>
+
+    <div class="page-hero">
+        <div class="breadcrumb">
+            <a href="../../index.html">Home</a>
+            <i class="fas fa-chevron-right" style="font-size:0.55rem;"></i>
+            <a href="../index.html">Web Tools</a>
+            <i class="fas fa-chevron-right" style="font-size:0.55rem;"></i>
+            <span>Mood Journal</span>
+        </div>
+        <h1>Mood <em>Journal</em></h1>
+        <p>Log how you feel today. Your entries are saved in your browser.</p>
+    </div>
+
+    <div class="tool-section">
+
+        <!-- LOG MOOD CARD -->
+        <div class="card">
+            <div class="card-title">11 / Log Today's Mood</div>
+
+            <span class="mood-label">How are you feeling?</span>
+            <div class="mood-row" id="moodRow">
+                <button class="mood-btn" data-mood="Happy"   data-emoji="😊" onclick="selectMood(this)">
+                    😊 <span class="mood-lbl">Happy</span>
+                </button>
+                <button class="mood-btn" data-mood="Neutral" data-emoji="😐" onclick="selectMood(this)">
+                    😐 <span class="mood-lbl">Neutral</span>
+                </button>
+                <button class="mood-btn" data-mood="Sad"     data-emoji="😢" onclick="selectMood(this)">
+                    😢 <span class="mood-lbl">Sad</span>
+                </button>
+                <button class="mood-btn" data-mood="Angry"   data-emoji="😠" onclick="selectMood(this)">
+                    😠 <span class="mood-lbl">Angry</span>
+                </button>
+                <button class="mood-btn" data-mood="Tired"   data-emoji="😴" onclick="selectMood(this)">
+                    😴 <span class="mood-lbl">Tired</span>
+                </button>
+            </div>
+
+            <span class="note-label">Add a note <span style="color:var(--ink-muted);font-size:0.65rem;">(optional)</span></span>
+            <textarea id="noteInput" rows="3" placeholder="What's on your mind today?"></textarea>
+
+            <button class="btn-primary" id="saveBtn" onclick="saveEntry()" disabled>
+                Save Entry <i class="fas fa-arrow-right"></i>
+            </button>
+            <div class="toast" id="toast"></div>
+        </div>
+
+        <!-- PAST ENTRIES CARD -->
+        <div class="card">
+            <div class="entries-header">
+                <span class="entries-title">Past Entries</span>
+                <button class="clear-btn" onclick="clearAll()">Clear All</button>
+            </div>
+            <div id="entriesList"></div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>© 2026 Sareena Rahim</p>
+        <p>Part of <span>·</span> <a href="../../index.html">sareenarahim.dev</a></p>
+    </footer>
+
+    <script>
+        // ── STATE ─────────────────────────────────────
+        // selectedMood holds the currently picked mood button's data
+        let selectedMood = null; // { mood: 'Happy', emoji: '😊' }
+
+        // localStorage key where we store all entries
+        const STORAGE_KEY = 'moodJournalEntries';
+
+        // ── ON PAGE LOAD ──────────────────────────────
+        // Render any existing entries from localStorage
+        renderEntries();
+
+        // ── SELECT A MOOD ─────────────────────────────
+        function selectMood(btn) {
+            // Remove selected class from all buttons
+            document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+
+            // Mark this one as selected
+            btn.classList.add('selected');
+
+            // Store the selected mood data
+            selectedMood = {
+                mood:  btn.dataset.mood,
+                emoji: btn.dataset.emoji
+            };
+
+            // Enable the save button now that a mood is picked
+            document.getElementById('saveBtn').disabled = false;
+        }
+
+        // ── SAVE ENTRY ────────────────────────────────
+        function saveEntry() {
+            if (!selectedMood) return;
+
+            const note = document.getElementById('noteInput').value.trim();
+
+            // Build the entry object
+            const entry = {
+                mood:  selectedMood.mood,
+                emoji: selectedMood.emoji,
+                note:  note,
+                date:  new Date().toLocaleDateString('en-IN', {
+                    weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
+                }),
+                time: new Date().toLocaleTimeString('en-IN', {
+                    hour: '2-digit', minute: '2-digit'
+                }),
+                id: Date.now() // unique ID using timestamp
+            };
+
+            // Load existing entries, add new one at the top, save back
+            const entries = loadEntries();
+            entries.unshift(entry); // unshift = add to beginning of array
+            saveEntries(entries);
+
+            // Reset the form
+            document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+            document.getElementById('noteInput').value = '';
+            document.getElementById('saveBtn').disabled = true;
+            selectedMood = null;
+
+            // Show a brief confirmation message
+            showToast('Entry saved!');
+
+            // Re-render the entries list
+            renderEntries();
+        }
+
+        // ── RENDER ENTRIES ────────────────────────────
+        // Reads from localStorage and displays all entries
+        function renderEntries() {
+            const entries  = loadEntries();
+            const container = document.getElementById('entriesList');
+
+            if (entries.length === 0) {
+                // Show empty state
+                container.innerHTML = `
+                    <div class="empty-entries">
+                        <p>No entries yet.<br>Log your first mood above!</p>
+                    </div>`;
+                return;
+            }
+
+            // Build HTML for each entry
+            container.innerHTML = `<div class="entries-list">
+                ${entries.map(e => `
+                    <div class="entry-item">
+                        <div class="entry-emoji">${e.emoji}</div>
+                        <div class="entry-body">
+                            <div class="entry-meta">
+                                <span class="entry-mood-name">${e.mood}</span>
+                                <span class="entry-date">${e.date} · ${e.time}</span>
+                            </div>
+                            ${e.note
+                                ? `<div class="entry-note">${escapeHTML(e.note)}</div>`
+                                : `<div class="entry-no-note">No note added.</div>`
+                            }
+                        </div>
+                    </div>
+                `).join('')}
+            </div>`;
+        }
+
+        // ── CLEAR ALL ENTRIES ─────────────────────────
+        function clearAll() {
+            if (!confirm('Delete all entries? This cannot be undone.')) return;
+            localStorage.removeItem(STORAGE_KEY);
+            renderEntries();
+        }
+
+        // ── LOCALSTORAGE HELPERS ──────────────────────
+        // Load entries array from localStorage (returns [] if nothing saved)
+        function loadEntries() {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            return raw ? JSON.parse(raw) : [];
+        }
+
+        // Save entries array to localStorage
+        function saveEntries(entries) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+        }
+
+        // ── SHOW TOAST MESSAGE ────────────────────────
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+        }
+
+        // ── ESCAPE HTML ───────────────────────────────
+        // Prevents XSS — converts < > & in user text to safe versions
+        function escapeHTML(str) {
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+    </script>
+
+</body>
+</html>
