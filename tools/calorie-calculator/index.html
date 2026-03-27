@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie Calculator · Sareena Rahim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f0e0d;
+            --ink-soft: #3a3835;
+            --ink-muted: #7a7672;
+            --paper: #f5f2ed;
+            --paper-warm: #ede9e2;
+            --paper-card: #f9f7f4;
+            --accent: #c0392b;
+            --accent-warm: #e67e22;
+            --accent-cool: #2c7a6e;
+            --rule: rgba(15,14,13,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--paper);
+            color: var(--ink);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 9999; opacity: 0.4;
+        }
+
+        /* ── HEADER ── */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(245,242,237,0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+        }
+
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 18px 7%; max-width: 1400px; margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem; color: var(--ink);
+            text-decoration: none; letter-spacing: -0.02em;
+        }
+
+        .logo sup {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.5rem; color: var(--accent);
+            vertical-align: super; letter-spacing: 0.1em; text-transform: uppercase;
+        }
+
+        .back-btn {
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            border: 1.5px solid var(--ink); padding: 9px 22px; border-radius: 3px;
+            text-decoration: none; color: var(--ink); letter-spacing: 0.05em;
+            display: flex; align-items: center; gap: 8px; transition: all 0.25s ease;
+        }
+
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+        /* ── PAGE HERO ── */
+        .page-hero {
+            padding: 60px 7% 44px; max-width: 1400px;
+            margin: 0 auto; border-bottom: 1px solid var(--rule);
+        }
+
+        .breadcrumb {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-muted); letter-spacing: 0.12em; text-transform: uppercase;
+            margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+        }
+
+        .breadcrumb a { color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
+        .breadcrumb a:hover { color: var(--accent); }
+        .breadcrumb span { color: var(--accent); }
+
+        .page-hero h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.2rem, 5vw, 3.6rem);
+            letter-spacing: -0.03em; line-height: 1.08;
+        }
+
+        .page-hero h1 em { font-style: italic; color: var(--accent); }
+
+        .page-hero p {
+            font-family: 'DM Mono', monospace; font-size: 0.8rem;
+            color: var(--ink-muted); letter-spacing: 0.08em; margin-top: 14px;
+        }
+
+        /* ── MAIN LAYOUT ── */
+        .tool-section {
+            padding: 52px 7% 100px; max-width: 1400px; margin: 0 auto;
+        }
+
+        .tool-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 28px; align-items: start;
+        }
+
+        /* ── CARD ── */
+        .card {
+            background: var(--paper-card); border: 1px solid var(--rule);
+            border-radius: 6px; padding: 40px 36px;
+        }
+
+        .card-title {
+            font-family: 'DM Mono', monospace; font-size: 0.7rem;
+            color: var(--ink-muted); letter-spacing: 0.15em; text-transform: uppercase;
+            margin-bottom: 28px; padding-bottom: 16px;
+            border-bottom: 1px solid var(--rule);
+        }
+
+        /* ── FIELDS ── */
+        .field { margin-bottom: 22px; }
+        .field:last-child { margin-bottom: 0; }
+
+        .field label {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-soft); letter-spacing: 0.08em; text-transform: uppercase;
+            display: block; margin-bottom: 10px;
+        }
+
+        .input-wrap { position: relative; }
+
+        .input-suffix {
+            position: absolute; right: 14px; top: 50%;
+            transform: translateY(-50%);
+            font-family: 'DM Mono', monospace; font-size: 0.85rem;
+            color: var(--ink-muted); pointer-events: none;
+        }
+
+        .field input, .field select {
+            width: 100%;
+            font-family: 'DM Mono', monospace; font-size: 0.95rem;
+            color: var(--ink); background: var(--paper-warm);
+            border: 1.5px solid var(--rule); border-radius: 4px;
+            padding: 14px 48px 14px 14px;
+            outline: none; transition: border-color 0.2s ease;
+            -moz-appearance: textfield; appearance: none;
+        }
+
+        .field select { padding-right: 14px; cursor: pointer; }
+
+        .field input::-webkit-outer-spin-button,
+        .field input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+        .field input:focus, .field select:focus { border-color: var(--accent); }
+        .field input::placeholder { color: var(--ink-muted); }
+
+        /* Gender toggle */
+        .gender-row { display: flex; gap: 10px; }
+
+        .gender-btn {
+            flex: 1; font-family: 'DM Mono', monospace; font-size: 0.75rem;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            padding: 12px; border-radius: 4px; cursor: pointer;
+            border: 1.5px solid var(--rule); background: var(--paper-warm);
+            color: var(--ink-muted); transition: all 0.2s ease;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+
+        .gender-btn.selected { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+        .gender-btn:hover:not(.selected) { border-color: var(--ink-muted); }
+
+        /* ── EMPTY STATE ── */
+        .empty-state { text-align: center; padding: 40px 20px; }
+
+        .empty-state i { font-size: 2rem; color: var(--rule); margin-bottom: 16px; display: block; }
+
+        .empty-state p {
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            color: var(--ink-muted); letter-spacing: 0.06em; line-height: 1.6;
+        }
+
+        /* ── RESULT BLOCK ── */
+        .result-block { display: flex; flex-direction: column; gap: 16px; }
+
+        .cal-main {
+            background: var(--ink); border-radius: 6px;
+            padding: 32px 30px; text-align: center;
+        }
+
+        .cal-main-label {
+            font-family: 'DM Mono', monospace; font-size: 0.68rem;
+            color: rgba(245,242,237,0.5); letter-spacing: 0.15em; text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .cal-main-value {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.2rem, 5vw, 3rem);
+            letter-spacing: -0.03em; color: var(--paper); line-height: 1;
+        }
+
+        .cal-main-unit {
+            font-family: 'DM Mono', monospace; font-size: 0.68rem;
+            color: rgba(245,242,237,0.4); letter-spacing: 0.1em; margin-top: 8px;
+        }
+
+        .goal-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+        }
+
+        .goal-box {
+            background: var(--paper-warm); border: 1px solid var(--rule);
+            border-radius: 6px; padding: 18px 16px;
+            display: flex; flex-direction: column; gap: 6px;
+        }
+
+        .goal-label {
+            font-family: 'DM Mono', monospace; font-size: 0.62rem;
+            color: var(--ink-muted); letter-spacing: 0.1em; text-transform: uppercase;
+        }
+
+        .goal-val {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem; letter-spacing: -0.02em; line-height: 1;
+        }
+
+        .goal-val.lose { color: var(--accent-cool); }
+        .goal-val.gain { color: var(--accent-warm); }
+
+        .goal-note {
+            font-family: 'DM Mono', monospace; font-size: 0.6rem;
+            color: var(--ink-muted); letter-spacing: 0.06em; line-height: 1.4;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--rule); padding: 24px 7%;
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 1400px; margin: 0 auto;
+        }
+
+        footer p { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--ink-muted); letter-spacing: 0.08em; }
+        footer span { color: var(--accent); }
+        footer a { color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
+        footer a:hover { color: var(--accent); }
+
+        @media (max-width: 900px) { .tool-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 560px) { .card { padding: 28px 22px; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Tools</a>
+        </nav>
+    </header>
+
+    <div class="page-hero">
+        <div class="breadcrumb">
+            <a href="../../index.html">Home</a>
+            <i class="fas fa-chevron-right" style="font-size:0.55rem;"></i>
+            <a href="../index.html">Web Tools</a>
+            <i class="fas fa-chevron-right" style="font-size:0.55rem;"></i>
+            <span>Calorie Calculator</span>
+        </div>
+        <h1>Calorie <em>Calculator</em></h1>
+        <p>Find your daily calorie needs based on your body and activity level.</p>
+    </div>
+
+    <div class="tool-section">
+        <div class="tool-grid">
+
+            <!-- INPUT CARD -->
+            <div class="card">
+                <div class="card-title">12 / Your Details</div>
+
+                <div class="field">
+                    <label>Gender</label>
+                    <div class="gender-row">
+                        <button class="gender-btn selected" id="btnMale"   onclick="setGender('male')">
+                            <i class="fas fa-mars"></i> Male
+                        </button>
+                        <button class="gender-btn"          id="btnFemale" onclick="setGender('female')">
+                            <i class="fas fa-venus"></i> Female
+                        </button>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Age</label>
+                    <div class="input-wrap">
+                        <input type="number" id="age" placeholder="e.g. 25" oninput="calculate()">
+                        <span class="input-suffix">yrs</span>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Height</label>
+                    <div class="input-wrap">
+                        <input type="number" id="height" placeholder="e.g. 165" oninput="calculate()">
+                        <span class="input-suffix">cm</span>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Weight</label>
+                    <div class="input-wrap">
+                        <input type="number" id="weight" placeholder="e.g. 60" oninput="calculate()">
+                        <span class="input-suffix">kg</span>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Activity Level</label>
+                    <div class="input-wrap">
+                        <select id="activity" onchange="calculate()">
+                            <option value="1.2">Sedentary — little or no exercise</option>
+                            <option value="1.375">Lightly Active — 1–3 days/week</option>
+                            <option value="1.55" selected>Moderately Active — 3–5 days/week</option>
+                            <option value="1.725">Very Active — 6–7 days/week</option>
+                            <option value="1.9">Extra Active — physical job or 2x training</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESULT CARD -->
+            <div class="card">
+                <div class="card-title">Your Result</div>
+
+                <div id="emptyState" class="empty-state">
+                    <i class="fas fa-fire"></i>
+                    <p>Fill in your details on the left<br>to see your daily calorie needs.</p>
+                </div>
+
+                <div id="results" class="result-block" style="display:none;">
+
+                    <div class="cal-main">
+                        <div class="cal-main-label">Daily Maintenance Calories</div>
+                        <div class="cal-main-value" id="mainCal">—</div>
+                        <div class="cal-main-unit">kcal / day</div>
+                    </div>
+
+                    <div class="goal-grid">
+                        <div class="goal-box">
+                            <span class="goal-label">To Lose Weight</span>
+                            <span class="goal-val lose" id="loseCal">—</span>
+                            <span class="goal-note">500 kcal deficit/day (~0.5 kg/week)</span>
+                        </div>
+                        <div class="goal-box">
+                            <span class="goal-label">To Gain Weight</span>
+                            <span class="goal-val gain" id="gainCal">—</span>
+                            <span class="goal-note">500 kcal surplus/day (~0.5 kg/week)</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 Sareena Rahim</p>
+        <p>Part of <span>·</span> <a href="../../index.html">sareenarahim.dev</a></p>
+    </footer>
+
+    <script>
+        // ── STATE ─────────────────────────────────────
+        let gender = 'male'; // tracks selected gender
+
+        // ── GENDER TOGGLE ─────────────────────────────
+        function setGender(g) {
+            gender = g;
+            document.getElementById('btnMale').classList.toggle('selected',   g === 'male');
+            document.getElementById('btnFemale').classList.toggle('selected', g === 'female');
+            calculate();
+        }
+
+        // ── MAIN CALCULATE FUNCTION ───────────────────
+        function calculate() {
+            const age      = parseFloat(document.getElementById('age').value);
+            const height   = parseFloat(document.getElementById('height').value);
+            const weight   = parseFloat(document.getElementById('weight').value);
+            const activity = parseFloat(document.getElementById('activity').value);
+
+            // Show empty state if any field is missing
+            if (!age || !height || !weight || age <= 0 || height <= 0 || weight <= 0) {
+                document.getElementById('emptyState').style.display = 'block';
+                document.getElementById('results').style.display    = 'none';
+                return;
+            }
+
+            // ── MIFFLIN-ST JEOR FORMULA ───────────────
+            // Step 1: Calculate BMR (calories needed if you just rest all day)
+            // Step 2: Multiply by activity factor → TDEE (actual daily need)
+
+            let bmr;
+
+            if (gender === 'male') {
+                // Male BMR = (10 × kg) + (6.25 × cm) − (5 × age) + 5
+                bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
+            } else {
+                // Female BMR = (10 × kg) + (6.25 × cm) − (5 × age) − 161
+                bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
+            }
+
+            const tdee = Math.round(bmr * activity); // total daily calories
+            const lose = tdee - 500;                 // eat less to lose weight
+            const gain = tdee + 500;                 // eat more to gain weight
+
+            // ── UPDATE UI ─────────────────────────────
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('results').style.display    = 'flex';
+
+            document.getElementById('mainCal').textContent = tdee.toLocaleString();
+            document.getElementById('loseCal').textContent = lose.toLocaleString();
+            document.getElementById('gainCal').textContent = gain.toLocaleString();
+        }
+    </script>
+
+</body>
+</html>
