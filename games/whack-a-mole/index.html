@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whack-a-Mole · Sareena Rahim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f0e0d;
+            --ink-soft: #3a3835;
+            --ink-muted: #7a7672;
+            --paper: #f5f2ed;
+            --paper-warm: #ede9e2;
+            --paper-card: #f9f7f4;
+            --accent: #c0392b;
+            --accent-warm: #e67e22;
+            --accent-cool: #2c7a6e;
+            --rule: rgba(15,14,13,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--paper);
+            color: var(--ink);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        body.hit  { background-color: #d0f0e8; }
+        body.miss { background-color: #f5d0ce; }
+
+        body::before {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 9999; opacity: 0.4;
+        }
+
+        /* ── HEADER ── */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(245,242,237,0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+        }
+
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 18px 7%; max-width: 1400px; margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem; color: var(--ink);
+            text-decoration: none; letter-spacing: -0.02em;
+        }
+
+        .logo sup {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.5rem; color: var(--accent);
+            vertical-align: super; letter-spacing: 0.1em; text-transform: uppercase;
+        }
+
+        .back-btn {
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            border: 1.5px solid var(--ink); padding: 9px 22px; border-radius: 3px;
+            text-decoration: none; color: var(--ink); letter-spacing: 0.05em;
+            display: flex; align-items: center; gap: 8px; transition: all 0.25s ease;
+        }
+
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+        /* ── WRAPPER ── */
+        .wrapper {
+            max-width: 600px; margin: 0 auto;
+            padding: 60px 7% 100px;
+            display: flex; flex-direction: column; align-items: center; gap: 32px;
+        }
+
+        /* ── SCREENS ── */
+        .screen { display: none; width: 100%; flex-direction: column; align-items: center; gap: 28px; }
+        .screen.active { display: flex; }
+
+        /* ── START SCREEN ── */
+        .eyebrow {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-muted); letter-spacing: 0.15em; text-transform: uppercase;
+        }
+
+        .big-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.8rem, 8vw, 4.5rem);
+            letter-spacing: -0.03em; line-height: 1.0; text-align: center;
+        }
+
+        .big-title em { font-style: italic; color: var(--accent); }
+
+        .start-desc {
+            font-family: 'DM Mono', monospace; font-size: 0.82rem;
+            color: var(--ink-muted); line-height: 1.7; text-align: center;
+            max-width: 340px; letter-spacing: 0.03em;
+        }
+
+        /* ── BUTTONS ── */
+        .btn-primary {
+            font-family: 'DM Mono', monospace; font-size: 0.85rem;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            background: var(--ink); color: var(--paper);
+            border: none; padding: 18px 52px; border-radius: 3px;
+            cursor: pointer; transition: all 0.25s ease;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .btn-primary:hover { background: var(--accent); transform: translateY(-2px); }
+
+        .btn-secondary {
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            background: transparent; color: var(--ink);
+            border: 1.5px solid var(--ink); padding: 14px 32px; border-radius: 3px;
+            cursor: pointer; transition: all 0.25s ease;
+            text-decoration: none; display: flex; align-items: center; gap: 8px;
+        }
+
+        .btn-secondary:hover { background: var(--ink); color: var(--paper); }
+
+        /* ── GAME SCREEN ── */
+
+        /* Top bar */
+        .top-bar {
+            width: 100%; display: flex; justify-content: space-between;
+            align-items: center; padding-bottom: 20px;
+            border-bottom: 1px solid var(--rule);
+        }
+
+        .top-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+
+        .top-label {
+            font-family: 'DM Mono', monospace; font-size: 0.65rem;
+            color: var(--ink-muted); letter-spacing: 0.12em; text-transform: uppercase;
+        }
+
+        .top-val {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem; letter-spacing: -0.03em; line-height: 1;
+        }
+
+        .top-val.timer { color: var(--accent-cool); }
+        .top-val.timer.urgent { color: var(--accent); }
+
+        /* Timer bar */
+        .timer-track {
+            width: 100%; height: 5px;
+            background: var(--paper-warm); border-radius: 99px; overflow: hidden;
+        }
+
+        .timer-fill {
+            height: 100%; border-radius: 99px; width: 100%;
+            background: var(--accent-cool);
+            transition: width 0.1s linear, background 0.4s ease;
+        }
+
+        /* Mole grid — 3x3 = 9 holes */
+        .mole-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            width: 100%;
+        }
+
+        /* Each hole */
+        .hole {
+            aspect-ratio: 1;
+            background: var(--paper-warm);
+            border: 1.5px solid var(--rule);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: clamp(2rem, 7vw, 3.5rem);
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.15s ease;
+            position: relative; overflow: hidden;
+        }
+
+        /* Mole emoji — hidden by default, shown when active */
+        .hole .mole {
+            position: absolute;
+            transition: transform 0.15s ease;
+            transform: translateY(100%); /* hidden below */
+            font-size: clamp(1.8rem, 6vw, 3rem);
+        }
+
+        .hole.active .mole {
+            transform: translateY(0); /* pops up */
+        }
+
+        .hole.active {
+            background: var(--paper-card);
+            border-color: var(--accent-warm);
+            cursor: pointer;
+        }
+
+        .hole.active:hover { transform: scale(1.05); }
+
+        /* Whacked animation */
+        .hole.whacked {
+            animation: whack 0.2s ease;
+        }
+
+        @keyframes whack {
+            0%   { transform: scale(1); }
+            50%  { transform: scale(0.85); }
+            100% { transform: scale(1); }
+        }
+
+        /* ── RESULT SCREEN ── */
+        .result-eyebrow {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-muted); letter-spacing: 0.15em; text-transform: uppercase;
+        }
+
+        .result-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.5rem, 7vw, 4rem);
+            letter-spacing: -0.03em; line-height: 1.05; text-align: center;
+        }
+
+        .result-title em { font-style: italic; color: var(--accent); }
+
+        .result-stats {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 14px; width: 100%;
+        }
+
+        .stat-box {
+            background: var(--paper-card); border: 1px solid var(--rule);
+            border-radius: 6px; padding: 24px 20px;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+        }
+
+        .stat-val {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.4rem; letter-spacing: -0.03em; line-height: 1;
+        }
+
+        .stat-val.green { color: var(--accent-cool); }
+        .stat-val.red   { color: var(--accent); }
+
+        .stat-lbl {
+            font-family: 'DM Mono', monospace; font-size: 0.65rem;
+            color: var(--ink-muted); letter-spacing: 0.12em; text-transform: uppercase;
+        }
+
+        .result-verdict {
+            font-family: 'DM Mono', monospace; font-size: 0.82rem;
+            color: var(--ink-soft); line-height: 1.7; text-align: center;
+            max-width: 340px; letter-spacing: 0.03em;
+        }
+
+        .result-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--rule); padding: 24px 7%;
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 1400px; margin: 0 auto;
+        }
+
+        footer p { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--ink-muted); letter-spacing: 0.08em; }
+        footer span { color: var(--accent); }
+        footer a { color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
+        footer a:hover { color: var(--accent); }
+
+        @media (max-width: 480px) {
+            .wrapper { padding: 36px 5% 80px; }
+            .mole-grid { gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Games</a>
+        </nav>
+    </header>
+
+    <div class="wrapper">
+
+        <!-- ── START ── -->
+        <div class="screen active" id="startScreen">
+            <p class="eyebrow">13 / Reflex</p>
+            <h1 class="big-title">Whack-a-<br><em>Mole!</em></h1>
+            <p class="start-desc">Moles pop up randomly across 9 holes. Click them before they disappear! They get faster as time runs out. 30 seconds on the clock.</p>
+            <button class="btn-primary" onclick="startGame()">
+                Start Game <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- ── GAME ── -->
+        <div class="screen" id="gameScreen">
+
+            <div class="top-bar">
+                <div class="top-item">
+                    <span class="top-label">Score</span>
+                    <span class="top-val" id="scoreVal">0</span>
+                </div>
+                <div class="top-item">
+                    <span class="top-label">Time</span>
+                    <span class="top-val timer" id="timerVal">30</span>
+                </div>
+            </div>
+
+            <div class="timer-track">
+                <div class="timer-fill" id="timerFill"></div>
+            </div>
+
+            <!-- 9 mole holes -->
+            <div class="mole-grid" id="moleGrid">
+                <div class="hole" onclick="whack(0)"><span class="mole">🐭</span></div>
+                <div class="hole" onclick="whack(1)"><span class="mole">🐭</span></div>
+                <div class="hole" onclick="whack(2)"><span class="mole">🐭</span></div>
+                <div class="hole" onclick="whack(3)"><span class="mole">🐭</span></div>
+                <div class="hole" onclick="whack(4)"><span class="mole">🐭</span></div>
+                <div class="hole" onclick="whack(5)"><span class="mole">🐭</span></div>
+                <div class="hole" onclick="whack(6)"><span class="mole">🐭</span></div>
+                <div class="hole" onclick="whack(7)"><span class="mole">🐭</span></div>
+                <div class="hole" onclick="whack(8)"><span class="mole">🐭</span></div>
+            </div>
+
+        </div>
+
+        <!-- ── RESULT ── -->
+        <div class="screen" id="resultScreen">
+            <p class="result-eyebrow">Time's Up!</p>
+            <h2 class="result-title" id="resultTitle"></h2>
+            <div class="result-stats">
+                <div class="stat-box">
+                    <span class="stat-val green" id="statHits">0</span>
+                    <span class="stat-lbl">Whacked</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-val red" id="statMissed">0</span>
+                    <span class="stat-lbl">Missed</span>
+                </div>
+            </div>
+            <p class="result-verdict" id="resultVerdict"></p>
+            <div class="result-actions">
+                <button class="btn-primary" onclick="startGame()">
+                    Play Again <i class="fas fa-arrow-right"></i>
+                </button>
+                <a href="../index.html" class="btn-secondary">
+                    <i class="fas fa-gamepad"></i> All Games
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>© 2026 Sareena Rahim</p>
+        <p>Part of <span>·</span> <a href="../../index.html">sareenarahim.dev</a></p>
+    </footer>
+
+    <script>
+        // ── SETTINGS ──────────────────────────────────
+        const TOTAL_TIME   = 30;   // seconds
+        const MOLE_START   = 1200; // starting mole duration in ms (how long mole stays up)
+        const MOLE_MIN     = 500;  // minimum mole duration (gets faster over time)
+
+        // Game state
+        let score      = 0;
+        let missed     = 0;
+        let timeLeft   = TOTAL_TIME;
+        let gameTimer  = null;  // countdown interval
+        let moleTimer  = null;  // mole spawning interval
+        let activeMole = -1;    // which hole currently has a mole (-1 = none)
+        let moleDuration = MOLE_START; // current mole display time (shrinks over time)
+
+        const holes = document.querySelectorAll('.hole');
+
+        // ── SCREEN SWITCH ──────────────────────────────
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function clearBg() {
+            document.body.classList.remove('hit', 'miss');
+        }
+
+        // ── START GAME ─────────────────────────────────
+        function startGame() {
+            score        = 0;
+            missed       = 0;
+            timeLeft     = TOTAL_TIME;
+            moleDuration = MOLE_START;
+            activeMole   = -1;
+            clearBg();
+
+            document.getElementById('scoreVal').textContent = 0;
+            document.getElementById('timerVal').textContent = TOTAL_TIME;
+            document.getElementById('timerVal').classList.remove('urgent');
+
+            // Clear all holes
+            holes.forEach(h => h.classList.remove('active', 'whacked'));
+
+            showScreen('gameScreen');
+
+            startCountdown();
+            spawnMole();
+        }
+
+        // ── COUNTDOWN TIMER ────────────────────────────
+        function startCountdown() {
+            clearInterval(gameTimer);
+            updateTimerBar();
+
+            gameTimer = setInterval(() => {
+                timeLeft -= 0.1;
+                updateTimerBar();
+
+                const secs = Math.ceil(timeLeft);
+                document.getElementById('timerVal').textContent = secs;
+
+                // Moles get faster in the last 10 seconds
+                if (timeLeft <= 10) {
+                    document.getElementById('timerVal').classList.add('urgent');
+                    // Speed up — reduce mole duration toward minimum
+                    moleDuration = Math.max(MOLE_MIN, MOLE_START - ((TOTAL_TIME - timeLeft) * 50));
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(gameTimer);
+                    clearTimeout(moleTimer);
+                    hideMole();
+                    endGame();
+                }
+            }, 100);
+        }
+
+        function updateTimerBar() {
+            const pct = Math.max(0, (timeLeft / TOTAL_TIME) * 100);
+            const bar = document.getElementById('timerFill');
+            bar.style.width = pct + '%';
+
+            const ratio = timeLeft / TOTAL_TIME;
+            if      (ratio < 0.33) bar.style.background = 'var(--accent)';
+            else if (ratio < 0.6)  bar.style.background = 'var(--accent-warm)';
+            else                   bar.style.background = 'var(--accent-cool)';
+        }
+
+        // ── SPAWN A MOLE ───────────────────────────────
+        function spawnMole() {
+            if (timeLeft <= 0) return;
+
+            // Hide previous mole if still showing
+            hideMole();
+
+            // Pick a random hole (different from the last one)
+            let newMole;
+            do {
+                newMole = Math.floor(Math.random() * 9);
+            } while (newMole === activeMole);
+
+            activeMole = newMole;
+            holes[activeMole].classList.add('active');
+
+            // After moleDuration ms, hide the mole (player missed it)
+            moleTimer = setTimeout(() => {
+                if (holes[activeMole] && holes[activeMole].classList.contains('active')) {
+                    // Mole escaped — count as missed
+                    missed++;
+                    hideMole();
+                    spawnMole(); // spawn next mole
+                }
+            }, moleDuration);
+        }
+
+        // ── HIDE CURRENT MOLE ──────────────────────────
+        function hideMole() {
+            if (activeMole !== -1) {
+                holes[activeMole].classList.remove('active', 'whacked');
+                activeMole = -1;
+            }
+        }
+
+        // ── PLAYER WHACKS A MOLE ───────────────────────
+        function whack(index) {
+            if (timeLeft <= 0) return;
+
+            // Only count if this hole actually has an active mole
+            if (index !== activeMole) return;
+
+            // Player hit it!
+            score++;
+            document.getElementById('scoreVal').textContent = score;
+
+            // Show whack animation
+            holes[index].classList.add('whacked');
+            holes[index].classList.remove('active');
+
+            // Flash background green
+            clearBg();
+            document.body.classList.add('hit');
+            setTimeout(clearBg, 300);
+
+            // Clear the auto-hide timer and spawn next mole
+            clearTimeout(moleTimer);
+            activeMole = -1;
+
+            setTimeout(spawnMole, 200); // tiny pause before next mole
+        }
+
+        // ── END GAME ───────────────────────────────────
+        function endGame() {
+            clearBg();
+            showScreen('resultScreen');
+
+            document.getElementById('statHits').textContent   = score;
+            document.getElementById('statMissed').textContent = missed;
+
+            let title, verdict;
+
+            if (score >= 20) {
+                title   = 'Mole<br><em>Destroyer!</em>';
+                verdict = `${score} moles whacked — you have the reflexes of a cat. Impressive!`;
+            } else if (score >= 12) {
+                title   = 'Well<br><em>Done!</em>';
+                verdict = `${score} moles whacked — solid reflexes. Can you beat it next round?`;
+            } else if (score >= 6) {
+                title   = 'Not<br><em>Bad!</em>';
+                verdict = `${score} moles whacked — keep practising and you'll get faster!`;
+            } else {
+                title   = 'Keep<br><em>Trying!</em>';
+                verdict = `${score} moles whacked this time. Those moles are sneaky!`;
+            }
+
+            document.getElementById('resultTitle').innerHTML     = title;
+            document.getElementById('resultVerdict').textContent = verdict;
+        }
+    </script>
+
+</body>
+</html>
