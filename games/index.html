@@ -262,6 +262,21 @@
         .sprint-bar-wrap { width: 100%; height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
         .sprint-bar-fill { height: 100%; width: 55%; background: linear-gradient(90deg, var(--accent-cool), var(--accent-warm)); border-radius: 2px; }
 
+        /* AI Debate */
+        .banner-debate { background: var(--ink); }
+        .debate-scene { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; padding: 0 24px; }
+        .debate-topic { font-family: 'DM Serif Display', serif; font-size: 0.95rem; color: rgba(245,242,237,0.85); text-align: center; line-height: 1.4; letter-spacing: -0.01em; }
+        .debate-btn-row { display: flex; gap: 10px; width: 100%; }
+        .debate-btn { flex: 1; padding: 8px; border-radius: 3px; font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; text-align: center; font-weight: 600; }
+        .debate-btn.ag { background: rgba(44,122,110,0.2); color: #7ecfbe; border: 1.5px solid rgba(44,122,110,0.3); }
+        .debate-btn.ds { background: rgba(230,126,34,0.2); color: #f0a860; border: 1.5px solid rgba(230,126,34,0.3); }
+
+        /* Whack-a-Mole */
+        .banner-wam { background: var(--paper-warm); }
+        .wam-scene { display: grid; grid-template-columns: repeat(3, 52px); grid-template-rows: repeat(3, 52px); gap: 8px; }
+        .wam-hole { background: var(--paper-card); border: 1.5px solid var(--rule); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+        .wam-hole.up { background: var(--paper-warm); border-color: var(--accent-warm); }
+
         /* Shared hover overlay */
         .banner-overlay { position: absolute; inset: 0; background: rgba(192,57,43,0.08); opacity: 0; transition: opacity 0.3s; display: flex; align-items: center; justify-content: center; }
         .banner-overlay span { font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: white; background: var(--accent); padding: 8px 20px; border-radius: 2px; transform: translateY(10px); transition: transform 0.3s ease; }
@@ -315,7 +330,7 @@
         <h1>Inter&shy;active <em>Games</em></h1>
         <div class="page-hero-meta">
             <p>Logic-based browser games. No installs. Play right here.</p>
-            <span class="game-count">11 Games</span>
+            <span class="game-count">12 Games</span>
         </div>
     </div>
 
@@ -565,9 +580,7 @@
                     <div class="sprint-scene">
                         <div class="sprint-sum">7 × 8 = ?</div>
                         <div class="sprint-input-fake">Type your answer...</div>
-                        <div class="sprint-bar-wrap">
-                            <div class="sprint-bar-fill"></div>
-                        </div>
+                        <div class="sprint-bar-wrap"><div class="sprint-bar-fill"></div></div>
                     </div>
                     <div class="banner-overlay"><span>Play Now</span></div>
                 </div>
@@ -576,6 +589,31 @@
                     <h2>Math<br>Sprint</h2>
                     <p>Solve as many sums as you can in 30 seconds. Addition, subtraction and multiplication. How high can you score?</p>
                     <div class="game-tags"><span class="tag">Math</span><span class="tag">Speed</span><span class="tag">Single Player</span></div>
+                    <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- 12 Whack-a-Mole -->
+            <a href="whack-a-mole/index.html" class="game-card fade-in" style="transition-delay:0.77s;">
+                <div class="game-banner banner-wam">
+                    <div class="wam-scene">
+                        <div class="wam-hole"></div>
+                        <div class="wam-hole up">🐭</div>
+                        <div class="wam-hole"></div>
+                        <div class="wam-hole up">🐭</div>
+                        <div class="wam-hole"></div>
+                        <div class="wam-hole"></div>
+                        <div class="wam-hole"></div>
+                        <div class="wam-hole"></div>
+                        <div class="wam-hole up">🐭</div>
+                    </div>
+                    <div class="banner-overlay"><span>Play Now</span></div>
+                </div>
+                <div class="game-body">
+                    <div class="game-num">12 / Reflex</div>
+                    <h2>Whack-a-<br>Mole!</h2>
+                    <p>Moles pop up randomly across 9 holes. Click them before they disappear! They get faster as time runs out.</p>
+                    <div class="game-tags"><span class="tag">Reflex</span><span class="tag">Speed</span><span class="tag">Single Player</span></div>
                     <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
                 </div>
             </a>
