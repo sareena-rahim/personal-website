@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habit Tracker · Sareena Rahim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f0e0d;
+            --ink-soft: #3a3835;
+            --ink-muted: #7a7672;
+            --paper: #f5f2ed;
+            --paper-warm: #ede9e2;
+            --paper-card: #f9f7f4;
+            --accent: #c0392b;
+            --accent-warm: #e67e22;
+            --accent-cool: #2c7a6e;
+            --rule: rgba(15,14,13,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--paper);
+            color: var(--ink);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 9999; opacity: 0.4;
+        }
+
+        /* ── HEADER ── */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(245,242,237,0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+        }
+
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 18px 7%; max-width: 1400px; margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem; color: var(--ink);
+            text-decoration: none; letter-spacing: -0.02em;
+        }
+
+        .logo sup {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.5rem; color: var(--accent);
+            vertical-align: super; letter-spacing: 0.1em; text-transform: uppercase;
+        }
+
+        .back-btn {
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            border: 1.5px solid var(--ink); padding: 9px 22px; border-radius: 3px;
+            text-decoration: none; color: var(--ink); letter-spacing: 0.05em;
+            display: flex; align-items: center; gap: 8px; transition: all 0.25s ease;
+        }
+
+        .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+        /* ── PAGE HERO ── */
+        .page-hero {
+            padding: 60px 7% 44px; max-width: 1400px;
+            margin: 0 auto; border-bottom: 1px solid var(--rule);
+        }
+
+        .breadcrumb {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-muted); letter-spacing: 0.12em; text-transform: uppercase;
+            margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+        }
+
+        .breadcrumb a { color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
+        .breadcrumb a:hover { color: var(--accent); }
+        .breadcrumb span { color: var(--accent); }
+
+        .hero-top {
+            display: flex; justify-content: space-between;
+            align-items: flex-end; flex-wrap: wrap; gap: 16px;
+        }
+
+        .page-hero h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.2rem, 5vw, 3.6rem);
+            letter-spacing: -0.03em; line-height: 1.08;
+        }
+
+        .page-hero h1 em { font-style: italic; color: var(--accent); }
+
+        .today-badge {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-muted); letter-spacing: 0.1em;
+            background: var(--paper-warm); border: 1px solid var(--rule);
+            padding: 6px 16px; border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        .page-hero p {
+            font-family: 'DM Mono', monospace; font-size: 0.8rem;
+            color: var(--ink-muted); letter-spacing: 0.08em; margin-top: 14px;
+        }
+
+        /* ── MAIN LAYOUT ── */
+        .tool-section {
+            padding: 52px 7% 100px; max-width: 760px;
+            margin: 0 auto; display: flex; flex-direction: column; gap: 24px;
+        }
+
+        /* ── CARD ── */
+        .card {
+            background: var(--paper-card); border: 1px solid var(--rule);
+            border-radius: 6px; padding: 36px;
+        }
+
+        .card-title {
+            font-family: 'DM Mono', monospace; font-size: 0.7rem;
+            color: var(--ink-muted); letter-spacing: 0.15em; text-transform: uppercase;
+            margin-bottom: 24px; padding-bottom: 16px;
+            border-bottom: 1px solid var(--rule);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        /* ── PROGRESS BAR ── */
+        .progress-wrap { margin-bottom: 32px; }
+
+        .progress-top {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-label {
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            color: var(--ink-soft); letter-spacing: 0.08em; text-transform: uppercase;
+        }
+
+        .progress-count {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem; letter-spacing: -0.025em; color: var(--accent-cool);
+            line-height: 1;
+        }
+
+        .progress-track {
+            width: 100%; height: 8px;
+            background: var(--paper-warm); border-radius: 99px; overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%; border-radius: 99px;
+            background: var(--accent-cool);
+            transition: width 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            width: 0%;
+        }
+
+        .progress-fill.done { background: var(--accent-warm); }
+
+        /* ── HABIT LIST ── */
+        .habit-list { display: flex; flex-direction: column; gap: 12px; }
+
+        .habit-item {
+            display: flex; align-items: center; gap: 16px;
+            background: var(--paper-warm); border: 1.5px solid var(--rule);
+            border-radius: 6px; padding: 18px 20px;
+            cursor: pointer; transition: all 0.25s ease;
+            user-select: none;
+        }
+
+        .habit-item:hover { border-color: var(--ink-muted); transform: translateX(3px); }
+
+        .habit-item.done {
+            background: rgba(44,122,110,0.08);
+            border-color: rgba(44,122,110,0.3);
+        }
+
+        /* Custom checkbox */
+        .habit-check {
+            width: 26px; height: 26px; border-radius: 50%;
+            border: 2px solid var(--rule); background: var(--paper-card);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; transition: all 0.25s ease;
+        }
+
+        .habit-item.done .habit-check {
+            background: var(--accent-cool); border-color: var(--accent-cool);
+        }
+
+        .habit-check i {
+            font-size: 0.7rem; color: white;
+            opacity: 0; transition: opacity 0.2s ease;
+        }
+
+        .habit-item.done .habit-check i { opacity: 1; }
+
+        /* Habit info */
+        .habit-info { flex: 1; display: flex; align-items: center; gap: 14px; }
+
+        .habit-emoji { font-size: 1.4rem; line-height: 1; }
+
+        .habit-name {
+            font-family: 'Syne', sans-serif; font-size: 1rem;
+            font-weight: 600; color: var(--ink); letter-spacing: -0.01em;
+            transition: color 0.25s ease;
+        }
+
+        .habit-item.done .habit-name {
+            color: var(--accent-cool);
+            text-decoration: line-through;
+            text-decoration-color: rgba(44,122,110,0.4);
+        }
+
+        .habit-desc {
+            font-family: 'DM Mono', monospace; font-size: 0.7rem;
+            color: var(--ink-muted); letter-spacing: 0.04em;
+        }
+
+        /* Tap hint */
+        .habit-tap {
+            font-family: 'DM Mono', monospace; font-size: 0.62rem;
+            color: var(--ink-muted); letter-spacing: 0.08em; text-transform: uppercase;
+            opacity: 0; transition: opacity 0.2s;
+        }
+
+        .habit-item:hover .habit-tap { opacity: 1; }
+        .habit-item.done .habit-tap { opacity: 0; }
+
+        /* ── ALL DONE MESSAGE ── */
+        .all-done {
+            text-align: center; padding: 24px 20px;
+            display: none;
+        }
+
+        .all-done.show { display: block; }
+
+        .all-done-emoji { font-size: 2.5rem; margin-bottom: 12px; }
+
+        .all-done p {
+            font-family: 'DM Mono', monospace; font-size: 0.82rem;
+            color: var(--ink-soft); letter-spacing: 0.06em; line-height: 1.6;
+        }
+
+        /* Reset button */
+        .reset-btn {
+            font-family: 'DM Mono', monospace; font-size: 0.65rem;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            color: var(--ink-muted); background: none; border: none;
+            cursor: pointer; transition: color 0.2s;
+        }
+
+        .reset-btn:hover { color: var(--accent); }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--rule); padding: 24px 7%;
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 1400px; margin: 0 auto;
+        }
+
+        footer p { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--ink-muted); letter-spacing: 0.08em; }
+        footer span { color: var(--accent); }
+        footer a { color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
+        footer a:hover { color: var(--accent); }
+
+        @media (max-width: 560px) {
+            .card { padding: 24px 20px; }
+            .habit-tap { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">Sareena Rahim<sup>dev</sup></a>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Tools</a>
+        </nav>
+    </header>
+
+    <div class="page-hero">
+        <div class="breadcrumb">
+            <a href="../../index.html">Home</a>
+            <i class="fas fa-chevron-right" style="font-size:0.55rem;"></i>
+            <a href="../index.html">Web Tools</a>
+            <i class="fas fa-chevron-right" style="font-size:0.55rem;"></i>
+            <span>Habit Tracker</span>
+        </div>
+        <div class="hero-top">
+            <h1>Habit <em>Tracker</em></h1>
+            <span class="today-badge" id="todayBadge">—</span>
+        </div>
+        <p>Tick off your daily habits. Progress resets automatically each new day.</p>
+    </div>
+
+    <div class="tool-section">
+        <div class="card">
+            <div class="card-title">
+                <span>13 / Today's Habits</span>
+                <button class="reset-btn" onclick="resetAll()">Reset</button>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="progress-wrap">
+                <div class="progress-top">
+                    <span class="progress-label">Completed</span>
+                    <span class="progress-count" id="progressCount">0 / 5</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <!-- Habit list -->
+            <div class="habit-list" id="habitList"></div>
+
+            <!-- All done message -->
+            <div class="all-done" id="allDone">
+                <div class="all-done-emoji">🎉</div>
+                <p>All habits done for today!<br>Come back tomorrow to keep your streak going.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 Sareena Rahim</p>
+        <p>Part of <span>·</span> <a href="../../index.html">sareenarahim.dev</a></p>
+    </footer>
+
+    <script>
+        // ── HABIT DEFINITIONS ─────────────────────────
+        // These are the 5 preset habits shown to the user
+        const HABITS = [
+            { id: 'sleep',    emoji: '😴', name: 'Sleep',    desc: '7–8 hours of rest'       },
+            { id: 'exercise', emoji: '🏃', name: 'Exercise', desc: 'At least 20 minutes'     },
+            { id: 'water',    emoji: '💧', name: 'Water',    desc: 'Drink 8 glasses'          },
+            { id: 'read',     emoji: '📖', name: 'Read',     desc: 'At least 10 pages'        },
+            { id: 'meditate', emoji: '🧘', name: 'Meditate', desc: '5–10 minutes of calm'     },
+        ];
+
+        // localStorage key
+        const STORAGE_KEY = 'habitTracker';
+
+        // ── ON PAGE LOAD ──────────────────────────────
+        showTodayDate();
+        checkDayReset();  // reset habits if it's a new day
+        renderHabits();
+
+        // ── SHOW TODAY'S DATE IN HEADER ───────────────
+        function showTodayDate() {
+            const today = new Date().toLocaleDateString('en-IN', {
+                weekday: 'long', day: 'numeric', month: 'long'
+            });
+            document.getElementById('todayBadge').textContent = today;
+        }
+
+        // ── CHECK IF IT'S A NEW DAY → RESET ──────────
+        // We store the last saved date. If today is different, we clear all habits.
+        function checkDayReset() {
+            const data     = loadData();
+            const today    = getTodayString(); // e.g. "2026-03-31"
+            const lastDate = data.date;
+
+            if (lastDate !== today) {
+                // New day — reset all habits
+                saveData({ date: today, done: [] });
+            }
+        }
+
+        // ── GET TODAY AS A STRING (YYYY-MM-DD) ────────
+        function getTodayString() {
+            const d = new Date();
+            return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+        }
+
+        // ── RENDER ALL HABIT ITEMS ────────────────────
+        function renderHabits() {
+            const data = loadData();
+            const list = document.getElementById('habitList');
+            list.innerHTML = '';
+
+            HABITS.forEach(habit => {
+                const isDone = data.done.includes(habit.id);
+
+                // Build each habit row as HTML
+                const item = document.createElement('div');
+                item.className = 'habit-item' + (isDone ? ' done' : '');
+                item.onclick   = () => toggleHabit(habit.id);
+
+                item.innerHTML = `
+                    <div class="habit-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="habit-info">
+                        <span class="habit-emoji">${habit.emoji}</span>
+                        <div>
+                            <div class="habit-name">${habit.name}</div>
+                            <div class="habit-desc">${habit.desc}</div>
+                        </div>
+                    </div>
+                    <span class="habit-tap">${isDone ? '' : 'Tap to complete'}</span>
+                `;
+
+                list.appendChild(item);
+            });
+
+            updateProgress(data.done.length);
+        }
+
+        // ── TOGGLE A HABIT ON / OFF ───────────────────
+        function toggleHabit(id) {
+            const data = loadData();
+
+            if (data.done.includes(id)) {
+                // Already done — remove it (uncheck)
+                data.done = data.done.filter(d => d !== id);
+            } else {
+                // Not done — add it (check)
+                data.done.push(id);
+            }
+
+            saveData(data);
+            renderHabits();
+        }
+
+        // ── UPDATE PROGRESS BAR AND COUNT ────────────
+        function updateProgress(count) {
+            const total = HABITS.length;
+            const pct   = (count / total) * 100;
+
+            document.getElementById('progressCount').textContent = `${count} / ${total}`;
+
+            const fill = document.getElementById('progressFill');
+            fill.style.width = pct + '%';
+
+            // Turn the bar orange when all done
+            if (count === total) {
+                fill.classList.add('done');
+            } else {
+                fill.classList.remove('done');
+            }
+
+            // Show or hide the "all done" message
+            const allDone = document.getElementById('allDone');
+            if (count === total) {
+                allDone.classList.add('show');
+            } else {
+                allDone.classList.remove('show');
+            }
+        }
+
+        // ── RESET ALL HABITS (manual reset button) ────
+        function resetAll() {
+            if (!confirm('Reset all habits for today?')) return;
+            saveData({ date: getTodayString(), done: [] });
+            renderHabits();
+        }
+
+        // ── LOCALSTORAGE HELPERS ──────────────────────
+        // data shape: { date: "2026-3-31", done: ["sleep", "water"] }
+
+        function loadData() {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (raw) return JSON.parse(raw);
+            return { date: getTodayString(), done: [] };
+        }
+
+        function saveData(data) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+    </script>
+
+</body>
+</html>
