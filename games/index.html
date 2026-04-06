@@ -277,6 +277,11 @@
         .wam-hole { background: var(--paper-card); border: 1.5px solid var(--rule); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
         .wam-hole.up { background: var(--paper-warm); border-color: var(--accent-warm); }
 
+        /* Bubble Pop */
+        .banner-bubble { background: var(--paper-card); }
+        .bubble-scene { position: relative; width: 100%; height: 100%; }
+        .b-bub { position: absolute; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: inset -3px -3px 6px rgba(0,0,0,0.1), inset 2px 2px 5px rgba(255,255,255,0.4); }
+
         /* Shared hover overlay */
         .banner-overlay { position: absolute; inset: 0; background: rgba(192,57,43,0.08); opacity: 0; transition: opacity 0.3s; display: flex; align-items: center; justify-content: center; }
         .banner-overlay span { font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: white; background: var(--accent); padding: 8px 20px; border-radius: 2px; transform: translateY(10px); transition: transform 0.3s ease; }
@@ -330,7 +335,7 @@
         <h1>Inter&shy;active <em>Games</em></h1>
         <div class="page-hero-meta">
             <p>Logic-based browser games. No installs. Play right here.</p>
-            <span class="game-count">12 Games</span>
+            <span class="game-count">13 Games</span>
         </div>
     </div>
 
@@ -613,6 +618,27 @@
                     <div class="game-num">12 / Reflex</div>
                     <h2>Whack-a-<br>Mole!</h2>
                     <p>Moles pop up randomly across 9 holes. Click them before they disappear! They get faster as time runs out.</p>
+                    <div class="game-tags"><span class="tag">Reflex</span><span class="tag">Speed</span><span class="tag">Single Player</span></div>
+                    <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- 13 Bubble Pop -->
+            <a href="bubble-pop/index.html" class="game-card fade-in" style="transition-delay:0.84s;">
+                <div class="game-banner banner-bubble">
+                    <div class="bubble-scene">
+                        <div class="b-bub" style="width:64px;height:64px;left:20px;top:30px;background:rgba(44,122,110,0.2);border:2px solid rgba(44,122,110,0.4);">🫧</div>
+                        <div class="b-bub" style="width:56px;height:56px;left:110px;top:15px;background:rgba(192,57,43,0.18);border:2px solid rgba(192,57,43,0.35);">💭</div>
+                        <div class="b-bub" style="width:70px;height:70px;left:185px;top:40px;background:rgba(230,126,34,0.2);border:2px solid rgba(230,126,34,0.4);">🫧</div>
+                        <div class="b-bub" style="width:50px;height:50px;left:60px;top:100px;background:rgba(74,144,217,0.2);border:2px solid rgba(74,144,217,0.4);">🔵</div>
+                        <div class="b-bub" style="width:60px;height:60px;left:155px;top:105px;background:rgba(155,89,182,0.18);border:2px solid rgba(155,89,182,0.35);">🟣</div>
+                    </div>
+                    <div class="banner-overlay"><span>Play Now</span></div>
+                </div>
+                <div class="game-body">
+                    <div class="game-num">13 / Reflex</div>
+                    <h2>Bubble<br>Pop!</h2>
+                    <p>Colourful bubbles appear across the screen. Click them before they escape! They spawn faster as time runs out. 30 seconds.</p>
                     <div class="game-tags"><span class="tag">Reflex</span><span class="tag">Speed</span><span class="tag">Single Player</span></div>
                     <span class="play-link">Play Game <i class="fas fa-arrow-right"></i></span>
                 </div>
